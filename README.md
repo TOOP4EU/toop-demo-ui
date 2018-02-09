@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 cctf-dc-user-interface
 ==============
 
@@ -50,3 +51,6 @@ Using Vaadin pre-releases
 
 If Vaadin pre-releases are not enabled by default, use the Maven parameter
 "-P vaadin-prerelease" or change the activation default value of the profile in pom.xml .
+=======
+# DC-User-Interface
+>>>>>>> fbe053b822c6370540fd7b89a65d56b8df1bf798
