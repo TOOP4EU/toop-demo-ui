@@ -1,11 +1,8 @@
-cctf-dc-user-interface
-==============
+# toop-demo-ui
 
 Template for a simple Vaadin application that only requires a Servlet 3.0 container to run.
 
-
-Workflow
-========
+# Workflow
 
 To compile the entire project, run "mvn install".
 
@@ -16,8 +13,7 @@ To produce a deployable production mode WAR:
 - run "mvn clean package"
 - test the war file with "mvn jetty:run-war"
 
-Client-Side compilation
--------------------------
+# Client-Side compilation
 
 The generated maven project is using an automatically generated widgetset by default. 
 When you add a dependency that needs client-side compilation, the maven plugin will 
@@ -28,8 +24,7 @@ Debugging client side code
   - run "mvn vaadin:run-codeserver" on a separate console while the application is running
   - activate Super Dev Mode in the debug window of the application
 
-Developing a theme using the runtime compiler
--------------------------
+# Developing a theme using the runtime compiler
 
 When developing the theme, Vaadin can be configured to compile the SASS based
 theme at runtime in the server. This way you can just modify the scss files in
@@ -45,8 +40,7 @@ significantly.
 
 It is highly recommended to disable runtime compilation for production WAR files.
 
-Using Vaadin pre-releases
--------------------------
+# Using Vaadin pre-releases
 
 If Vaadin pre-releases are not enabled by default, use the Maven parameter
 "-P vaadin-prerelease" or change the activation default value of the profile in pom.xml .
