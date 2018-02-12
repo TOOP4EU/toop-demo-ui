@@ -28,11 +28,9 @@
   </session-config>
   
   <!-- The welcome file is only required for the initial redirect -->
-  <!--  
   <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
+    <welcome-file>/ui/</welcome-file>
   </welcome-file-list>
-  -->
   
   <servlet>
     <servlet-name>ToopInterfaceServlet</servlet-name>

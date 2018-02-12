@@ -34,7 +34,8 @@ public class DCUI extends UI {
         navigator.addView("", new StartView());
     }
 
-    @WebServlet(urlPatterns = "/*", name = "DCUIServlet", asyncSupported = true)
+    //@WebServlet(urlPatterns = "/ui/*", name = "DCUIServlet", asyncSupported = true)
+    @WebServlet(urlPatterns = "/ui/*", value = {"/UI/*", "/VAADIN/*"}, name = "DCUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = DCUI.class, productionMode = false)
     public static class DCUIServlet extends VaadinServlet {
     }
