@@ -135,6 +135,12 @@
       <artifactId>ph-oton-jetty</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-continuation</artifactId>
+      <version>9.4.8.v20171121</version>
+      <scope>test</scope>
+    </dependency>
 	</dependencies>
 
 	<build>

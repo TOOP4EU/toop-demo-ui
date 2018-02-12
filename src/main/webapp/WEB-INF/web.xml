@@ -16,7 +16,10 @@
     limitations under the License.
 
 -->
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+<web-app version="3.0" 
+         xmlns="http://java.sun.com/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
   <display-name>TOOP Demo UI</display-name>
   <description>https://github.com/toop4eu/toop-demo-ui</description>
   
@@ -25,9 +28,11 @@
   </session-config>
   
   <!-- The welcome file is only required for the initial redirect -->
+  <!--  
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
+  -->
   
   <servlet>
     <servlet-name>ToopInterfaceServlet</servlet-name>
