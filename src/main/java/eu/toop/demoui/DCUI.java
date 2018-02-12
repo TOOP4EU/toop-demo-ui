@@ -10,6 +10,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
 import eu.toop.demoui.view.StartView;
+import eu.toop.demoui.view.eIDModuleView;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window
@@ -25,10 +26,11 @@ public class DCUI extends UI {
 
     @Override
     protected void init(final VaadinRequest vaadinRequest) {
-        getPage().setTitle("DC user interface");
+        getPage().setTitle("TOOP Demo User Interface");
 
         navigator = new Navigator(this, this);
         navigator.addView("", new StartView());
+        navigator.addView("eIDModuleView", new eIDModuleView());
     }
 
     // @WebServlet(urlPatterns = "/ui/*", name = "DCUIServlet", asyncSupported = true)
