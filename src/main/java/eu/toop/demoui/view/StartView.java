@@ -1,4 +1,4 @@
-package eu.toop.view;
+package eu.toop.demoui.view;
 
 import com.vaadin.navigator.View;
 import com.vaadin.ui.Button;
