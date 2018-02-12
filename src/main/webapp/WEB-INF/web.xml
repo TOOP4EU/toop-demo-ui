@@ -26,7 +26,7 @@
   <session-config>
     <session-timeout>60</session-timeout>
   </session-config>
-  
+
   <!-- The welcome file is only required for the initial redirect -->
   <welcome-file-list>
     <welcome-file>/ui/</welcome-file>
