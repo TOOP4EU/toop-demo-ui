@@ -33,7 +33,6 @@ public class DCUI extends UI {
         navigator.addView("eIDModuleView", new eIDModuleView());
     }
 
-    // @WebServlet(urlPatterns = "/ui/*", name = "DCUIServlet", asyncSupported = true)
     @WebServlet(urlPatterns = {"/ui/*", "/VAADIN/*"}, asyncSupported = true)
     @VaadinServletConfiguration(ui = DCUI.class, productionMode = false)
     public static class DCUIServlet extends VaadinServlet {

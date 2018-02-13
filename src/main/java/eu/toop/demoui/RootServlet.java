@@ -32,18 +32,15 @@ import com.helger.commons.string.StringHelper;
  * @author Philip Helger
  */
 @WebServlet ("")
-public class RootServlet extends HttpServlet
-{
-  @Override
-  protected void doGet (final HttpServletRequest req, final HttpServletResponse resp) throws ServletException,
-                                                                                      IOException
-  {
-    String sRedirectURL = req.getContextPath () + "/ui";
+public class RootServlet extends HttpServlet {
+    @Override
+    protected void doGet (final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        String sRedirectURL = req.getContextPath () + "/ui";
 
-    final String sQueryString = req.getQueryString ();
-    if (StringHelper.hasText (sQueryString))
-      sRedirectURL += "?" + sQueryString;
+        final String sQueryString = req.getQueryString ();
+        if (StringHelper.hasText (sQueryString))
+            sRedirectURL += "?" + sQueryString;
 
-    resp.sendRedirect (sRedirectURL);
-  }
+        resp.sendRedirect (sRedirectURL);
+    }
 }
