@@ -18,6 +18,9 @@ package eu.toop.demoui.standalone;
 import javax.annotation.concurrent.Immutable;
 
 import com.helger.photon.jetty.JettyStarter;
+import eu.toop.demoui.endpoints.TOOPInterfaceDC;
+import eu.toop.demoui.endpoints.TOOPInterfaceDP;
+import eu.toop.iface.ToopInterface;
 
 /**
  * Run as a standalone web application in Jetty on port 8080.<br>
@@ -30,6 +33,9 @@ public final class RunInJettyDEMOUI
 {
   public static void main (final String [] args) throws Exception
   {
+
+    ToopInterface.setInterfaceDC(new TOOPInterfaceDC());
+    ToopInterface.setInterfaceDP(new TOOPInterfaceDP());
     new JettyStarter (RunInJettyDEMOUI.class).setPort (8080).run ();
   }
 }

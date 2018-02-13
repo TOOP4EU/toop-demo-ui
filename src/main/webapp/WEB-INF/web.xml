@@ -20,19 +20,28 @@
          xmlns="http://java.sun.com/xml/ns/javaee" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-  <display-name>TOOP Demo UI</display-name>
-  <description>https://github.com/toop4eu/toop-demo-ui</description>
-  
-  <session-config>
-    <session-timeout>60</session-timeout>
-  </session-config>
-  
-  <servlet>
-    <servlet-name>ToopInterfaceServlet</servlet-name>
-    <servlet-class>eu.toop.iface.servlet.ToopInterfaceServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ToopInterfaceServlet</servlet-name>
-    <url-pattern>/interface/*</url-pattern>
-  </servlet-mapping>
+    <display-name>TOOP Demo UI</display-name>
+    <description>https://github.com/toop4eu/toop-demo-ui</description>
+
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+    <servlet>
+        <servlet-name>ToopInterfaceServletDC</servlet-name>
+        <servlet-class>eu.toop.iface.servlet.ToopInterfaceServletDC</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ToopInterfaceServletDC</servlet-name>
+        <url-pattern>/interface/dc/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ToopInterfaceServletDP</servlet-name>
+        <servlet-class>eu.toop.iface.servlet.ToopInterfaceServletDP</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ToopInterfaceServletDP</servlet-name>
+        <url-pattern>/interface/dp/*</url-pattern>
+    </servlet-mapping>
 </web-app>

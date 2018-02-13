@@ -9,8 +9,11 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
+import eu.toop.demoui.endpoints.TOOPInterfaceDC;
+import eu.toop.demoui.endpoints.TOOPInterfaceDP;
 import eu.toop.demoui.view.StartView;
 import eu.toop.demoui.view.eIDModuleView;
+import eu.toop.iface.ToopInterface;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window
