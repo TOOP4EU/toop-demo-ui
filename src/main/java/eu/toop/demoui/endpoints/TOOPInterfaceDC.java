@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.UI;
 import eu.toop.iface.ITOOPInterfaceDC;
 
 public class TOOPInterfaceDC implements ITOOPInterfaceDC {

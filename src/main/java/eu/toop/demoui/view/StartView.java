@@ -4,6 +4,14 @@ import com.vaadin.navigator.View;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import eu.toop.iface.mockup.MSDataRequest;
+import eu.toop.iface.mockup.TOOPDataRequest;
+import eu.toop.iface.mockup.TOOPMessageBundle;
+import eu.toop.iface.mockup.TOOPMessageBundleBuilder;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 public class StartView extends VerticalLayout implements View {
 
@@ -17,14 +25,22 @@ public class StartView extends VerticalLayout implements View {
         });
         addComponents(eIDModuleButton);
 
-        // TODO: Preview Identity the claim data retrieved from eID-Module
-
         Button toopButton = new Button("Pre-fill my form using TOOP!");
         toopButton.addClickListener(e -> {
-            // TODO: Start construction of ASIC-container.
-            // TODO: Serialize MSDataRequest container into binary and store in Asic-container.
-            // TODO: Use toop-interface to send the Asic-container to the Message-Processor!
-            System.out.println("TODO: Use the toop-interface to send to Message-Processor!");
+            ByteArrayOutputStream archiveOutput = new ByteArrayOutputStream();
+            final File keystoreFile = new File("src/main/resources/demo-keystore.jks");
+            final String keystorePassword = "password";
+            final String keyPassword = "password";
+
+            try {
+                TOOPMessageBundle bundle = new TOOPMessageBundleBuilder()
+                        .setMSDataRequest(new MSDataRequest("ABC123"))
+                        .sign(archiveOutput, keystoreFile, keystorePassword, keyPassword);
+                eu.toop.iface.mockup.client.SendToMPClient.httpClientCall(archiveOutput.toByteArray());
+                archiveOutput.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
         addComponents(toopButton);
     }
