@@ -33,9 +33,6 @@ public final class RunInJettyDEMOUI
 {
   public static void main (final String [] args) throws Exception
   {
-
-    ToopInterface.setInterfaceDC(new TOOPInterfaceDC());
-    ToopInterface.setInterfaceDP(new TOOPInterfaceDP());
     new JettyStarter (RunInJettyDEMOUI.class).setPort (8080).run ();
   }
 }

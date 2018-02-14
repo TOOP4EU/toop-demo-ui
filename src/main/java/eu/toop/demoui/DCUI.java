@@ -29,6 +29,9 @@ public class DCUI extends UI {
 
     @Override
     protected void init(final VaadinRequest vaadinRequest) {
+        ToopInterface.setInterfaceDC(new TOOPInterfaceDC(this));
+        ToopInterface.setInterfaceDP(new TOOPInterfaceDP(this));
+
         getPage().setTitle("TOOP Demo User Interface");
 
         navigator = new Navigator(this, this);

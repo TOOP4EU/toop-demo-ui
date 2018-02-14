@@ -7,9 +7,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.vaadin.ui.UI;
 import eu.toop.iface.ITOOPInterfaceDP;
 
 public class TOOPInterfaceDP implements ITOOPInterfaceDP {
+
+    private UI ui;
+
+    public TOOPInterfaceDP(UI ui) {
+        this.ui = ui;
+    }
+
     @Override
     public void doPost(final HttpServletRequest req, final HttpServletResponse resp)
 	    throws ServletException, IOException {

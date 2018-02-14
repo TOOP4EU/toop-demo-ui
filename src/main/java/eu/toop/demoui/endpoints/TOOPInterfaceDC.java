@@ -12,6 +12,14 @@ import com.vaadin.ui.UI;
 import eu.toop.iface.ITOOPInterfaceDC;
 
 public class TOOPInterfaceDC implements ITOOPInterfaceDC {
+
+    private UI ui;
+
+    public TOOPInterfaceDC(UI ui) {
+        this.ui = ui;
+    }
+
+    @Override
     public void doPost(final HttpServletRequest req, final HttpServletResponse resp)
 	    throws ServletException, IOException {
         final String pathInfo = req.getPathInfo();
