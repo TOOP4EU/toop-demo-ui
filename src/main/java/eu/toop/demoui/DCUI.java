@@ -12,7 +12,6 @@ import com.vaadin.ui.UI;
 import eu.toop.demoui.endpoints.TOOPInterfaceDC;
 import eu.toop.demoui.endpoints.TOOPInterfaceDP;
 import eu.toop.demoui.view.StartView;
-import eu.toop.demoui.view.eIDModuleView;
 import eu.toop.iface.ToopInterface;
 
 /**
@@ -29,14 +28,14 @@ public class DCUI extends UI {
 
     @Override
     protected void init(final VaadinRequest vaadinRequest) {
-        ToopInterface.setInterfaceDC(new TOOPInterfaceDC(this));
-        ToopInterface.setInterfaceDP(new TOOPInterfaceDP(this));
 
         getPage().setTitle("TOOP Demo User Interface");
 
+        ToopInterface.setInterfaceDC(new TOOPInterfaceDC(this));
+        ToopInterface.setInterfaceDP(new TOOPInterfaceDP(this));
+
         navigator = new Navigator(this, this);
         navigator.addView("", new StartView());
-        navigator.addView("eIDModuleView", new eIDModuleView());
     }
 
     @WebServlet(urlPatterns = {"/ui/*", "/VAADIN/*"}, asyncSupported = true)

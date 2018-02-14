@@ -6,34 +6,35 @@ import com.vaadin.ui.*;
 import eu.toop.demoui.bean.Identity;
 
 public class IdentityForm extends FormLayout {
+
+    private Binder<Identity> binder = new Binder<>();
+
+    private Identity identity;
+
     public IdentityForm(Identity identity, Button.ClickListener onSubmit) {
-        Binder<Identity> binder = new Binder<>();
 
         TextField firstNameField = new TextField("First name");
-        binder.bind(firstNameField, Identity::getFirstName, Identity::setFirstName);
-        addComponent(firstNameField);
-
         TextField familyNameField = new TextField("Family Name");
-        binder.bind(familyNameField, Identity::getFamilyName, Identity::setFamilyName);
-        addComponent(familyNameField);
-
         TextField birthPlaceField = new TextField("Birth place");
-        binder.bind(birthPlaceField, Identity::getBirthPlace, Identity::setBirthPlace);
-        addComponent(birthPlaceField);
-
         TextField identifierField = new TextField("Identifier");
-        binder.bind(identifierField, Identity::getIdentifier, Identity::setIdentifier);
-        addComponent(identifierField);
-
         DateField birthDateField = new DateField("Birth date");
-        binder.bind(birthDateField, Identity::getBirthDate, Identity::setBirthDate);
-        addComponent(birthDateField);
-
         TextField nationalityField = new TextField("Nationality");
+
+        binder.bind(firstNameField, Identity::getFirstName, Identity::setFirstName);
+        binder.bind(familyNameField, Identity::getFamilyName, Identity::setFamilyName);
+        binder.bind(birthPlaceField, Identity::getBirthPlace, Identity::setBirthPlace);
+        binder.bind(identifierField, Identity::getIdentifier, Identity::setIdentifier);
+        binder.bind(birthDateField, Identity::getBirthDate, Identity::setBirthDate);
         binder.bind(nationalityField, Identity::getNationality, Identity::setNationality);
+
+        addComponent(firstNameField);
+        addComponent(familyNameField);
+        addComponent(birthPlaceField);
+        addComponent(identifierField);
+        addComponent(birthDateField);
         addComponent(nationalityField);
 
-        binder.readBean(identity);
+        setIdentityBean(identity);
 
         Button submitButton = new Button("Use this identity", clickEvent -> {
             try {
@@ -42,8 +43,21 @@ public class IdentityForm extends FormLayout {
                 Notification.show("Identity could not be saved, " +
                     "please check error messages for each field.");
             }
+
+            firstNameField.setReadOnly(true);
+            familyNameField.setReadOnly(true);
+            birthPlaceField.setReadOnly(true);
+            identifierField.setReadOnly(true);
+            birthDateField.setReadOnly(true);
+            nationalityField.setReadOnly(true);
+
             onSubmit.buttonClick(clickEvent);
         });
         addComponent(submitButton);
+    }
+
+    public void setIdentityBean(Identity _identity) {
+        identity = _identity;
+        binder.readBean(identity);
     }
 }

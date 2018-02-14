@@ -4,6 +4,10 @@ import com.vaadin.navigator.View;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import eu.toop.demoui.bean.Identity;
+import eu.toop.demoui.bean.Organization;
+import eu.toop.demoui.form.IdentityForm;
+import eu.toop.demoui.form.OrganizationForm;
 import eu.toop.iface.mockup.MSDataRequest;
 import eu.toop.iface.mockup.TOOPDataRequest;
 import eu.toop.iface.mockup.TOOPMessageBundle;
@@ -15,33 +19,25 @@ import java.io.IOException;
 
 public class StartView extends VerticalLayout implements View {
 
+    public Identity identity;
+    public Organization organization;
+
+    public IdentityForm identityForm;
+    public OrganizationForm organizationForm;
+
     public StartView() {
+        identity = new Identity();
+        organization = new Organization();
+
+        identityForm = new IdentityForm(identity, event -> {});
+        organizationForm = new OrganizationForm(organization, event -> {});
 
         addComponent(new Label("TOOP demo user interface"));
+        addComponent(identityForm);
+        addComponent(organizationForm);
 
-        Button eIDModuleButton = new Button("Go to the eID-Module!");
-        eIDModuleButton.addClickListener(e -> {
-            getUI().getNavigator().navigateTo("eIDModuleView");
-        });
-        addComponents(eIDModuleButton);
-
-        Button toopButton = new Button("Pre-fill my form using TOOP!");
-        toopButton.addClickListener(e -> {
-            ByteArrayOutputStream archiveOutput = new ByteArrayOutputStream();
-            final File keystoreFile = new File("src/main/resources/demo-keystore.jks");
-            final String keystorePassword = "password";
-            final String keyPassword = "password";
-
-            try {
-                TOOPMessageBundle bundle = new TOOPMessageBundleBuilder()
-                        .setMSDataRequest(new MSDataRequest("ABC123"))
-                        .sign(archiveOutput, keystoreFile, keystorePassword, keyPassword);
-                eu.toop.iface.mockup.client.SendToMPClient.httpClientCall(archiveOutput.toByteArray());
-                archiveOutput.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        });
-        addComponents(toopButton);
+        addComponent(new Button("Register your new company", clickEvent -> {
+            addComponent(new Label("Your new company has been registered!"));
+        }));
     }
 }
