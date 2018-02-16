@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.vaadin.ui.UI;
 import eu.toop.iface.ITOOPInterfaceDP;
 
-public class TOOPInterfaceDP implements ITOOPInterfaceDP {
+public class ToopInterfaceDP implements ITOOPInterfaceDP {
 
     private UI ui;
 
-    public TOOPInterfaceDP(UI ui) {
+    public ToopInterfaceDP(UI ui) {
         this.ui = ui;
     }
 
@@ -23,7 +23,7 @@ public class TOOPInterfaceDP implements ITOOPInterfaceDP {
 	    throws ServletException, IOException {
         final String pathInfo = req.getPathInfo();
         final PrintWriter aPW = resp.getWriter();
-        aPW.write("<html><body><h1>TOOPInterfaceDP (doPost)</h1>");
+        aPW.write("<html><body><h1>ToopInterfaceDP (doPost)</h1>");
         aPW.write("<div>Path info: " + pathInfo + "</div>");
         aPW.write("<div>Parameter map: " + req.getParameterMap() + "</div>");
         aPW.write("</body></html>");

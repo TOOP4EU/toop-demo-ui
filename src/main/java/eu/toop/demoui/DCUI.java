@@ -9,8 +9,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
-import eu.toop.demoui.endpoints.TOOPInterfaceDC;
-import eu.toop.demoui.endpoints.TOOPInterfaceDP;
+import eu.toop.demoui.endpoints.ToopInterfaceDC;
+import eu.toop.demoui.endpoints.ToopInterfaceDP;
 import eu.toop.demoui.view.StartView;
 import eu.toop.iface.ToopInterface;
 
@@ -31,8 +31,8 @@ public class DCUI extends UI {
 
         getPage().setTitle("TOOP Demo User Interface");
 
-        ToopInterface.setInterfaceDC(new TOOPInterfaceDC(this));
-        ToopInterface.setInterfaceDP(new TOOPInterfaceDP(this));
+        ToopInterface.setInterfaceDC(new ToopInterfaceDC(this));
+        ToopInterface.setInterfaceDP(new ToopInterfaceDP(this));
 
         navigator = new Navigator(this, this);
         navigator.addView("", new StartView());

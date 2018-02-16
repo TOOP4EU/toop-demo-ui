@@ -15,11 +15,11 @@ import eu.toop.iface.ITOOPInterfaceDC;
 import eu.toop.iface.mockup.TOOPMessageBundle;
 import eu.toop.iface.mockup.TOOPMessageBundleBuilder;
 
-public class TOOPInterfaceDC implements ITOOPInterfaceDC {
+public class ToopInterfaceDC implements ITOOPInterfaceDC {
 
     private UI ui;
 
-    public TOOPInterfaceDC(UI ui) {
+    public ToopInterfaceDC(UI ui) {
         this.ui = ui;
     }
 
@@ -38,7 +38,7 @@ public class TOOPInterfaceDC implements ITOOPInterfaceDC {
                     StartView startView = (StartView)ui.getNavigator().getCurrentView();
                     Organization organization = new Organization();
                     organization.setCompanyName(bundleRead.getMsDataRequest().identifier); // TODO: Actual data from the retrieved ToopMessageBundle, however it is the wrong attribute. Should be the company name.
-                    organization.setCompanyType("Limited partnership"); // TODO: Replace this mockup data with real data fetched from a TOOPMessageBundle
+                    organization.setCompanyType("Limited partnership"); // TODO: Replace this mockup data with real data fetched from a ToopMessageBundle
                     startView.organizationForm.setOrganizationBean(organization);
                 }
             });
