@@ -4,13 +4,14 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.ui.*;
 import eu.toop.demoui.bean.Organization;
-import eu.toop.iface.mockup.MSDataRequest;
-import eu.toop.iface.mockup.ToopMessageBundle;
-import eu.toop.iface.mockup.ToopMessageBundleBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
+import eu.toop.commons.ToopMessageBundle;
+import eu.toop.commons.ToopMessageBundleBuilder;
+import eu.toop.commons.MSDataRequest;
 
 public class OrganizationForm extends FormLayout {
     private Binder<Organization> binder = new Binder<>();

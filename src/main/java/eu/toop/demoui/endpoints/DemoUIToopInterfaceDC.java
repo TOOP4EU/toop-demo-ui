@@ -12,8 +12,9 @@ import com.vaadin.ui.UI;
 import eu.toop.demoui.bean.Organization;
 import eu.toop.demoui.view.StartView;
 import eu.toop.iface.IToopInterfaceDC;
-import eu.toop.iface.mockup.ToopMessageBundle;
-import eu.toop.iface.mockup.ToopMessageBundleBuilder;
+
+import eu.toop.commons.ToopMessageBundle;
+import eu.toop.commons.ToopMessageBundleBuilder;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
