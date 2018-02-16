@@ -5230,7 +5230,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .DCUITheme .v-textfield-readonly {
-	background: #eaeaea;
+	background: #fafafa;
 	color: #464646;
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -5992,7 +5992,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .DCUITheme .v-datefield.v-readonly [class*="textfield"] {
-	background: #eaeaea;
+	background: #fafafa;
 	color: #464646;
 	-webkit-box-shadow: none;
 	box-shadow: none;

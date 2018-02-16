@@ -64,6 +64,14 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<developers>
+		<developer>
+			<id>anton</id>
+			<name>Anton Wiklund</name>
+			<email>ixuz(at)gmail.com</email>
+			<url>http://antwik.com</url>
+		</developer>
+	</developers>
 	<dependencies>
 		<dependency>
 		  <groupId>com.helger</groupId>
