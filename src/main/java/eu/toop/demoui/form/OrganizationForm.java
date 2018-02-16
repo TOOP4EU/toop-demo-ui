@@ -5,8 +5,8 @@ import com.vaadin.data.ValidationException;
 import com.vaadin.ui.*;
 import eu.toop.demoui.bean.Organization;
 import eu.toop.iface.mockup.MSDataRequest;
-import eu.toop.iface.mockup.TOOPMessageBundle;
-import eu.toop.iface.mockup.TOOPMessageBundleBuilder;
+import eu.toop.iface.mockup.ToopMessageBundle;
+import eu.toop.iface.mockup.ToopMessageBundleBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,7 +38,7 @@ public class OrganizationForm extends FormLayout {
             final String keyPassword = "password";
 
             try {
-                TOOPMessageBundle bundle = new TOOPMessageBundleBuilder()
+                ToopMessageBundle bundle = new ToopMessageBundleBuilder()
                         .setMSDataRequest(new MSDataRequest("ABC123"))
                         .sign(archiveOutput, keystoreFile, keystorePassword, keyPassword);
                 eu.toop.iface.mockup.client.SendToMPClient.httpClientCall(archiveOutput.toByteArray());

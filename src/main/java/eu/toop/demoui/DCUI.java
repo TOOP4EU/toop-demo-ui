@@ -9,10 +9,10 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
-import eu.toop.demoui.endpoints.TOOPInterfaceDC;
-import eu.toop.demoui.endpoints.TOOPInterfaceDP;
+import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
+import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
 import eu.toop.demoui.view.StartView;
-import eu.toop.iface.ToopInterface;
+import eu.toop.iface.ToopInterfaceManager;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window
@@ -31,8 +31,8 @@ public class DCUI extends UI {
 
         getPage().setTitle("TOOP Demo User Interface");
 
-        ToopInterface.setInterfaceDC(new TOOPInterfaceDC(this));
-        ToopInterface.setInterfaceDP(new TOOPInterfaceDP(this));
+        ToopInterfaceManager.setInterfaceDC(new DemoUIToopInterfaceDC(this));
+        ToopInterfaceManager.setInterfaceDP(new DemoUIToopInterfaceDP(this));
 
         navigator = new Navigator(this, this);
         navigator.addView("", new StartView());
