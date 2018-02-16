@@ -9,9 +9,9 @@ import eu.toop.demoui.bean.Organization;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.form.OrganizationForm;
 import eu.toop.iface.mockup.MSDataRequest;
-import eu.toop.iface.mockup.TOOPDataRequest;
-import eu.toop.iface.mockup.TOOPMessageBundle;
-import eu.toop.iface.mockup.TOOPMessageBundleBuilder;
+import eu.toop.iface.mockup.ToopDataRequest;
+import eu.toop.iface.mockup.ToopMessageBundle;
+import eu.toop.iface.mockup.ToopMessageBundleBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
