@@ -37,7 +37,7 @@ public class IdentityForm extends FormLayout {
 
         setIdentityBean(identity);
 
-        Button submitButton = new Button("Use this identity", clickEvent -> {
+        /*Button submitButton = new Button("Use this identity", clickEvent -> {
             try {
                 binder.writeBean(identity);
             } catch (ValidationException e) {
@@ -56,7 +56,7 @@ public class IdentityForm extends FormLayout {
                 onSubmit.buttonClick(clickEvent);
             }
         });
-        addComponent(submitButton);
+        addComponent(submitButton);*/
     }
 
     public void setIdentityBean(Identity _identity) {

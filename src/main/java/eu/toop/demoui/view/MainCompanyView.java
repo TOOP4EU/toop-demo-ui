@@ -14,11 +14,6 @@ public class MainCompanyView extends VerticalLayout implements View {
   private OrganizationForm organizationForm;
 
   public MainCompanyView() {
-    Button nextButton = new Button("Go to MainCompanyRequestDisclaimerView", clickEvent -> {
-      UI.getCurrent().getNavigator().navigateTo(MainCompanyRequestDisclaimerView.class.getName());
-    });
-    addComponent(nextButton);
-
     organization = new Organization();
     organizationForm = new OrganizationForm(organization, event -> {});
     addComponent(organizationForm);
