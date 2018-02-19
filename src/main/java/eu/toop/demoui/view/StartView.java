@@ -4,7 +4,6 @@ import com.vaadin.navigator.View;
 import com.vaadin.ui.*;
 
 public class StartView extends VerticalLayout implements View {
-
     public StartView() {
         VerticalLayout headerLayout = new VerticalLayout();
         VerticalLayout mainLayout = new VerticalLayout();

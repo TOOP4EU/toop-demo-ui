@@ -1,58 +1,62 @@
 package eu.toop.demoui.form;
 
-import com.vaadin.data.Binder;
-import com.vaadin.data.ValidationException;
-import com.vaadin.ui.*;
-import eu.toop.demoui.bean.Organization;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-import eu.toop.commons.ToopMessageBundle;
-import eu.toop.commons.ToopMessageBundleBuilder;
-import eu.toop.commons.MSDataRequest;
+import com.helger.asic.SignatureHelper;
+import com.helger.commons.io.file.FileHelper;
+import com.helger.commons.io.stream.NonBlockingByteArrayOutputStream;
+import com.vaadin.data.Binder;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.TextField;
+
+import eu.toop.commons.exchange.message.ToopMessageBuilder;
+import eu.toop.commons.exchange.mock.MSDataRequest;
+import eu.toop.demoui.bean.Organization;
+//import eu.toop.iface.mockup.client.HttpClientInvoker;
 
 public class OrganizationForm extends FormLayout {
-    private Binder<Organization> binder = new Binder<>();
+  private final Binder<Organization> binder = new Binder<>();
 
-    private Organization organization;
+  private Organization organization;
 
-    public OrganizationForm(Organization organization, Button.ClickListener onSubmit) {
+  public OrganizationForm(final Organization organization, final Button.ClickListener onSubmit) {
 
-        TextField companyNameField = new TextField("Company name");
-        TextField companyTypeField = new TextField("Company type");
+    final TextField companyNameField = new TextField("Company name");
+    final TextField companyTypeField = new TextField("Company type");
 
-        binder.bind(companyNameField, Organization::getCompanyName, Organization::setCompanyName);
-        binder.bind(companyTypeField, Organization::getCompanyType, Organization::setCompanyType);
+    binder.bind(companyNameField, Organization::getCompanyName, Organization::setCompanyName);
+    binder.bind(companyTypeField, Organization::getCompanyType, Organization::setCompanyType);
 
-        addComponent(companyNameField);
-        addComponent(companyTypeField);
+    addComponent(companyNameField);
+    addComponent(companyTypeField);
 
-        setOrganizationBean(organization);
+    setOrganizationBean(organization);
 
-        Button toopButton = new Button("Pre-fill my form using TOOP!");
-        toopButton.addClickListener(e -> {
-            ByteArrayOutputStream archiveOutput = new ByteArrayOutputStream();
-            final File keystoreFile = new File("src/main/resources/demo-keystore.jks");
-            final String keystorePassword = "password";
-            final String keyPassword = "password";
+    final Button toopButton = new Button("Pre-fill my form using TOOP!");
+    toopButton.addClickListener(e -> {
+      // TODO use production keystore
+      final SignatureHelper aSH = new SignatureHelper(
+          FileHelper.getInputStream(new File("src/main/resources/demo-keystore.jks")), "password", null, "password");
 
-            try {
-                ToopMessageBundle bundle = new ToopMessageBundleBuilder()
-                        .setMSDataRequest(new MSDataRequest("ABC123"))
-                        .sign(archiveOutput, keystoreFile, keystorePassword, keyPassword);
-                eu.toop.iface.mockup.client.SendToMPClient.httpClientCall(archiveOutput.toByteArray());
-                archiveOutput.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        });
-        addComponents(toopButton);
-    }
+      /*try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream()) {
+        ToopMessageBuilder.createRequestMessage(new MSDataRequest("DE", "urn:abc:whatsoever-document-type-ID",
+            organization.getCompanyName() + "/" + organization.getCompanyType()), archiveOutput, aSH);
 
-    public void setOrganizationBean(Organization _organization) {
-        organization = _organization;
-        binder.readBean(organization);
-    }
+        // Send to DC (see DCInputServlet in toop-mp-webapp)
+        HttpClientInvoker.httpClientCallNoResponse("http://mp.elonia.toop:8090/dcinput", archiveOutput.toByteArray());
+
+        // Successfully sent
+      } catch (final IOException e1) {
+        e1.printStackTrace();
+      }*/
+    });
+    addComponents(toopButton);
+  }
+
+  public void setOrganizationBean(final Organization _organization) {
+    organization = _organization;
+    binder.readBean(organization);
+  }
 }

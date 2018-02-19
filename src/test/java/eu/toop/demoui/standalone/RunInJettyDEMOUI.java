@@ -26,10 +26,8 @@ import com.helger.photon.jetty.JettyStarter;
  * @author Philip Helger
  */
 @Immutable
-public final class RunInJettyDEMOUI
-{
-  public static void main (final String [] args) throws Exception
-  {
-    new JettyStarter (RunInJettyDEMOUI.class).setPort (8080).run ();
+public final class RunInJettyDEMOUI {
+  public static void main(final String[] args) throws Exception {
+    new JettyStarter(RunInJettyDEMOUI.class).setPort(8080).run();
   }
 }
