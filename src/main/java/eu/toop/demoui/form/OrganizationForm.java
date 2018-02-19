@@ -40,17 +40,18 @@ public class OrganizationForm extends FormLayout {
       final SignatureHelper aSH = new SignatureHelper(
           FileHelper.getInputStream(new File("src/main/resources/demo-keystore.jks")), "password", null, "password");
 
-      /*try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream()) {
-        ToopMessageBuilder.createRequestMessage(new MSDataRequest("DE", "urn:abc:whatsoever-document-type-ID",
-            organization.getCompanyName() + "/" + organization.getCompanyType()), archiveOutput, aSH);
+      try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream()) {
+        ToopMessageBuilder.createRequestMessage(new MSDataRequest("DE", "foobar::urn:abc:whatsoever-document-type-ID",
+            "test::procID", true, organization.getCompanyName() + "/" + organization.getCompanyType()), archiveOutput,
+            aSH);
 
         // Send to DC (see DCInputServlet in toop-mp-webapp)
-        HttpClientInvoker.httpClientCallNoResponse("http://mp.elonia.toop:8090/dcinput", archiveOutput.toByteArray());
+        //HttpClientInvoker.httpClientCallNoResponse("http://mp.elonia.toop:8090/dcinput", archiveOutput.toByteArray());
 
         // Successfully sent
       } catch (final IOException e1) {
         e1.printStackTrace();
-      }*/
+      }
     });
     addComponents(toopButton);
   }
