@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.vaadin.ui.UI;
 
 import eu.toop.demoui.bean.Organization;
+import eu.toop.demoui.view.MainCompanyView;
 import eu.toop.demoui.view.StartView;
 import eu.toop.iface.IToopInterfaceDC;
 
@@ -37,13 +38,13 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 			ui.access(() -> {
 				// Push a new organization bean to the UI
 				if (ui.getNavigator().getCurrentView() instanceof StartView) {
-					final StartView startView = (StartView) ui.getNavigator().getCurrentView();
+					final MainCompanyView startView = (MainCompanyView) ui.getNavigator().getCurrentView();
 					final Organization organization = new Organization();
 					// TODO: Real values are read from a retrieved ToopMessageBundle, however
 					// the correct values have to be read instead. These are just placeholders.
-					organization.setCompanyName(bundleRead.getMsDataRequest().identifier);
-					organization.setCompanyType(bundleRead.getMsDataRequest().identifier);
-					startView.organizationForm.setOrganizationBean(organization);
+					organization.setCompanyName(bundleRead.getMsDataRequest().getIdentifier());
+					organization.setCompanyType(bundleRead.getMsDataRequest().getIdentifier());
+					startView.getOrganizationForm().setOrganizationBean(organization);
 				}
 			});
 		} catch (Exception e) {

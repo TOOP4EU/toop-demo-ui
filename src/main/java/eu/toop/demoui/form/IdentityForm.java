@@ -1,5 +1,6 @@
 package eu.toop.demoui.form;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.ui.*;
@@ -51,7 +52,9 @@ public class IdentityForm extends FormLayout {
             birthDateField.setReadOnly(true);
             nationalityField.setReadOnly(true);
 
-            onSubmit.buttonClick(clickEvent);
+            if (onSubmit != null) {
+                onSubmit.buttonClick(clickEvent);
+            }
         });
         addComponent(submitButton);
     }
