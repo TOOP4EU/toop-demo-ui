@@ -38,7 +38,7 @@ public class OrganizationForm extends FormLayout {
     toopButton.addClickListener(e -> {
       // TODO use production keystore
       final SignatureHelper aSH = new SignatureHelper(
-          FileHelper.getInputStream(new File("src/test/resources/demo-keystore.jks")), "password", null, "password");
+          FileHelper.getInputStream(new File("src/main/resources/demo-keystore.jks")), "password", null, "password");
 
       try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream()) {
         ToopMessageBuilder.createRequestMessage(new MSDataRequest("DE", "urn:abc:whatsoever-document-type-ID",
