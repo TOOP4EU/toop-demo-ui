@@ -13,18 +13,18 @@ import eu.toop.iface.IToopInterfaceDP;
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
-    private final UI ui;
+  private final UI _ui;
 
-    public DemoUIToopInterfaceDP(final UI ui) {
-	this.ui = ui;
-    }
+  public DemoUIToopInterfaceDP(final UI ui) {
+    this._ui = ui;
+  }
 
-    @Override
-    public void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-	    throws ServletException, IOException {
-	final String pathInfo = req.getPathInfo();
-	final PrintWriter aPW = resp.getWriter();
-	aPW.write("<html><body>OK</body></html>");
-	aPW.flush();
-    }
+  @Override
+  public void doPost(final HttpServletRequest req, final HttpServletResponse resp)
+      throws ServletException, IOException {
+    final String pathInfo = req.getPathInfo();
+    final PrintWriter aPW = resp.getWriter();
+    aPW.write("<html><body>OK</body></html>");
+    aPW.flush();
+  }
 }

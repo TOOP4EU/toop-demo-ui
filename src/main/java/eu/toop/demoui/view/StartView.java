@@ -11,25 +11,27 @@ import eu.toop.demoui.form.OrganizationForm;
 
 public class StartView extends VerticalLayout implements View {
 
-    public Identity identity;
-    public Organization organization;
+  public Identity identity;
+  public Organization organization;
 
-    public IdentityForm identityForm;
-    public OrganizationForm organizationForm;
+  public IdentityForm identityForm;
+  public OrganizationForm organizationForm;
 
-    public StartView() {
-        identity = new Identity();
-        organization = new Organization();
+  public StartView() {
+    identity = new Identity();
+    organization = new Organization();
 
-        identityForm = new IdentityForm(identity, event -> {});
-        organizationForm = new OrganizationForm(organization, event -> {});
+    identityForm = new IdentityForm(identity, event -> {
+    });
+    organizationForm = new OrganizationForm(organization, event -> {
+    });
 
-        addComponent(new Label("TOOP demo user interface"));
-        addComponent(identityForm);
-        addComponent(organizationForm);
+    addComponent(new Label("TOOP demo user interface"));
+    addComponent(identityForm);
+    addComponent(organizationForm);
 
-        addComponent(new Button("Register your new company", clickEvent -> {
-            addComponent(new Label("Your new company has been registered!"));
-        }));
-    }
+    addComponent(new Button("Register your new company", clickEvent -> {
+      addComponent(new Label("Your new company has been registered!"));
+    }));
+  }
 }
