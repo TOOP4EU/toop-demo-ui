@@ -14,6 +14,7 @@ import com.vaadin.ui.TextField;
 import eu.toop.commons.exchange.message.ToopMessageBuilder;
 import eu.toop.commons.exchange.mock.MSDataRequest;
 import eu.toop.demoui.bean.Organization;
+import eu.toop.iface.mockup.client.HttpClientInvoker;
 
 public class OrganizationForm extends FormLayout {
   private final Binder<Organization> binder = new Binder<>();
@@ -35,13 +36,18 @@ public class OrganizationForm extends FormLayout {
 
     final Button toopButton = new Button("Pre-fill my form using TOOP!");
     toopButton.addClickListener(e -> {
+      // TODO use production keystore
       final SignatureHelper aSH = new SignatureHelper(
-          FileHelper.getInputStream(new File("src/main/resources/demo-keystore.jks")), "password", null, "password");
+          FileHelper.getInputStream(new File("src/test/resources/demo-keystore.jks")), "password", null, "password");
 
       try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream()) {
-        // TODO should be the request I assume
-        ToopMessageBuilder.createResponseMessage(new MSDataRequest("ABC123"), null, null, null, archiveOutput, aSH);
-        eu.toop.iface.mockup.client.SendToMPClient.httpClientCall(archiveOutput.toByteArray());
+        ToopMessageBuilder.createRequestMessage(new MSDataRequest("DE", "urn:abc:whatsoever-document-type-ID",
+            organization.getCompanyName() + "/" + organization.getCompanyType()), archiveOutput, aSH);
+
+        // Send to DC (see DCInputServlet in toop-mp-webapp)
+        HttpClientInvoker.httpClientCallNoResponse("http://mp.elonia.toop:8090/dcinput", archiveOutput.toByteArray());
+
+        // Successfully sent
       } catch (final IOException e1) {
         e1.printStackTrace();
       }
