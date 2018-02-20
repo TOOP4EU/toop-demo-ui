@@ -26,53 +26,57 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
+import eu.toop.commons.doctype.EToopDocumentType;
+import eu.toop.commons.doctype.EToopProcess;
 import eu.toop.commons.exchange.message.ToopMessageBuilder;
 import eu.toop.commons.exchange.mock.MSDataRequest;
 import eu.toop.demoui.bean.Organization;
 //import eu.toop.iface.mockup.client.HttpClientInvoker;
 
 public class OrganizationForm extends FormLayout {
-  private final Binder<Organization> binder = new Binder<>();
+  private final Binder<Organization> binder = new Binder<> ();
 
   private Organization organization;
 
-  public OrganizationForm(final Organization organization, final Button.ClickListener onSubmit) {
+  public OrganizationForm (final Organization organization, final Button.ClickListener onSubmit) {
 
-    final TextField companyNameField = new TextField("Company name");
-    final TextField companyTypeField = new TextField("Company type");
+    final TextField companyNameField = new TextField ("Company name");
+    final TextField companyTypeField = new TextField ("Company type");
 
-    binder.bind(companyNameField, Organization::getCompanyName, Organization::setCompanyName);
-    binder.bind(companyTypeField, Organization::getCompanyType, Organization::setCompanyType);
+    binder.bind (companyNameField, Organization::getCompanyName, Organization::setCompanyName);
+    binder.bind (companyTypeField, Organization::getCompanyType, Organization::setCompanyType);
 
-    addComponent(companyNameField);
-    addComponent(companyTypeField);
+    addComponent (companyNameField);
+    addComponent (companyTypeField);
 
-    setOrganizationBean(organization);
+    setOrganizationBean (organization);
 
-    final Button toopButton = new Button("Pre-fill my form using TOOP!");
-    toopButton.addClickListener(e -> {
+    final Button toopButton = new Button ("Pre-fill my form using TOOP!");
+    toopButton.addClickListener (e -> {
       // TODO use production keystore
-      final SignatureHelper aSH = new SignatureHelper(
-          FileHelper.getInputStream(new File("src/main/resources/demo-keystore.jks")), "password", null, "password");
+      final SignatureHelper aSH = new SignatureHelper (FileHelper.getInputStream (new File ("src/main/resources/demo-keystore.jks")),
+                                                       "password", null, "password");
 
-      try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream()) {
-        ToopMessageBuilder.createRequestMessage(new MSDataRequest("DE", "foobar::urn:abc:whatsoever-document-type-ID",
-            "test::procID", true, organization.getCompanyName() + "/" + organization.getCompanyType()), archiveOutput,
-            aSH);
+      try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream ()) {
+        ToopMessageBuilder.createRequestMessage (new MSDataRequest ("DE", EToopDocumentType.DOCTYPE3.getURIEncoded (),
+                                                                    EToopProcess.PROC.getURIEncoded (),
+                                                                    organization.getCompanyName () + "/" + organization.getCompanyType ()),
+                                                 archiveOutput, aSH);
 
         // Send to DC (see DCInputServlet in toop-mp-webapp)
-        //HttpClientInvoker.httpClientCallNoResponse("http://mp.elonia.toop:8090/dcinput", archiveOutput.toByteArray());
+        // HttpClientInvoker.httpClientCallNoResponse("http://mp.elonia.toop:8090/dcinput",
+        // archiveOutput.toByteArray());
 
         // Successfully sent
       } catch (final IOException e1) {
-        e1.printStackTrace();
+        e1.printStackTrace ();
       }
     });
-    addComponents(toopButton);
+    addComponents (toopButton);
   }
 
-  public void setOrganizationBean(final Organization _organization) {
+  public void setOrganizationBean (final Organization _organization) {
     organization = _organization;
-    binder.readBean(organization);
+    binder.readBean (organization);
   }
 }
