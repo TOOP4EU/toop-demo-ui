@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.helger.asic.SignatureHelper;
+import com.helger.commons.collection.impl.CommonsArrayList;
 import com.helger.commons.io.file.FileHelper;
 import com.helger.commons.io.stream.NonBlockingByteArrayOutputStream;
 import com.vaadin.data.Binder;
@@ -28,6 +29,7 @@ import com.vaadin.ui.TextField;
 
 import eu.toop.commons.doctype.EToopDocumentType;
 import eu.toop.commons.doctype.EToopProcess;
+import eu.toop.commons.exchange.RequestValue;
 import eu.toop.commons.exchange.message.ToopMessageBuilder;
 import eu.toop.commons.exchange.mock.MSDataRequest;
 import eu.toop.demoui.bean.Organization;
@@ -60,7 +62,10 @@ public class OrganizationForm extends FormLayout {
       try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream ()) {
         ToopMessageBuilder.createRequestMessage (new MSDataRequest ("DE", EToopDocumentType.DOCTYPE3.getURIEncoded (),
                                                                     EToopProcess.PROC.getURIEncoded (),
-                                                                    organization.getCompanyName () + "/" + organization.getCompanyType ()),
+                                                                    new CommonsArrayList<> (new RequestValue ("companyName",
+                                                                                                              organization.getCompanyName ()),
+                                                                                            new RequestValue ("companyType",
+                                                                                                              organization.getCompanyType ()))),
                                                  archiveOutput, aSH);
 
         // Send to DC (see DCInputServlet in toop-mp-webapp)
