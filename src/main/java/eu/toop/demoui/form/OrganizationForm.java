@@ -60,7 +60,8 @@ public class OrganizationForm extends FormLayout {
                                                        "password", null, "password");
 
       try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream ()) {
-        ToopMessageBuilder.createRequestMessage (new MSDataRequest ("DE", EToopDocumentType.DOCTYPE3.getURIEncoded (),
+        ToopMessageBuilder.createRequestMessage (new MSDataRequest ("toop::sender", "DE",
+                                                                    EToopDocumentType.DOCTYPE3.getURIEncoded (),
                                                                     EToopProcess.PROC.getURIEncoded (),
                                                                     new CommonsArrayList<> (new RequestValue ("companyName",
                                                                                                               organization.getCompanyName ()),
