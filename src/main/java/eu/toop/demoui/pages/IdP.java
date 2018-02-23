@@ -32,5 +32,11 @@ public class IdP extends Base {
 
     Button nextButton = new Button ("Use my identity");
     main.addComponent (nextButton);
+
+    nextButton.addClickListener(new Button.ClickListener() {
+      public void buttonClick(Button.ClickEvent event) {
+        view.setCurrentPage (new ConfirmDetails (getView ()));
+      }
+    });
   }
 }
