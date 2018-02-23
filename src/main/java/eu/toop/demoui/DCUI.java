@@ -26,6 +26,7 @@ import eu.toop.iface.ToopInterfaceManager;
  */
 @SuppressWarnings("javadoc")
 @Theme("DCUITheme")
+@PreserveOnRefresh
 public class DCUI extends UI {
 
   private Navigator navigator;
