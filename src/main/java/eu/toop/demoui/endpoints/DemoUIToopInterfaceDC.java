@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2018 toop.eu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
@@ -24,32 +39,34 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
   private final UI _ui;
 
-  public DemoUIToopInterfaceDC(final UI ui) {
+  public DemoUIToopInterfaceDC (final UI ui) {
     this._ui = ui;
   }
 
   @Override
-  public void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-      throws ServletException, IOException {
-    final PrintWriter aPW = resp.getWriter();
-    aPW.write("<html><body>OK</body></html>");
-    aPW.flush();
+  public void doPost (final HttpServletRequest req,
+                      final HttpServletResponse resp) throws ServletException, IOException {
+    final PrintWriter aPW = resp.getWriter ();
+    aPW.write ("<html><body>OK</body></html>");
+    aPW.flush ();
 
     try {
-      final ToopResponseMessage bundleRead = ToopMessageBuilder.parseResponseMessage(req.getInputStream(),
-          MSDataRequest.getDeserializerFunction(), ToopDataRequest.getDeserializerFunction(),
-          MSDataResponse.getDeserializerFunction(), ToopDataResponse.getDeserializerFunction());
+      final ToopResponseMessage bundleRead = ToopMessageBuilder.parseResponseMessage (req.getInputStream (),
+                                                                                      MSDataRequest.getDeserializerFunction (),
+                                                                                      ToopDataRequest.getDeserializerFunction (),
+                                                                                      MSDataResponse.getDeserializerFunction (),
+                                                                                      ToopDataResponse.getDeserializerFunction ());
 
-      _ui.access(() -> {
+      _ui.access ( () -> {
         // Push a new organization bean to the UI
-        if (_ui.getNavigator().getCurrentView() instanceof StartView) {
-          final MainCompanyView mainCompanyView = (MainCompanyView) _ui.getNavigator().getCurrentView();
-          final Organization organization = new Organization();
+        if (_ui.getNavigator ().getCurrentView () instanceof StartView) {
+          final MainCompanyView mainCompanyView = (MainCompanyView) _ui.getNavigator ().getCurrentView ();
+          final Organization organization = new Organization ();
           // TODO: Real values are read from a retrieved ToopMessageBundle, however
           // the correct values have to be read instead. These are just placeholders.
-          organization.setCompanyName(((MSDataRequest) bundleRead.getMSDataRequest()).getIdentifier());
-          organization.setCompanyType(((MSDataRequest) bundleRead.getMSDataRequest()).getIdentifier());
-					mainCompanyView.getOrganizationForm().setOrganizationBean(organization);
+          organization.setCompanyName (bundleRead.getToopDataRequest ().getRequestID ());
+          organization.setCompanyType (bundleRead.getToopDataRequest ().getRequestID ());
+          mainCompanyView.getOrganizationForm ().setOrganizationBean (organization);
         }
       });
     } catch (final Exception e) {
