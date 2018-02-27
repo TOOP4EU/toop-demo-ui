@@ -50,11 +50,7 @@ public class MainCompanyPage extends BasePage {
     }
 
     final Button toopButton = new Button ("Click to pre-fill with TOOP.", clickEvent -> {
-      try {
-        ToopInterfaceManager.requestConcepts (Arrays.asList ("companyName", "companyType"));
-      } catch (final IOException ex) {
-        throw new UncheckedIOException (ex);
-      }
+      ToopInterfaceManager.requestConcepts (Arrays.asList ("companyName", "companyType"));
     });
     main.addComponent (toopButton);
 

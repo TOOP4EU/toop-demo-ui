@@ -44,17 +44,61 @@ public class MainCompanyForm extends FormLayout {
 
   public MainCompanyForm (final MainCompany mainCompany, boolean readOnly, final Button.ClickListener onSubmit) {
 
+    final TextField companyField = new TextField ("Company");
+    final TextField undertakingIdentificationField = new TextField ("Undertaking identification");
+    final TextField registrationNumberField = new TextField ("Registration number");
+    final TextField companyCodeField = new TextField ("Company code");
+    final TextField companyDesignationField = new TextField ("Company designation");
     final TextField companyNameField = new TextField ("Company name");
+    final TextField legalFormField = new TextField ("Legal form");
     final TextField companyTypeField = new TextField ("Company type");
+    final TextField companyStatusField = new TextField ("Company status");
+    final TextField legalStatusField = new TextField ("Legal status");
+    final TextField addressDataField = new TextField ("Address data");
+    final TextField telephoneNumberField = new TextField ("Telephone number");
+    final TextField emailAddressField = new TextField ("Email address");
 
+    binder.bind (companyField, MainCompany::getCompany, MainCompany::setCompany);
+    binder.bind (undertakingIdentificationField, MainCompany::getUndertakingIdentification, MainCompany::setUndertakingIdentification);
+    binder.bind (registrationNumberField, MainCompany::getRegistrationNumber, MainCompany::setRegistrationNumber);
+    binder.bind (companyCodeField, MainCompany::getCompanyCode, MainCompany::setCompanyCode);
+    binder.bind (companyDesignationField, MainCompany::getCompanyDesignation, MainCompany::setCompanyDesignation);
     binder.bind (companyNameField, MainCompany::getCompanyName, MainCompany::setCompanyName);
+    binder.bind (legalFormField, MainCompany::getLegalForm, MainCompany::setLegalForm);
     binder.bind (companyTypeField, MainCompany::getCompanyType, MainCompany::setCompanyType);
+    binder.bind (companyStatusField, MainCompany::getCompanyStatus, MainCompany::setCompanyStatus);
+    binder.bind (legalStatusField, MainCompany::getLegalStatus, MainCompany::setLegalStatus);
+    binder.bind (addressDataField, MainCompany::getAddressData, MainCompany::setAddressData);
+    binder.bind (telephoneNumberField, MainCompany::getTelephoneNumber, MainCompany::setTelephoneNumber);
+    binder.bind (emailAddressField, MainCompany::getEmailAddress, MainCompany::setEmailAddress);
 
+    companyField.setReadOnly (readOnly);
+    undertakingIdentificationField.setReadOnly (readOnly);
+    registrationNumberField.setReadOnly (readOnly);
+    companyCodeField.setReadOnly (readOnly);
+    companyDesignationField.setReadOnly (readOnly);
     companyNameField.setReadOnly (readOnly);
+    legalFormField.setReadOnly (readOnly);
     companyTypeField.setReadOnly (readOnly);
+    companyStatusField.setReadOnly (readOnly);
+    legalStatusField.setReadOnly (readOnly);
+    addressDataField.setReadOnly (readOnly);
+    telephoneNumberField.setReadOnly (readOnly);
+    emailAddressField.setReadOnly (readOnly);
 
+    addComponent (companyField);
+    addComponent (undertakingIdentificationField);
+    addComponent (registrationNumberField);
+    addComponent (companyCodeField);
+    addComponent (companyDesignationField);
     addComponent (companyNameField);
+    addComponent (legalFormField);
     addComponent (companyTypeField);
+    addComponent (companyStatusField);
+    addComponent (legalStatusField);
+    addComponent (addressDataField);
+    addComponent (telephoneNumberField);
+    addComponent (emailAddressField);
 
     setOrganizationBean (mainCompany);
   }
