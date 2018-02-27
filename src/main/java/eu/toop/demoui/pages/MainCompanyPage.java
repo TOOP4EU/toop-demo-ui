@@ -15,10 +15,13 @@ import eu.toop.demoui.components.FreedoniaHeader;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.form.MainCompanyForm;
 import eu.toop.demoui.view.StartView;
+import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.iface.mockup.client.HttpClientInvoker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainCompanyPage extends BasePage {
 
@@ -54,31 +57,10 @@ public class MainCompanyPage extends BasePage {
     }
 
     Button toopButton = new Button ("Click to pre-fill with TOOP.", clickEvent -> {
-      File keystoreFile = new File ("src/main/resources/demo-keystore.jks");
-
-      final SignatureHelper aSH = new SignatureHelper (FileHelper.getInputStream (keystoreFile),
-        "password",
-        null,
-        "password");
-
-      try (final NonBlockingByteArrayOutputStream archiveOutput = new NonBlockingByteArrayOutputStream ()) {
-        CommonsArrayList<RequestValue> commonsArrayList = new CommonsArrayList<> ();
-        commonsArrayList.add(new RequestValue ("companyName", null));
-        commonsArrayList.add(new RequestValue ("companyType", null));
-
-        MSDataRequest msDataRequest = new MSDataRequest ("toop::sender", "DE",
-          EToopDocumentType.DOCTYPE3.getURIEncoded (),
-          EToopProcess.PROC.getURIEncoded (),
-          commonsArrayList);
-
-        ToopMessageBuilder.createRequestMessage (msDataRequest, archiveOutput, aSH);
-
-        // Send to DC (see DCInputServlet in toop-mp-webapp)
-        String destinationUrl = "http://mp.elonia.toop:8083/dcinput";
-        HttpClientInvoker.httpClientCallNoResponse (destinationUrl, archiveOutput.toByteArray ());
-      } catch (IOException e) {
-        e.printStackTrace ();
-      }
+      List<String> conceptList = new ArrayList<> ();
+      conceptList.add ("companyName");
+      conceptList.add ("companyType");
+      ToopInterfaceManager.requestConcepts (conceptList);
     });
     main.addComponent (toopButton);
 
