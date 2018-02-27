@@ -28,7 +28,7 @@
   }
 
   .v-slot-body {
-      overflow-y: scroll;
+    overflow-y: scroll;
   }
 
   .header {
@@ -50,6 +50,14 @@
 
   .body {
 
+  }
+
+  .mainColumn {
+    padding: 16px;
+  }
+
+  .rightColumn {
+    padding: 16px;
   }
 
   .v-slot-banner {
