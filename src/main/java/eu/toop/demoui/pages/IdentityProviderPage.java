@@ -1,17 +1,19 @@
 package eu.toop.demoui.pages;
 
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.components.Body;
 import eu.toop.demoui.components.EloniaHeader;
 import eu.toop.demoui.components.InfoIdP;
-import eu.toop.demoui.components.InfoStart;
 import eu.toop.demoui.view.StartView;
 
-public class IdP extends Base {
-  public IdP (StartView view) {
+import java.time.LocalDate;
+
+public class IdentityProviderPage extends BasePage {
+
+  public IdentityProviderPage (StartView view) {
     super (view);
 
     setStyleName ("eIDModule");
@@ -35,7 +37,17 @@ public class IdP extends Base {
 
     nextButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
-        view.setCurrentPage (new ConfirmDetails (getView ()));
+        // Preset mockup data
+        Identity identity = new Identity ();
+        identity.setFirstName ("Jan");
+        identity.setFamilyName ("Doe");
+        identity.setBirthPlace("Fridili");
+        identity.setBirthDate (LocalDate.parse("1986-02-01"));
+        identity.setIdentifier ("EL/EL/12345");
+        identity.setNationality ("EL");
+        view.setIdentity (identity);
+
+        view.setCurrentPage (new ConfirmDetailsPage (getView ()));
       }
     });
   }

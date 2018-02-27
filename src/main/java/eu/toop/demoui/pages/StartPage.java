@@ -3,11 +3,10 @@ package eu.toop.demoui.pages;
 import com.vaadin.ui.*;
 import eu.toop.demoui.components.*;
 import eu.toop.demoui.view.StartView;
-import eu.toop.demoui.view.eIDModuleView;
 
-public class Start extends Base {
+public class StartPage extends BasePage {
 
-  public Start(StartView view) {
+  public StartPage (StartView view) {
     super (view);
     setStyleName ("Start");
 
@@ -39,7 +38,7 @@ public class Start extends Base {
 
       processButton.addClickListener(new Button.ClickListener() {
         public void buttonClick(Button.ClickEvent event) {
-          view.setCurrentPage (new eIDModule (getView ()));
+          view.setCurrentPage (new eIDModulePage (getView ()));
         }
       });
     }

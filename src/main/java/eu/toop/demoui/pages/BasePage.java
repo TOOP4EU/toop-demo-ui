@@ -5,14 +5,14 @@ import com.vaadin.ui.VerticalLayout;
 import eu.toop.demoui.components.*;
 import eu.toop.demoui.view.StartView;
 
-public class Base extends VerticalLayout {
+public class BasePage extends VerticalLayout {
 
   private StartView _view;
   private Header _header;
   private Banner _banner;
   private Body _body;
 
-  public Base (StartView view) {
+  public BasePage (StartView view) {
     setSizeFull();
     setMargin (false);
     setView(view);

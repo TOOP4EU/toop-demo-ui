@@ -17,7 +17,7 @@ package eu.toop.demoui.bean;
 
 import java.io.Serializable;
 
-public class Organization implements Serializable {
+public class MainCompany implements Serializable {
   private String companyName;
   private String companyType;
 

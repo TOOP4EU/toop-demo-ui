@@ -17,21 +17,51 @@ package eu.toop.demoui.view;
 
 import com.vaadin.navigator.View;
 import com.vaadin.ui.*;
-import eu.toop.demoui.pages.Start;
+import eu.toop.demoui.bean.Identity;
+import eu.toop.demoui.bean.NewCompany;
+import eu.toop.demoui.bean.MainCompany;
+import eu.toop.demoui.pages.StartPage;
 
 public class StartView extends VerticalLayout implements View {
 
   private AbstractLayout _page = null;
+  private Identity identity = new Identity ();
+  private MainCompany mainCompany = new MainCompany ();
+  private NewCompany newCompany = new NewCompany ();
 
   public StartView() {
     setSizeFull();
     setMargin(false);
 
-    setCurrentPage (new Start (this));
+    setCurrentPage (new StartPage (this));
   }
 
   public void setCurrentPage(AbstractLayout page) {
     replaceComponent (_page, page);
     _page = page;
+  }
+
+  public Identity getIdentity () {
+    return identity;
+  }
+
+  public void setIdentity (Identity identity) {
+    this.identity = identity;
+  }
+
+  public MainCompany getMainCompany () {
+    return mainCompany;
+  }
+
+  public void setMainCompany (MainCompany mainCompany) {
+    this.mainCompany = mainCompany;
+  }
+
+  public NewCompany getNewCompany () {
+    return newCompany;
+  }
+
+  public void setNewCompany (NewCompany newCompany) {
+    this.newCompany = newCompany;
   }
 }

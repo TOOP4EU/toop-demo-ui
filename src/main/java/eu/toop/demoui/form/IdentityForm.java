@@ -27,7 +27,7 @@ public class IdentityForm extends FormLayout {
 
   private Identity identity;
 
-  public IdentityForm(Identity identity, Button.ClickListener onSubmit) {
+  public IdentityForm(Identity identity, boolean readOnly, Button.ClickListener onSubmit) {
     TextField firstNameField = new TextField("First name");
     TextField familyNameField = new TextField("Family Name");
     TextField birthPlaceField = new TextField("Birth place");
@@ -41,6 +41,13 @@ public class IdentityForm extends FormLayout {
     binder.bind(identifierField, Identity::getIdentifier, Identity::setIdentifier);
     binder.bind(birthDateField, Identity::getBirthDate, Identity::setBirthDate);
     binder.bind(nationalityField, Identity::getNationality, Identity::setNationality);
+
+    firstNameField.setReadOnly (readOnly);
+    familyNameField.setReadOnly (readOnly);
+    birthPlaceField.setReadOnly (readOnly);
+    identifierField.setReadOnly (readOnly);
+    birthDateField.setReadOnly (readOnly);
+    nationalityField.setReadOnly (readOnly);
 
     addComponent(firstNameField);
     addComponent(familyNameField);
@@ -76,5 +83,13 @@ public class IdentityForm extends FormLayout {
   public void setIdentityBean(Identity _identity) {
     identity = _identity;
     binder.readBean(identity);
+  }
+
+  public void save() {
+    try {
+      binder.writeBean (identity);
+    } catch (ValidationException e) {
+      e.printStackTrace ();
+    }
   }
 }

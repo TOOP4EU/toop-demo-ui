@@ -56,14 +56,6 @@ public class DCUI extends UI {
     navigator = new Navigator(this, this);
     navigator.addView("", new StartView());
     navigator.addView(StartView.class.getName(), new StartView());
-    navigator.addView(eIDModuleView.class.getName(), new eIDModuleView());
-    navigator.addView(IdentityProviderView.class.getName(), new IdentityProviderView());
-    navigator.addView(IdentityProviderConfirmView.class.getName(), new IdentityProviderConfirmView());
-    navigator.addView(MainCompanyView.class.getName(), new MainCompanyView());
-    navigator.addView(MainCompanyRequestDisclaimerView.class.getName(), new MainCompanyRequestDisclaimerView());
-    navigator.addView(NewCompanyView.class.getName(), new NewCompanyView());
-    navigator.addView(FinalReviewView.class.getName(), new FinalReviewView());
-    navigator.addView(SuccessView.class.getName(), new SuccessView());
   }
 
   @WebServlet(urlPatterns = { "/ui/*", "/VAADIN/*" }, asyncSupported = true)

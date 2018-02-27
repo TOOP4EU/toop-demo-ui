@@ -4,8 +4,8 @@ import com.vaadin.ui.*;
 import eu.toop.demoui.components.*;
 import eu.toop.demoui.view.StartView;
 
-public class eIDModule extends Base {
-  public eIDModule (StartView view) {
+public class eIDModulePage extends BasePage {
+  public eIDModulePage (StartView view) {
     super (view);
 
     setStyleName ("eIDModule");
@@ -25,7 +25,7 @@ public class eIDModule extends Base {
 
     nextButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
-        view.setCurrentPage (new IdP (getView ()));
+        view.setCurrentPage (new IdentityProviderPage (getView ()));
       }
     });
   }

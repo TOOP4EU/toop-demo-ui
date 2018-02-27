@@ -7,13 +7,14 @@ import com.vaadin.ui.VerticalLayout;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.components.Body;
 import eu.toop.demoui.components.EloniaHeader;
-import eu.toop.demoui.components.FreedoniaHeader;
-import eu.toop.demoui.components.InfoStart;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.view.StartView;
 
-public class ConfirmDetails extends Base {
-  public ConfirmDetails (StartView view) {
+public class ConfirmDetailsPage extends BasePage {
+
+  private IdentityForm identityForm;
+
+  public ConfirmDetailsPage (StartView view) {
     super(view);
 
     setStyleName ("pageConfirmDetails");
@@ -32,14 +33,16 @@ public class ConfirmDetails extends Base {
       Label label = new Label ("Your personal details");
       main.addComponent (label);
     }
-    main.addComponent (new IdentityForm (new Identity (), clickEvent -> {}));
+
+    identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {});
+    main.addComponent (identityForm);
 
     Button nextButton = new Button ("Confirm and proceed");
     main.addComponent (nextButton);
 
     nextButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
-        view.setCurrentPage (new MainCompany (getView ()));
+        view.setCurrentPage (new MainCompanyPage (getView ()));
       }
     });
   }

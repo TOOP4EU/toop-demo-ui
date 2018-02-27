@@ -26,13 +26,7 @@ public class Identity implements java.io.Serializable {
   private String nationality;
 
   public Identity() {
-    // Preset mockup data
-    firstName = "John";
-    familyName = "Doe";
-    birthPlace = "Fridili";
-    birthDate = LocalDate.parse("1986-02-01");
-    identifier = "EL/EL/12345";
-    nationality = "EL";
+
   }
 
   public String getFirstName() {
