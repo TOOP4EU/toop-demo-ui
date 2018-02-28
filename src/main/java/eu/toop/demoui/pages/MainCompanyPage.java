@@ -9,6 +9,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
+import eu.toop.commons.concept.ConceptValue;
 import eu.toop.demoui.components.Body;
 import eu.toop.demoui.components.FreedoniaHeader;
 import eu.toop.demoui.form.IdentityForm;
@@ -50,7 +51,14 @@ public class MainCompanyPage extends BasePage {
     }
 
     final Button toopButton = new Button ("Click to pre-fill with TOOP.", clickEvent -> {
-      ToopInterfaceManager.requestConcepts (Arrays.asList ("companyName", "companyType"));
+      try {
+        final String NS = "http://toop.eu/organization";
+        ToopInterfaceManager.requestConcepts (Arrays.asList (new ConceptValue (NS, "companyName"),
+                                                             new ConceptValue (NS, "companyType")));
+      } catch (final IOException ex) {
+        // Convert from checked to unchecked
+        throw new UncheckedIOException (ex);
+      }
     });
     main.addComponent (toopButton);
 
