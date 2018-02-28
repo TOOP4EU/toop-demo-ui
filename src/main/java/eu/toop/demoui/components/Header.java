@@ -10,5 +10,6 @@ public class Header extends VerticalLayout {
   public Header () {
     setMargin (false);
     setWidth ("100%");
+    setStyleName ("header");
   }
 }

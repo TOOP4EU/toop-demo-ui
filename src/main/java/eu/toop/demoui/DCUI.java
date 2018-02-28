@@ -54,8 +54,8 @@ public class DCUI extends UI {
     ToopInterfaceManager.setInterfaceDP(new DemoUIToopInterfaceDP(this));
 
     navigator = new Navigator(this, this);
-    navigator.addView("", new StartView());
-    navigator.addView(StartView.class.getName(), new StartView());
+    navigator.addView("", new HomeView ());
+    navigator.addView(StartView.class.getName(), new HomeView());
   }
 
   @WebServlet(urlPatterns = { "/ui/*", "/VAADIN/*" }, asyncSupported = true)

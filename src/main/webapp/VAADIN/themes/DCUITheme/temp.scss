@@ -1,0 +1,143 @@
+@import "DCUITheme.scss";
+@import "addons.scss";
+
+// This file prefixes all rules with the theme name to avoid causing conflicts with other themes.
+// The actual styles should be defined in DCUITheme.scss
+
+.DCUITheme {
+  @include addons;
+  @include DCUITheme;
+
+  .DCUITheme.v-app, .DCUITheme.v-app-loading {
+    text-align: center;
+  }
+
+  .v-ui {
+    /*padding-right: 100px;*/
+    /*padding-left: 100px;*/
+  }
+
+  .v-spacing {
+    width: 0px;
+    height: 0px;
+  }
+
+  .v-label-wrap pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .v-label-bold {
+    font-weight: 600;
+  }
+
+  .v-slot-body {
+    overflow-y: scroll;
+  }
+
+  .header {
+    padding: 24px;
+    background-color: #161140;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 500;
+
+  }
+
+  .headerElonia {
+    padding: 24px;
+    background-color: #e7e7e7;
+    color: #707070;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .body {
+
+  }
+
+  .mainColumn {
+    padding: 16px;
+  }
+
+  .rightColumn {
+    padding: 16px;
+  }
+
+  .v-slot-banner {
+    height: 0px;
+  }
+
+  .v-slot-cityBackground {
+    background: url('img/background.jpg');
+  }
+
+  .footer {
+    padding: 24px;
+    background-color: #161140;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .infoFreedonia {
+    background-color: #30336b;
+    color: #ffffff;
+    width: 500px;
+  }
+
+  .infoElonia {
+    background-color: #383838;
+    color: #ffffff;
+    width: 500px;
+  }
+
+  .countryName {
+    font-weight: 600;
+  }
+
+  .serviceInfoBar {
+
+  }
+
+  .welcomeBanner {
+    text-align: center;
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+
+  .welcomeBannerTitle {
+    margin-bottom: -12px;
+    font-size: 48px;
+    color: #1ea5b3;
+    text-transform: uppercase;
+  }
+
+  .welcomeBannerSubTitle {
+    font-size: 26px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .processButtonGroup {
+    width: 100%;
+    text-align: center;
+  }
+
+  .processButton {
+    width: 320px;
+    height: 540px;
+    margin: 2px;
+  }
+
+  .mainArea {
+    width: 100%;
+    text-align: center;
+  }
+
+  .mainPage {
+    width: 1200px;
+    background-color: #eee;
+  }
+}
+
