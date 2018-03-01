@@ -3,40 +3,40 @@ package eu.toop.demoui.bean;
 import java.io.Serializable;
 
 public class NewCompany implements Serializable {
-  private String companyTradeName;
-  private String undertakingIdentification;
-  private String companyType;
-  private String legalForm;
+  private String wasteDisposalProcess;
+  private String hazardousMaterials;
+  private String exemptions;
+  private String producerComplianceScheme;
 
-  public String getCompanyTradeName () {
-    return companyTradeName;
+  public String getWasteDisposalProcess () {
+    return wasteDisposalProcess;
   }
 
-  public void setCompanyTradeName (String companyTradeName) {
-    this.companyTradeName = companyTradeName;
+  public void setWasteDisposalProcess (String wasteDisposalProcess) {
+    this.wasteDisposalProcess = wasteDisposalProcess;
   }
 
-  public String getUndertakingIdentification () {
-    return undertakingIdentification;
+  public String getHazardousMaterials () {
+    return hazardousMaterials;
   }
 
-  public void setUndertakingIdentification (String undertakingIdentification) {
-    this.undertakingIdentification = undertakingIdentification;
+  public void setHazardousMaterials (String hazardousMaterials) {
+    this.hazardousMaterials = hazardousMaterials;
   }
 
-  public String getCompanyType () {
-    return companyType;
+  public String getExemptions () {
+    return exemptions;
   }
 
-  public void setCompanyType (String companyType) {
-    this.companyType = companyType;
+  public void setExemptions (String exemptions) {
+    this.exemptions = exemptions;
   }
 
-  public String getLegalForm () {
-    return legalForm;
+  public String getProducerComplianceScheme () {
+    return producerComplianceScheme;
   }
 
-  public void setLegalForm (String legalForm) {
-    this.legalForm = legalForm;
+  public void setProducerComplianceScheme (String producerComplianceScheme) {
+    this.producerComplianceScheme = producerComplianceScheme;
   }
 }

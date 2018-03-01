@@ -14,25 +14,25 @@ public class NewCompanyForm extends FormLayout {
 
   public NewCompanyForm (NewCompany newCompany, boolean readOnly) {
 
-    TextField companyTradeName = new TextField("Company trade name");
-    TextField undertakingIdentification = new TextField("Undertaking identification");
-    TextField companyType = new TextField("Company type");
-    TextField legalForm = new TextField("Legal form");
+    TextField wasteDisposalProcess = new TextField("Waste disposal process");
+    TextField hazardousMaterials = new TextField("Hazardous materials");
+    TextField exemptions = new TextField("Exemptions");
+    TextField producerComplianceScheme = new TextField("Producer compliance scheme");
 
-    binder.bind (companyTradeName, NewCompany::getCompanyTradeName, NewCompany::setCompanyTradeName);
-    binder.bind (undertakingIdentification, NewCompany::getUndertakingIdentification, NewCompany::setUndertakingIdentification);
-    binder.bind (companyType, NewCompany::getCompanyType, NewCompany::setCompanyType);
-    binder.bind (legalForm, NewCompany::getLegalForm, NewCompany::setLegalForm);
+    binder.bind (wasteDisposalProcess, NewCompany::getWasteDisposalProcess, NewCompany::setWasteDisposalProcess);
+    binder.bind (hazardousMaterials, NewCompany::getHazardousMaterials, NewCompany::setHazardousMaterials);
+    binder.bind (exemptions, NewCompany::getExemptions, NewCompany::setExemptions);
+    binder.bind (producerComplianceScheme, NewCompany::getProducerComplianceScheme, NewCompany::setProducerComplianceScheme);
 
-    companyTradeName.setReadOnly (readOnly);
-    undertakingIdentification.setReadOnly (readOnly);
-    companyType.setReadOnly (readOnly);
-    legalForm.setReadOnly (readOnly);
+    wasteDisposalProcess.setReadOnly (readOnly);
+    hazardousMaterials.setReadOnly (readOnly);
+    exemptions.setReadOnly (readOnly);
+    producerComplianceScheme.setReadOnly (readOnly);
 
-    addComponent (companyTradeName);
-    addComponent (undertakingIdentification);
-    addComponent (companyType);
-    addComponent (legalForm);
+    addComponent (wasteDisposalProcess);
+    addComponent (hazardousMaterials);
+    addComponent (exemptions);
+    addComponent (producerComplianceScheme);
 
     setNewCompanyBean (newCompany);
   }

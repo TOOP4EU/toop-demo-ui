@@ -16,6 +16,21 @@
     width: 100%;
   }
 
+  .v-textfield,
+  .v-datefield {
+    width: 90%;
+    border: 0px;
+    border-top: 0px solid !important;
+    border-left: 0px solid !important;
+    border-right: 0px solid !important;
+    border-bottom: 1px solid #bbb !important;
+    border-radius: 0px;
+
+    .v-textfield {
+      border-bottom: 0px solid !important;
+    }
+  }
+
   .background {
     overflow: scroll;
     width: 100%;

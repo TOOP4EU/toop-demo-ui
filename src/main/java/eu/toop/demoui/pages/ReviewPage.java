@@ -6,35 +6,33 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.form.IdentityForm;
+import eu.toop.demoui.form.MainCompanyForm;
+import eu.toop.demoui.form.NewCompanyForm;
 import eu.toop.demoui.view.HomeView;
 
 import java.time.LocalDate;
 
-public class ConfirmPersonalDetailsPage extends CustomLayout {
-  public ConfirmPersonalDetailsPage (HomeView view) {
-    super ("ConfirmPersonalDetailsPage");
+public class ReviewPage extends CustomLayout {
+  public ReviewPage (HomeView view) {
+    super ("ReviewPage");
 
     setHeight ("100%");
 
-    Identity identity = new Identity ();
-    identity.setFirstName ("Jan");
-    identity.setFamilyName ("Doe");
-    identity.setBirthPlace("Fridili");
-    identity.setBirthDate (LocalDate.parse("1986-02-01"));
-    identity.setIdentifier ("EL/EL/12345");
-    identity.setNationality ("EL");
-    view.setIdentity (identity);
-
     IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {});
     addComponent (identityForm, "identityForm");
+
+    NewCompanyForm newCompanyForm = new NewCompanyForm (view.getNewCompany (), true);
+    addComponent (newCompanyForm, "newCompanyForm");
+
+    MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), true, null);
+    addComponent (mainCompanyForm, "mainCompanyForm");
 
     Button nextButton = new Button ("Next");
     addComponent (nextButton, "nextButton");
     nextButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
         nextButton.setCaption ("clicked");
-        identityForm.save ();
-        view.setCurrentPage (new RegisterWithWEEEMainPage (view));
+        view.setCurrentPage (new SuccessPage (view));
       }
     });
   }
