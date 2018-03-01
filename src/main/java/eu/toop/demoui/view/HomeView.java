@@ -1,5 +1,6 @@
 package eu.toop.demoui.view;
 
+import com.vaadin.event.ContextClickEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.*;
 import eu.toop.demoui.bean.Identity;
@@ -19,6 +20,7 @@ public class HomeView extends CustomLayout implements View {
     setHeight ("100%");
 
     setCurrentPage (new HomePage (this));
+
   }
 
   public void setCurrentPage(CustomLayout page) {

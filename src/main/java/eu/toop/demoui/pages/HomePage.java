@@ -1,7 +1,13 @@
 package eu.toop.demoui.pages;
 
+import com.vaadin.event.ContextClickEvent;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import eu.toop.demoui.components.ClickableLayout;
+import eu.toop.demoui.components.ServiceChoicePanel;
 import eu.toop.demoui.view.HomeView;
 
 public class HomePage extends CustomLayout {
@@ -11,13 +17,13 @@ public class HomePage extends CustomLayout {
 
     setHeight ("100%");
 
-    Button nextButton = new Button ("Next");
-    addComponent (nextButton, "nextButton");
-    nextButton.addClickListener(new Button.ClickListener() {
-      public void buttonClick(Button.ClickEvent event) {
-        nextButton.setCaption ("clicked");
+    ClickableLayout serviceChoicePanel = new ClickableLayout (new LayoutEvents.LayoutClickListener () {
+      @Override
+      public void layoutClick (LayoutEvents.LayoutClickEvent layoutClickEvent) {
         view.setCurrentPage (new BusinessServicesPage (view));
       }
     });
+    serviceChoicePanel.addComponent (new ServiceChoicePanel ("BUSINESS SERVICES", ""));
+    addComponent (serviceChoicePanel, "serviceChoicePanel");
   }
 }
