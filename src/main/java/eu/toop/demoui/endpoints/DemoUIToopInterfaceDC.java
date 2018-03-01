@@ -30,7 +30,7 @@ import eu.toop.commons.exchange.mock.MSDataRequest;
 import eu.toop.commons.exchange.mock.MSDataResponse;
 import eu.toop.commons.exchange.mock.ToopDataRequest;
 import eu.toop.commons.exchange.mock.ToopDataResponse;
-import eu.toop.demoui.view.StartView;
+import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.IToopInterfaceDC;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
@@ -57,7 +57,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
       _ui.access ( () -> {
         // Push a new organization bean to the UI
-        if (_ui.getNavigator ().getCurrentView () instanceof StartView) {
+        if (_ui.getNavigator ().getCurrentView () instanceof HomeView) {
           //final MainCompanyView mainCompanyView = (MainCompanyView) _ui.getNavigator ().getCurrentView ();
           //final MainCompany mainCompany = new MainCompany ();
           // TODO: Real values are read from a retrieved ToopMessageBundle, however
