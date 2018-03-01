@@ -1,4 +1,4 @@
-package eu.toop.demoui.pages;
+package eu.toop.demoui.pages.old;
 
 import java.io.IOException;
 import java.util.Arrays;

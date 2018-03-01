@@ -1,10 +1,8 @@
-package eu.toop.demoui.pages;
+package eu.toop.demoui.pages.old;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.components.Body;
 import eu.toop.demoui.components.EloniaHeader;
 import eu.toop.demoui.form.IdentityForm;

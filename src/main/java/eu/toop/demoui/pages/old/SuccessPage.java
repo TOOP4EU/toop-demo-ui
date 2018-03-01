@@ -1,4 +1,4 @@
-package eu.toop.demoui.pages;
+package eu.toop.demoui.pages.old;
 
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;

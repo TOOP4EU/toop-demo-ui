@@ -20,8 +20,7 @@ import com.vaadin.ui.*;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.bean.NewCompany;
 import eu.toop.demoui.bean.MainCompany;
-import eu.toop.demoui.pages.HomePage;
-import eu.toop.demoui.pages.StartPage;
+import eu.toop.demoui.pages.old.StartPage;
 
 public class StartView extends VerticalLayout implements View {
 
