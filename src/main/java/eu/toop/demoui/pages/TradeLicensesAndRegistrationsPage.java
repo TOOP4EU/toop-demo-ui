@@ -4,10 +4,10 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import eu.toop.demoui.view.HomeView;
 
-public class HomePage extends CustomLayout {
+public class TradeLicensesAndRegistrationsPage extends CustomLayout {
 
-  public HomePage (HomeView view) {
-    super ("HomePage");
+  public TradeLicensesAndRegistrationsPage (HomeView view) {
+    super ("TradeLicensesAndRegistrationsPage");
 
     setHeight ("100%");
 
@@ -16,7 +16,6 @@ public class HomePage extends CustomLayout {
     nextButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
         nextButton.setCaption ("clicked");
-        view.setCurrentPage (new BusinessServicesPage (view));
       }
     });
   }
