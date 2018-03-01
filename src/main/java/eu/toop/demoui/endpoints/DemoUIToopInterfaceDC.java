@@ -16,16 +16,12 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.annotation.Nonnull;
 
 import com.vaadin.ui.UI;
 
 import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
-import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.IToopInterfaceDC;
 
@@ -37,16 +33,8 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     this._ui = ui;
   }
 
-  @Override
-  public void doPost (final HttpServletRequest req,
-                      final HttpServletResponse resp) throws ServletException, IOException {
-    final PrintWriter aPW = resp.getWriter ();
-    aPW.write ("<html><body>OK</body></html>");
-    aPW.flush ();
-
+  public void onToopResponse (@Nonnull final TDETOOPDataResponseType aResponse) throws IOException {
     try {
-      final TDETOOPDataResponseType bundleRead = ToopMessageBuilder.parseResponseMessage (req.getInputStream ());
-
       _ui.access ( () -> {
         // Push a new organization bean to the UI
         if (_ui.getNavigator ().getCurrentView () instanceof HomeView) {

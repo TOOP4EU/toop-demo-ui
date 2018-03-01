@@ -16,30 +16,23 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.annotation.Nonnull;
 
 import com.vaadin.ui.UI;
 
+import eu.toop.commons.dataexchange.TDETOOPDataRequestType;
 import eu.toop.iface.IToopInterfaceDP;
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
   private final UI _ui;
 
-  public DemoUIToopInterfaceDP(final UI ui) {
+  public DemoUIToopInterfaceDP (final UI ui) {
     this._ui = ui;
   }
 
-  @Override
-  public void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-      throws ServletException, IOException {
-    final String pathInfo = req.getPathInfo();
-    final PrintWriter aPW = resp.getWriter();
-    aPW.write("<html><body>OK</body></html>");
-    aPW.flush();
+  public void onToopRequest (@Nonnull final TDETOOPDataRequestType aRequest) throws IOException {
+    // TODO
   }
 }
