@@ -63,6 +63,10 @@
     }
   }
 
+  .v-readonly {
+    background-color: #dedede !important;
+  }
+
   .background {
     overflow: scroll;
     width: 100%;
@@ -117,17 +121,25 @@
   }
 
   .freedonia-header {
-    padding: 8px;
+    //padding: 8px;
     font-weight: 500;
 
-    .left {
+    .left.icon {
       float: left;
-      width: 50%;
+      width: 10%;
+      margin-top: -5px;
+      margin-bottom: -10px;
+    }
+    .left.title {
+      float: left;
+      width: 40%;
+      padding-top: 14px;
     }
     .right {
       float: left;
       width: 50%;
       text-align: right;
+      padding-top: 14px;
     }
   }
 
