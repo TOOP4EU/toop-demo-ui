@@ -4,6 +4,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.view.HomeView;
@@ -28,11 +29,13 @@ public class ConfirmPersonalDetailsPage extends CustomLayout {
     IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {});
     addComponent (identityForm, "identityForm");
 
-    Button nextButton = new Button ("Next");
+    Button nextButton = new Button ("Confirm and proceed");
+    nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    nextButton.addStyleName (" elonia");
+    nextButton.setWidth ("200px");
     addComponent (nextButton, "nextButton");
     nextButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
-        nextButton.setCaption ("clicked");
         identityForm.save ();
         view.setCurrentPage (new RegisterWithWEEEMainPage (view));
       }

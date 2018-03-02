@@ -4,6 +4,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.concept.ConceptValue;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.bean.MainCompany;
@@ -39,7 +40,10 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     addComponent (mainCompanyForm, "mainCompanyForm");
 
     Button toopButton = new Button ("Get company info");
+    toopButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    toopButton.addStyleName (" freedonia");
     addComponent (toopButton, "toopButton");
+
     toopButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
         try {
@@ -60,11 +64,12 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
       }
     });
 
-    Button nextButton = new Button ("Next");
+    Button nextButton = new Button ("Proceed");
+    nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
     nextButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
-        nextButton.setCaption ("clicked");
         mainCompanyForm.save ();
         view.setCurrentPage (new RegisterWithWEEENewDetailsPage (view));
       }

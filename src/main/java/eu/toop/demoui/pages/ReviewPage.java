@@ -4,6 +4,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.form.MainCompanyForm;
@@ -27,11 +28,12 @@ public class ReviewPage extends CustomLayout {
     MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), true, null);
     addComponent (mainCompanyForm, "mainCompanyForm");
 
-    Button nextButton = new Button ("Next");
+    Button nextButton = new Button ("Proceed");
+    nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
     nextButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
-        nextButton.setCaption ("clicked");
         view.setCurrentPage (new SuccessPage (view));
       }
     });

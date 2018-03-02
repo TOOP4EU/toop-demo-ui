@@ -36,6 +36,18 @@
     width: 100%;
   }
 
+  .v-button-link {
+    height: auto;
+    padding: 0px;
+    text-align: left;
+    color: #2563b2;
+    font-weight: 500;
+
+    .v-button-wrap {
+      white-space: normal;
+    }
+  }
+
   .v-textfield,
   .v-datefield {
     width: 90%;
@@ -150,6 +162,39 @@
     padding: 8px;
     border-top: 4px solid #1ea5b3;
     border-bottom: 4px solid #1ea5b3;
+  }
+
+  .freedonia-auth-method-button {
+    background-color: #ebebeb;
+    height: 50px;
+    border: 1px solid #d7d7d7;
+    border-radius: 0px;
+    color: #30336b;
+  }
+
+  .freedonia-auth-method-button:hover {
+    background-color: #f6f6f6;
+    height: 50px;
+    border: 3px solid #d7d7d7;
+    border-radius: 0px;
+  }
+
+  .v-button-borderless.elonia {
+    background-color: black;
+    color: white;
+    padding: 14px;
+    height: auto;
+  }
+
+  .v-button-borderless.freedonia {
+    /*background-color: black;
+    color: white;
+    padding: 14px;
+    height: auto;*/
+
+    background-color: #004790;
+    height: 50px;
+    color: white;
   }
 }
 
