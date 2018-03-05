@@ -18,12 +18,12 @@ public class ConfirmPersonalDetailsPage extends CustomLayout {
     setHeight ("100%");
 
     Identity identity = new Identity ();
-    identity.setFirstName ("Jan");
-    identity.setFamilyName ("Doe");
-    identity.setBirthPlace("Fridili");
+    identity.setFirstName ("Maximillian");
+    identity.setFamilyName ("Stern");
+    identity.setBirthPlace("");
     identity.setBirthDate (LocalDate.parse("1986-02-01"));
     identity.setIdentifier ("EL/EL/12345");
-    identity.setNationality ("EL");
+    identity.setNationality ("");
     view.setIdentity (identity);
 
     IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {});

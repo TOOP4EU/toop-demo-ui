@@ -207,5 +207,25 @@
     margin-top: 8px;
     margin-bottom: 8px;
   }
-}
 
+  .attributesTable {
+    padding: 2px;
+    .title {
+      background-color: black;
+      color: white;
+      padding: 2px;
+      border: 1px solid grey;
+      font-weight: 600;
+    }
+    .even {
+      background-color: white;
+      padding: 2px;
+      border: 1px solid grey;
+    }
+    .odd {
+      background-color: #f2f2f2;
+      padding: 2px;
+      border: 1px solid grey;
+    }
+  }
+}

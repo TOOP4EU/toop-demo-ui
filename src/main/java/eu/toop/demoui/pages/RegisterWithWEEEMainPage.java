@@ -2,21 +2,13 @@ package eu.toop.demoui.pages;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
-import eu.toop.commons.concept.ConceptValue;
 import eu.toop.demoui.bean.Identity;
-import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.form.MainCompanyForm;
 import eu.toop.demoui.view.HomeView;
-import eu.toop.iface.ToopInterfaceManager;
-import org.jsoup.UncheckedIOException;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
 
 public class RegisterWithWEEEMainPage extends CustomLayout {
   public RegisterWithWEEEMainPage (HomeView view) {
@@ -46,6 +38,9 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
 
     toopButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
+
+        ConfirmToopDataFetchingPage consentWindow = new ConfirmToopDataFetchingPage (view, mainCompanyForm);
+        /*
         try {
           final String NS = "http://toop.eu/organization";
           ToopInterfaceManager.requestConcepts (Arrays.asList (new ConceptValue (NS, "companyName"),
@@ -61,6 +56,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
         view.setMainCompany (mainCompany);
         mainCompanyForm.setOrganizationBean (mainCompany);
         mainCompanyForm.save ();
+        */
       }
     });
 
