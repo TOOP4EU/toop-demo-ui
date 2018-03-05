@@ -38,16 +38,12 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
       _ui.access ( () -> {
         // Push a new organization bean to the UI
         if (_ui.getNavigator ().getCurrentView () instanceof HomeView) {
-          // final MainCompanyView mainCompanyView = (MainCompanyView) _ui.getNavigator
-          // ().getCurrentView ();
-          // final MainCompany mainCompany = new MainCompany ();
-          // TODO: Real values are read from a retrieved ToopMessageBundle, however
-          // the correct values have to be read instead. These are just placeholders.
-          // mainCompany.setCompanyName (bundleRead.getToopDataRequest ().getRequestID
-          // ());
-          // mainCompany.setCompanyType (bundleRead.getToopDataRequest ().getRequestID
-          // ());
-          // mainCompanyView.getOrganizationForm ().setOrganizationBean (mainCompany);
+          final HomeView homeView = (HomeView) _ui.getNavigator ().getCurrentView ();
+
+          homeView.getMainCompany ().setCompanyName("Mockup Company Name");
+          homeView.getMainCompany ().setCompanyType("Mockup Company Type");
+          homeView.getMainCompanyForm ().setOrganizationBean (homeView.getMainCompany ());
+          homeView.getMainCompanyForm ().save ();
         }
       });
     } catch (final Exception e) {

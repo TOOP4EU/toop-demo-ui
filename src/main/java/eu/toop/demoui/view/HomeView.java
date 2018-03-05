@@ -6,6 +6,7 @@ import com.vaadin.ui.*;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.bean.NewCompany;
+import eu.toop.demoui.form.MainCompanyForm;
 import eu.toop.demoui.pages.HomePage;
 
 public class HomeView extends CustomLayout implements View {
@@ -14,6 +15,8 @@ public class HomeView extends CustomLayout implements View {
   private Identity identity = new Identity ();
   private MainCompany mainCompany = new MainCompany ();
   private NewCompany newCompany = new NewCompany ();
+
+  private MainCompanyForm mainCompanyForm = null;
 
   public HomeView () {
     super("HomeView");
@@ -54,5 +57,13 @@ public class HomeView extends CustomLayout implements View {
 
   public void setNewCompany (NewCompany newCompany) {
     this.newCompany = newCompany;
+  }
+
+  public MainCompanyForm getMainCompanyForm () {
+    return mainCompanyForm;
+  }
+
+  public void setMainCompanyForm (MainCompanyForm mainCompanyForm) {
+    this.mainCompanyForm = mainCompanyForm;
   }
 }

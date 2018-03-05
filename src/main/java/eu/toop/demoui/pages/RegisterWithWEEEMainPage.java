@@ -4,6 +4,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.demoui.bean.Identity;
+import eu.toop.demoui.form.FreedoniaForm;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.form.MainCompanyForm;
 import eu.toop.demoui.view.HomeView;
@@ -19,9 +20,6 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {});
     addComponent (identityForm, "identityForm");
 
-    MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), false, null);
-    addComponent (mainCompanyForm, "mainCompanyForm");
-
     Button toopButton = new Button ("Get company info");
     toopButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     toopButton.addStyleName (" freedonia");
@@ -30,35 +28,27 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     toopButton.addClickListener(new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
 
-        ConfirmToopDataFetchingPage consentWindow = new ConfirmToopDataFetchingPage (view, mainCompanyForm);
-        /*
-        try {
-          final String NS = "http://toop.eu/organization";
-          ToopInterfaceManager.requestConcepts (Arrays.asList (new ConceptValue (NS, "companyName"),
-            new ConceptValue (NS, "companyType")));
-        } catch (final IOException ex) {
-          // Convert from checked to unchecked
-          throw new UncheckedIOException (ex);
-        }
+        ConfirmToopDataFetchingPage consentWindow = new ConfirmToopDataFetchingPage (view) {
+          @Override
+          public void onConsent() {
+            MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), false, null);
 
-        // TODO: This should happen when the response is handled async
-        MainCompany mainCompany = view.getMainCompany ();
-        mainCompany.setCompany ("Hello world");
-        view.setMainCompany (mainCompany);
-        mainCompanyForm.setOrganizationBean (mainCompany);
-        mainCompanyForm.save ();
-        */
-      }
-    });
+            FreedoniaForm freedoniaForm = new FreedoniaForm (mainCompanyForm, "Preview of company details");
+            addComponent (freedoniaForm, "mainCompanyForm");
+            view.setMainCompanyForm (mainCompanyForm);
 
-    Button nextButton = new Button ("Proceed");
-    nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
-    nextButton.addStyleName (" freedonia");
-    addComponent (nextButton, "nextButton");
-    nextButton.addClickListener(new Button.ClickListener() {
-      public void buttonClick(Button.ClickEvent event) {
-        mainCompanyForm.save ();
-        view.setCurrentPage (new RegisterWithWEEENewDetailsPage (view));
+            Button nextButton = new Button ("I have previewed and want to proceed");
+            nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+            nextButton.addStyleName (" freedonia");
+            addComponent (nextButton, "nextButton");
+            nextButton.addClickListener(new Button.ClickListener() {
+              public void buttonClick(Button.ClickEvent event) {
+                mainCompanyForm.save ();
+                view.setCurrentPage (new RegisterWithWEEENewDetailsPage (view));
+              }
+            });
+          }
+        };
       }
     });
   }
