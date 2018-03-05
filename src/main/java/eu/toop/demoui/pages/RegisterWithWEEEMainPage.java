@@ -16,15 +16,6 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
 
     setHeight ("100%");
 
-    Identity identity = new Identity ();
-    identity.setFirstName ("Jan");
-    identity.setFamilyName ("Doe");
-    identity.setBirthPlace("Fridili");
-    identity.setBirthDate (LocalDate.parse("1986-02-01"));
-    identity.setIdentifier ("EL/EL/12345");
-    identity.setNationality ("EL");
-    view.setIdentity (identity);
-
     IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {});
     addComponent (identityForm, "identityForm");
 

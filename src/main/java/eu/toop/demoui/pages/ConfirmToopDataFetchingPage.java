@@ -39,24 +39,24 @@ public class ConfirmToopDataFetchingPage extends Window {
 
     Button proceedButton = new Button ("I AGREE", new Button.ClickListener() {
       public void buttonClick(Button.ClickEvent event) {
-
         subWindow.close ();
 
-        try {
+        /*try {
+
           final String NS = "http://toop.eu/organization";
           ToopInterfaceManager.requestConcepts (Arrays.asList (new ConceptValue (NS, "companyName"),
             new ConceptValue (NS, "companyType")));
-
-          // TODO: This should happen when the response is handled async
-          MainCompany mainCompany = view.getMainCompany ();
-          mainCompany.setCompany ("Hello world");
-          view.setMainCompany (mainCompany);
-          mainCompanyForm.setOrganizationBean (mainCompany);
-          mainCompanyForm.save ();
         } catch (final IOException ex) {
           // Convert from checked to unchecked
           throw new UncheckedIOException (ex);
-        }
+        }*/
+
+        // TODO: This should happen when the response is handled async
+        MainCompany mainCompany = view.getMainCompany ();
+        mainCompany.setCompany ("Hello world");
+        view.setMainCompany (mainCompany);
+        mainCompanyForm.setOrganizationBean (mainCompany);
+        mainCompanyForm.save ();
       }
     });
 
