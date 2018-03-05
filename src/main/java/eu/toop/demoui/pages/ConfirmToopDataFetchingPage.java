@@ -23,6 +23,7 @@ public class ConfirmToopDataFetchingPage extends Window {
 
     subWindow.setWidth ("800px");
 
+    subWindow.setModal (true);
     subWindow.setCaption (null);
     subWindow.setResizable (false);
     subWindow.setClosable (false);
