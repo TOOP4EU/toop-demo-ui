@@ -27,8 +27,9 @@ import com.vaadin.ui.UI;
 
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
-import eu.toop.demoui.view.*;
+import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.ToopInterfaceManager;
+import eu.toop.kafkaclient.ToopKafkaClient;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -39,27 +40,34 @@ import eu.toop.iface.ToopInterfaceManager;
  * intended to be overridden to add component to the user interface and
  * initialize non-component functionality.
  */
-@SuppressWarnings("javadoc")
-@Theme("DCUITheme")
+@SuppressWarnings ("javadoc")
+@Theme ("DCUITheme")
 @PreserveOnRefresh
 public class DCUI extends UI {
 
   private Navigator navigator;
 
   @Override
-  protected void init(final VaadinRequest vaadinRequest) {
-    getPage().setTitle("TOOP Demo User Interface");
+  protected void init (final VaadinRequest vaadinRequest) {
+    getPage ().setTitle ("TOOP Demo User Interface");
 
-    ToopInterfaceManager.setInterfaceDC(new DemoUIToopInterfaceDC(this));
-    ToopInterfaceManager.setInterfaceDP(new DemoUIToopInterfaceDP(this));
+    ToopInterfaceManager.setInterfaceDC (new DemoUIToopInterfaceDC (this));
+    ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP (this));
+    ToopKafkaClient.setEnabled (true);
 
-    navigator = new Navigator(this, this);
-    navigator.addView("", new HomeView ());
-    navigator.addView(HomeView.class.getName(), new HomeView());
+    navigator = new Navigator (this, this);
+    navigator.addView ("", new HomeView ());
+    navigator.addView (HomeView.class.getName (), new HomeView ());
   }
 
-  @WebServlet(urlPatterns = { "/ui/*", "/VAADIN/*" }, asyncSupported = true)
-  @VaadinServletConfiguration(ui = DCUI.class, productionMode = false)
+  @Override
+  public void close () {
+    ToopKafkaClient.close ();
+    super.close ();
+  }
+
+  @WebServlet (urlPatterns = { "/ui/*", "/VAADIN/*" }, asyncSupported = true)
+  @VaadinServletConfiguration (ui = DCUI.class, productionMode = false)
   public static class DCUIServlet extends VaadinServlet {
   }
 }
