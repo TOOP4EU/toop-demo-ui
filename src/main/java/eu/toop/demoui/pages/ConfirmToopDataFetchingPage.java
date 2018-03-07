@@ -41,6 +41,16 @@ public class ConfirmToopDataFetchingPage extends Window {
       onConsent ();
       subWindow.close ();
 
+      { // Adding mockup data to the main company form for a live demo purpose
+        view.getMainCompany ().setCompanyName ("Zizi mat");
+        view.getMainCompany ().setCompanyCode ("JF 234556-6213");
+        view.getMainCompany ().setCompanyType ("Limited");
+        view.getMainCompany ().setLegalStatus ("Active");
+        view.getMainCompany ().setRegistrationNumber ("009987 665543");
+        view.getMainCompanyForm ().setOrganizationBean (view.getMainCompany ());
+        view.getMainCompanyForm ().save ();
+      }
+
       // Notify the Package-Tracker that we are sending a TOOP Message!
       ToopKafkaClient.send (EErrorLevel.INFO, "'dc.freedonia.toop' -> 'mp.freedonia.toop'");
 
