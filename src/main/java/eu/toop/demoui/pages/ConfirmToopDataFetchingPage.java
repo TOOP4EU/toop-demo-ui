@@ -11,6 +11,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import eu.toop.commons.concept.ConceptValue;
+import eu.toop.commons.doctype.EToopDocumentType;
 import eu.toop.demoui.components.ConfirmToopDataFetchingTable;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.ToopInterfaceManager;
@@ -46,8 +47,8 @@ public class ConfirmToopDataFetchingPage extends Window {
       // Send the request to the Message-Processor
       try {
         final String NS = "http://toop.eu/organization";
-        ToopInterfaceManager.requestConcepts (Arrays.asList (new ConceptValue (NS, "companyName"),
-                                                             new ConceptValue (NS, "companyType")));
+
+        ToopInterfaceManager.requestConcepts (Arrays.asList (new ConceptValue (NS, EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST.getURIEncoded ())));
       } catch (final IOException ex) {
         // Convert from checked to unchecked
         throw new UncheckedIOException (ex);
