@@ -33,7 +33,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ToopInterfaceServletDC</servlet-name>
-        <url-pattern>/interface/dc/*</url-pattern>
+        <url-pattern>/to-dc/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -42,6 +42,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ToopInterfaceServletDP</servlet-name>
-        <url-pattern>/interface/dp/*</url-pattern>
+        <url-pattern>/to-dp/*</url-pattern>
     </servlet-mapping>
 </web-app>
