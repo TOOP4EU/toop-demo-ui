@@ -26,22 +26,4 @@
     <session-config>
         <session-timeout>60</session-timeout>
     </session-config>
-
-    <servlet>
-        <servlet-name>ToopInterfaceServletDC</servlet-name>
-        <servlet-class>eu.toop.iface.servlet.ToopInterfaceServletDC</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ToopInterfaceServletDC</servlet-name>
-        <url-pattern>/interface/dc/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>ToopInterfaceServletDP</servlet-name>
-        <servlet-class>eu.toop.iface.servlet.ToopInterfaceServletDP</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ToopInterfaceServletDP</servlet-name>
-        <url-pattern>/interface/dp/*</url-pattern>
-    </servlet-mapping>
 </web-app>
