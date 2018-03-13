@@ -12,6 +12,7 @@ import com.vaadin.ui.Window;
 
 import eu.toop.commons.concept.ConceptValue;
 import eu.toop.commons.doctype.EToopDocumentType;
+import eu.toop.commons.doctype.EToopProcess;
 import eu.toop.demoui.components.ConfirmToopDataFetchingTable;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.ToopInterfaceManager;
@@ -52,13 +53,15 @@ public class ConfirmToopDataFetchingPage extends Window {
       }
 
       // Notify the Package-Tracker that we are sending a TOOP Message!
-      ToopKafkaClient.send (EErrorLevel.INFO, "'dc.freedonia.toop' -> 'mp.freedonia.toop'");
+      ToopKafkaClient.send (EErrorLevel.INFO, "'dc.freedonia.toop' -> 'tc.freedonia.toop'");
 
       // Send the request to the Message-Processor
       try {
-        final String NS = "http://toop.eu/organization";
-
-        ToopInterfaceManager.requestConcepts (Arrays.asList (new ConceptValue (NS, EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST.getURIEncoded ())));
+        ToopInterfaceManager.requestConcepts ("iso6523-actorid-upis::9999:freedonia", "SV",
+                                              EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST,
+                                              EToopProcess.PROCESS_REQUEST_RESPONSE,
+                                              Arrays.asList (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+                                                                               "companyCode")));
       } catch (final IOException ex) {
         // Convert from checked to unchecked
         throw new UncheckedIOException (ex);
