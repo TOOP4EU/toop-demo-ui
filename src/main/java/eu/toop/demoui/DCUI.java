@@ -53,7 +53,7 @@ public class DCUI extends UI {
 
     ToopInterfaceManager.setInterfaceDC (new DemoUIToopInterfaceDC (this));
     ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP (this));
-    ToopKafkaClient.setEnabled (true);
+    ToopKafkaClient.setKafkaEnabled (true);
 
     navigator = new Navigator (this, this);
     navigator.addView ("", new HomeView ());
