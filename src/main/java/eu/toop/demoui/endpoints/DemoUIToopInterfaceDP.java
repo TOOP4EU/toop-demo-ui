@@ -26,9 +26,11 @@ import org.slf4j.LoggerFactory;
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.ui.UI;
 
+import eu.toop.commons.dataexchange.TDEAddressType;
 import eu.toop.commons.dataexchange.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
+import eu.toop.commons.dataexchange.TDEDataProviderType;
 import eu.toop.commons.dataexchange.TDETOOPDataRequestType;
 import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
 import eu.toop.commons.exchange.ToopMessageBuilder;
@@ -77,6 +79,17 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // build response
     final TDETOOPDataResponseType aResponse = ToopMessageBuilder.createResponse (aRequest);
+    {
+      // Required for response
+      final TDEDataProviderType p = new TDEDataProviderType ();
+      p.setDPIdentifier (ToopXSDHelper.createIdentifier ("iso6523-actorid-upis", "9999:elonia"));
+      p.setDPName (ToopXSDHelper.createText ("EloniaDP"));
+      p.setDPElectronicAddressIdentifier (ToopXSDHelper.createIdentifier ("elonia@register.example.org"));
+      final TDEAddressType pa = new TDEAddressType ();
+      pa.setCountryCode (ToopXSDHelper.createCode ("SV"));
+      p.setDPLegalAddress (pa);
+      aResponse.setDataProvider (p);
+    }
 
     // add all the mapped values in the response
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
