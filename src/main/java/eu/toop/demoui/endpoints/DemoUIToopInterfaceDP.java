@@ -19,13 +19,16 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.ui.UI;
 
 import eu.toop.commons.dataexchange.TDETOOPDataRequestType;
 import eu.toop.iface.IToopInterfaceDP;
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
-
+  private static final Logger s_aLogger = LoggerFactory.getLogger (DemoUIToopInterfaceDP.class);
   private final UI _ui;
 
   public DemoUIToopInterfaceDP (final UI ui) {
@@ -34,5 +37,10 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
   public void onToopRequest (@Nonnull final TDETOOPDataRequestType aRequest) throws IOException {
     // TODO
+    s_aLogger.info ("DemoUIToopInterfaceDP got " + aRequest);
+
+    // TODO fetch values
+    // TODO build response
+    // TODO send back to toop-connector at /from-dp
   }
 }
