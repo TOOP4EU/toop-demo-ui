@@ -19,14 +19,19 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.ui.UI;
 
 import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.IToopInterfaceDC;
+import eu.toop.kafkaclient.ToopKafkaClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
+  private static final Logger s_aLogger = LoggerFactory.getLogger (DemoUIToopInterfaceDC.class);
   private final UI _ui;
 
   public DemoUIToopInterfaceDC (final UI ui) {
@@ -34,6 +39,10 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   }
 
   public void onToopResponse (@Nonnull final TDETOOPDataResponseType aResponse) throws IOException {
+
+    s_aLogger.info ("DemoUIToopInterfaceDC got " + aResponse);
+    ToopKafkaClient.send (EErrorLevel.INFO, "[DC] TDETOOPDataResponseType arrived: " + aResponse);
+
     try {
       _ui.access ( () -> {
         // Push a new organization bean to the UI

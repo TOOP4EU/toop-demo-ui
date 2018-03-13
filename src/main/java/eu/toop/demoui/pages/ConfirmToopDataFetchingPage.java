@@ -2,7 +2,9 @@ package eu.toop.demoui.pages;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.ui.Button;
@@ -14,11 +16,17 @@ import eu.toop.commons.concept.ConceptValue;
 import eu.toop.commons.doctype.EToopDocumentType;
 import eu.toop.commons.doctype.EToopProcess;
 import eu.toop.demoui.components.ConfirmToopDataFetchingTable;
+import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConfirmToopDataFetchingPage extends Window {
+
+  private static final Logger s_aLogger = LoggerFactory.getLogger (ConfirmToopDataFetchingPage.class);
+
   public ConfirmToopDataFetchingPage (final HomeView view) {
 
     final Window subWindow = new Window ("Sub-window");
@@ -52,16 +60,20 @@ public class ConfirmToopDataFetchingPage extends Window {
         view.getMainCompanyForm ().save ();
       }
 
-      // Notify the Package-Tracker that we are sending a TOOP Message!
-      ToopKafkaClient.send (EErrorLevel.INFO, "'dc.freedonia.toop' -> 'tc.freedonia.toop'");
-
       // Send the request to the Message-Processor
       try {
+        List<ConceptValue> conceptList = new ArrayList<> ();
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "companyCode"));
+
+        // Notify the logger and Package-Tracker that we are sending a TOOP Message!
+        s_aLogger.info ("Requesting concepts: " + conceptList);
+        ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Requesting concepts: " + conceptList);
+
         ToopInterfaceManager.requestConcepts ("iso6523-actorid-upis::9999:freedonia", "SV",
                                               EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST,
                                               EToopProcess.PROCESS_REQUEST_RESPONSE,
-                                              Arrays.asList (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                                                               "companyCode")));
+                                              conceptList);
       } catch (final IOException ex) {
         // Convert from checked to unchecked
         throw new UncheckedIOException (ex);
