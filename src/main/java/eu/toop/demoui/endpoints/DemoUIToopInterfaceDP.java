@@ -19,6 +19,8 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import com.helger.commons.error.level.EErrorLevel;
+import eu.toop.kafkaclient.ToopKafkaClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +40,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
   public void onToopRequest (@Nonnull final TDETOOPDataRequestType aRequest) throws IOException {
     // TODO
     s_aLogger.info ("DemoUIToopInterfaceDP got " + aRequest);
+    ToopKafkaClient.send (EErrorLevel.INFO, "[DP] TDETOOPDataRequestType arrived: " + aRequest);
 
     // TODO fetch values
     // TODO build response
