@@ -26,12 +26,8 @@ import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
-
-  private static final Logger s_aLogger = LoggerFactory.getLogger (DemoUIToopInterfaceDC.class);
   private final UI _ui;
 
   public DemoUIToopInterfaceDC (final UI ui) {
@@ -39,9 +35,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   }
 
   public void onToopResponse (@Nonnull final TDETOOPDataResponseType aResponse) throws IOException {
-
-    s_aLogger.info ("DemoUIToopInterfaceDC got " + aResponse);
-    ToopKafkaClient.send (EErrorLevel.INFO, "[DC] TDETOOPDataResponseType arrived: " + aResponse);
+    ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] TDETOOPDataResponseType arrived: " + aResponse);
 
     try {
       _ui.access ( () -> {
@@ -49,8 +43,8 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
         if (_ui.getNavigator ().getCurrentView () instanceof HomeView) {
           final HomeView homeView = (HomeView) _ui.getNavigator ().getCurrentView ();
 
-          homeView.getMainCompany ().setCompanyName("Mockup Company Name");
-          homeView.getMainCompany ().setCompanyType("Mockup Company Type");
+          homeView.getMainCompany ().setCompanyName ("Mockup Company Name");
+          homeView.getMainCompany ().setCompanyType ("Mockup Company Type");
           homeView.getMainCompanyForm ().setOrganizationBean (homeView.getMainCompany ());
           homeView.getMainCompanyForm ().save ();
         }
