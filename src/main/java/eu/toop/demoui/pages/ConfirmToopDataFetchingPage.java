@@ -16,9 +16,8 @@ import eu.toop.commons.concept.ConceptValue;
 import eu.toop.commons.doctype.EToopDocumentType;
 import eu.toop.commons.doctype.EToopProcess;
 import eu.toop.demoui.components.ConfirmToopDataFetchingTable;
-import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
 import eu.toop.demoui.view.HomeView;
-import eu.toop.iface.ToopInterfaceManager;
+import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,10 +69,11 @@ public class ConfirmToopDataFetchingPage extends Window {
         s_aLogger.info ("Requesting concepts: " + conceptList);
         ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Requesting concepts: " + conceptList);
 
-        ToopInterfaceManager.requestConcepts ("iso6523-actorid-upis::9999:freedonia", "SV",
-                                              EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST,
-                                              EToopProcess.PROCESS_REQUEST_RESPONSE,
-                                              conceptList);
+        ToopInterfaceClient.createRequestAndSendToToopConnector ("iso6523-actorid-upis::9999:freedonia",
+                                                                  "SV",
+                                                                  EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST,
+                                                                  EToopProcess.PROCESS_REQUEST_RESPONSE,
+                                                                  conceptList);
       } catch (final IOException ex) {
         // Convert from checked to unchecked
         throw new UncheckedIOException (ex);
