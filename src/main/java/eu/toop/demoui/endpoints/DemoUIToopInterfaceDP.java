@@ -33,6 +33,7 @@ import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.TDEDataProviderType;
 import eu.toop.commons.dataexchange.TDETOOPDataRequestType;
 import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
+import eu.toop.commons.doctype.EToopDocumentType;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.iface.IToopInterfaceDP;
@@ -72,11 +73,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     aConcept.getDataElementResponseValue ().add (aValue);
   }
 
-  public void onToopRequest (@Nonnull final TDETOOPDataRequestType aRequest) throws IOException {
-    final String sRequestID = aRequest.getDataRequestIdentifier ().getValue ();
-    final String sLogPrefix = "[" + sRequestID + "] ";
-    ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received DP Backend Request");
-
+  @Nonnull
+  private static TDETOOPDataResponseType _createResponseFromRequest (@Nonnull final TDETOOPDataRequestType aRequest) {
     // build response
     final TDETOOPDataResponseType aResponse = ToopMessageBuilder.createResponse (aRequest);
     {
@@ -90,6 +88,40 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       p.setDPLegalAddress (pa);
       aResponse.setDataProvider (p);
     }
+
+    // Document type must be switch from request to response
+    final EToopDocumentType eRequestDocType = EToopDocumentType.getFromIDOrNull (aRequest.getDocumentTypeIdentifier ()
+                                                                                         .getSchemeID (),
+                                                                                 aRequest.getDocumentTypeIdentifier ()
+                                                                                         .getValue ());
+    boolean bFoundNewDocType = false;
+    if (eRequestDocType != null) {
+      final EToopDocumentType eResponseDocType = eRequestDocType.getMatchingResponseDocumentType ();
+      if (eResponseDocType != null) {
+        // Set new doc type in response
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> "Switching document type '" + eRequestDocType.getURIEncoded ()
+                                                      + "' to '" + eResponseDocType.getURIEncoded () + "'");
+        aResponse.setDocumentTypeIdentifier (ToopXSDHelper.createIdentifier (eResponseDocType.getScheme (),
+                                                                             eResponseDocType.getValue ()));
+        bFoundNewDocType = true;
+      }
+    }
+    if (!bFoundNewDocType) {
+      ToopKafkaClient.send (EErrorLevel.INFO,
+                            () -> "Found no response document type for '"
+                                  + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
+                                  + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
+    }
+    return aResponse;
+  }
+
+  public void onToopRequest (@Nonnull final TDETOOPDataRequestType aRequest) throws IOException {
+    final String sRequestID = aRequest.getDataRequestIdentifier ().getValue ();
+    final String sLogPrefix = "[" + sRequestID + "] ";
+    ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received DP Backend Request");
+
+    // build response
+    final TDETOOPDataResponseType aResponse = _createResponseFromRequest (aRequest);
 
     // add all the mapped values in the response
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
