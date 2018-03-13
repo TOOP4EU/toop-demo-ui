@@ -61,7 +61,9 @@ public class ConfirmToopDataFetchingPage extends Window {
                                               EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST,
                                               EToopProcess.PROCESS_REQUEST_RESPONSE,
                                               Arrays.asList (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                                                               "companyCode")));
+                                                                               "FreedoniaBusinessCode"),
+                                                             new ConceptValue ("http://example.register.fre/freedonia-business-register",
+                                                                               "FreedoniaAddress")));
       } catch (final IOException ex) {
         // Convert from checked to unchecked
         throw new UncheckedIOException (ex);
