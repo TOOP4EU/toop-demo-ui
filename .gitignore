@@ -27,6 +27,3 @@ target/
 /.settings/
 /.project
 /.classpath
-
-# properties
-toop-interface.properties
