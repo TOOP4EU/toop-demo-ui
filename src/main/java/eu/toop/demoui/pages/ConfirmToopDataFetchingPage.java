@@ -3,10 +3,13 @@ package eu.toop.demoui.pages;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.helger.commons.error.level.EErrorLevel;
+import com.helger.commons.string.StringHelper;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
@@ -19,8 +22,6 @@ import eu.toop.demoui.components.ConfirmToopDataFetchingTable;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ConfirmToopDataFetchingPage extends Window {
 
@@ -61,19 +62,21 @@ public class ConfirmToopDataFetchingPage extends Window {
 
       // Send the request to the Message-Processor
       try {
-        List<ConceptValue> conceptList = new ArrayList<> ();
+        final List<ConceptValue> conceptList = new ArrayList<> ();
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-          "companyCode"));
+                                           "FreedoniaBusinessCode"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+                                           "FreedoniaAddress"));
 
         // Notify the logger and Package-Tracker that we are sending a TOOP Message!
-        s_aLogger.info ("Requesting concepts: " + conceptList);
-        ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Requesting concepts: " + conceptList);
+        ToopKafkaClient.send (EErrorLevel.INFO,
+                              () -> "[DC] Requesting concepts: "
+                                    + StringHelper.getImplodedMapped (", ", conceptList,
+                                                                      x -> x.getNamespace () + "#" + x.getValue ()));
 
-        ToopInterfaceClient.createRequestAndSendToToopConnector ("iso6523-actorid-upis::9999:freedonia",
-                                                                  "SV",
+        ToopInterfaceClient.createRequestAndSendToToopConnector ("iso6523-actorid-upis::9999:freedonia", "SV",
                                                                   EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST,
-                                                                  EToopProcess.PROCESS_REQUEST_RESPONSE,
-                                                                  conceptList);
+                                                                  EToopProcess.PROCESS_REQUEST_RESPONSE, conceptList);
       } catch (final IOException ex) {
         // Convert from checked to unchecked
         throw new UncheckedIOException (ex);
