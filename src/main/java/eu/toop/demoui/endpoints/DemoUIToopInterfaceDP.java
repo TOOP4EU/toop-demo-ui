@@ -20,9 +20,6 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.ui.UI;
 
@@ -41,7 +38,6 @@ import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
-  private static final Logger s_aLogger = LoggerFactory.getLogger (DemoUIToopInterfaceDP.class);
   private final UI _ui;
 
   public DemoUIToopInterfaceDP (final UI ui) {
@@ -63,6 +59,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP"));
     } else {
       // Dummy no error
+      // Default value for error does not work
+      aValue.setErrorIndicator (ToopXSDHelper.createIndicator (false));
       if (Math.random () < 0.3)
         aValue.setResponseNumeric (ToopXSDHelper.createNumeric (BigDecimal.valueOf (Math.random () * 100)));
       else if (Math.random () < 0.5)
