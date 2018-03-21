@@ -16,12 +16,16 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.ui.UI;
 
+import eu.toop.commons.dataexchange.TDEConceptRequestType;
+import eu.toop.commons.dataexchange.TDEDataElementRequestType;
+import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.IToopInterfaceDC;
@@ -35,22 +39,64 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   }
 
   public void onToopResponse (@Nonnull final TDETOOPDataResponseType aResponse) throws IOException {
-    ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] TDETOOPDataResponseType arrived: " + aResponse);
+    ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] TDETOOPDataResponseType (raw object dump): " + aResponse);
 
-    try {
-      _ui.access ( () -> {
-        // Push a new organization bean to the UI
-        if (_ui.getNavigator ().getCurrentView () instanceof HomeView) {
-          final HomeView homeView = (HomeView) _ui.getNavigator ().getCurrentView ();
+    ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Received data from Data Provider: "
+      + " DPIdentifier: " + aResponse.getDataProvider ().getDPIdentifier ().getValue () + ", "
+      + " DPName: " + aResponse.getDataProvider ().getDPName ().getValue () + ", "
+      + " DPElectronicAddressIdentifier: " + aResponse.getDataProvider ().getDPElectronicAddressIdentifier ().getValue ());
 
-          homeView.getMainCompany ().setCompanyName ("Mockup Company Name");
-          homeView.getMainCompany ().setCompanyType ("Mockup Company Type");
-          homeView.getMainCompanyForm ().setOrganizationBean (homeView.getMainCompany ());
-          homeView.getMainCompanyForm ().save ();
+    // Inspect all mapped values
+    for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
+
+      final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
+
+      final String sourceConceptName = aFirstLevelConcept.getConceptName ().getValue ();
+
+      for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
+
+        final String toopConceptName = aSecondLevelConcept.getConceptName ().getValue ();
+
+        for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
+
+          final String destinationConceptName = aThirdLevelConcept.getConceptName ().getValue ();
+
+          String mappedConcept = sourceConceptName + " - " + toopConceptName + " - " + destinationConceptName;
+
+          for (TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
+            ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Received a mapped concept ( " + mappedConcept + " ), response: " + aThirdLevelConceptDERValue);
+
+            // Push a new organization bean to the UI
+            try {
+
+              _ui.accessSynchronously (new Runnable() {
+                @Override
+                public void run() {
+                  final HomeView homeView = (HomeView) _ui.getNavigator ().getCurrentView ();
+                  if (_ui.getNavigator ().getCurrentView () instanceof HomeView) {
+
+                    if (sourceConceptName.equals ("FreedoniaBusinessCode")) {
+                      homeView.getMainCompany ().setCompanyCode (aThirdLevelConceptDERValue.getResponseCode ().getValue ());
+                    }
+                    if (sourceConceptName.equals ("FreedoniaAddress")) {
+                      homeView.getMainCompany ().setAddressData (aThirdLevelConceptDERValue.getResponseCode ().getValue ());
+                    }
+
+                    homeView.getMainCompanyForm ().setOrganizationBean (homeView.getMainCompany ());
+                    homeView.getMainCompanyForm ().save ();
+
+                    _ui.push ();
+                  }
+                }
+              });
+
+            } catch (final Exception e) {
+
+            }
+
+          }
         }
-      });
-    } catch (final Exception e) {
-
+      }
     }
   }
 }
