@@ -21,8 +21,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>eu.toop</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>1.0.2</version>
+    <artifactId>toop-parent-pom</artifactId>
+    <version>1.0.3</version>
   </parent>
   <groupId>eu.toop</groupId>
   <artifactId>toop-demo-ui</artifactId>
@@ -48,11 +48,11 @@
   </scm>
 
   <properties>
-    <vaadin.version>8.3.1</vaadin.version>
-    <vaadin.plugin.version>8.3.1</vaadin.plugin.version>
+    <vaadin.version>8.3.2</vaadin.version>
+    <vaadin.plugin.version>8.3.2</vaadin.plugin.version>
     <!-- If there are no local customizations, this can also be "fetch" or "cdn" -->
     <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
-    <jetty.version>9.4.8.v20171121</jetty.version>
+    <jetty.version>9.4.9.v20180320</jetty.version>
   </properties>
 
   <repositories>
@@ -68,6 +68,13 @@
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-bom</artifactId>
         <version>${vaadin.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.helger</groupId>
+        <artifactId>ph-commons-parent-pom</artifactId>
+        <version>9.0.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
