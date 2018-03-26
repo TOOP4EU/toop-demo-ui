@@ -26,6 +26,7 @@ import eu.toop.commons.dataexchange.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
+import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
@@ -45,57 +46,62 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
       + " DPName: " + aResponse.getDataProvider ().getDPName ().getValue () + ", "
       + " DPElectronicAddressIdentifier: " + aResponse.getDataProvider ().getDPElectronicAddressIdentifier ().getValue ());
 
-    // Inspect all mapped values
-    for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
+    //
 
-      final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
 
-      final String sourceConceptName = aFirstLevelConcept.getConceptName ().getValue ();
 
-      for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
+    // Push a new organization bean to the UI
+    try {
+      _ui.accessSynchronously (new Runnable() {
+        @Override
+        public void run() {
 
-        final String toopConceptName = aSecondLevelConcept.getConceptName ().getValue ();
+          final HomeView homeView = (HomeView) _ui.getNavigator ().getCurrentView ();
 
-        for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
+          if (_ui.getNavigator ().getCurrentView () instanceof HomeView) {
 
-          final String destinationConceptName = aThirdLevelConcept.getConceptName ().getValue ();
+            MainCompany bean = homeView.getMainCompany ();
 
-          String mappedConcept = sourceConceptName + " - " + toopConceptName + " - " + destinationConceptName;
+            // Inspect all mapped values
+            for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
 
-          for (TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
-            ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Received a mapped concept ( " + mappedConcept + " ), response: " + aThirdLevelConceptDERValue);
+              final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
 
-            // Push a new organization bean to the UI
-            try {
+              final String sourceConceptName = aFirstLevelConcept.getConceptName ().getValue ();
 
-              _ui.accessSynchronously (new Runnable() {
-                @Override
-                public void run() {
-                  final HomeView homeView = (HomeView) _ui.getNavigator ().getCurrentView ();
-                  if (_ui.getNavigator ().getCurrentView () instanceof HomeView) {
+              for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
+
+                final String toopConceptName = aSecondLevelConcept.getConceptName ().getValue ();
+
+                for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
+
+                  final String destinationConceptName = aThirdLevelConcept.getConceptName ().getValue ();
+
+                  String mappedConcept = sourceConceptName + " - " + toopConceptName + " - " + destinationConceptName;
+
+                  for (TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
+                    ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Received a mapped concept ( " + mappedConcept + " ), response: " + aThirdLevelConceptDERValue);
 
                     if (sourceConceptName.equals ("FreedoniaBusinessCode")) {
-                      homeView.getMainCompany ().setCompanyCode (aThirdLevelConceptDERValue.getResponseCode ().getValue ());
+                      bean.setCompanyCode (aThirdLevelConceptDERValue.getResponseCode ().getValue ());
                     }
                     if (sourceConceptName.equals ("FreedoniaAddress")) {
-                      homeView.getMainCompany ().setAddressData (aThirdLevelConceptDERValue.getResponseCode ().getValue ());
+                      bean.setAddressData (aThirdLevelConceptDERValue.getResponseCode ().getValue ());
                     }
-
-                    homeView.getMainCompanyForm ().setOrganizationBean (homeView.getMainCompany ());
-                    homeView.getMainCompanyForm ().save ();
-
-                    _ui.push ();
                   }
                 }
-              });
-
-            } catch (final Exception e) {
-
+              }
             }
 
+            homeView.getMainCompanyForm ().setOrganizationBean (bean);
+            homeView.getMainCompanyForm ().save ();
+
+            _ui.push ();
           }
         }
-      }
+      });
+    } catch (final Exception e) {
+
     }
   }
 }
