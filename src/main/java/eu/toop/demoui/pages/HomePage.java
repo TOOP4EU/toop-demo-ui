@@ -1,11 +1,8 @@
 package eu.toop.demoui.pages;
 
-import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+
 import eu.toop.demoui.components.ClickableLayout;
 import eu.toop.demoui.components.ServiceChoicePanel;
 import eu.toop.demoui.view.HomeView;

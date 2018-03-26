@@ -16,7 +16,6 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 

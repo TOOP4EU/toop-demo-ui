@@ -15,10 +15,13 @@
  */
 package eu.toop.demoui.form;
 
-import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.TextField;
+
 import eu.toop.demoui.bean.Identity;
 
 public class IdentityForm extends FormLayout {

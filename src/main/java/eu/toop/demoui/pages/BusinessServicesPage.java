@@ -3,6 +3,7 @@ package eu.toop.demoui.pages;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
 import eu.toop.demoui.view.HomeView;
 
 public class BusinessServicesPage extends CustomLayout {

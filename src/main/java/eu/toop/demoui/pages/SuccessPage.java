@@ -1,6 +1,8 @@
 package eu.toop.demoui.pages;
 
-import com.vaadin.ui.*;
+import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Label;
+
 import eu.toop.demoui.view.HomeView;
 
 public class SuccessPage extends CustomLayout {

@@ -2,9 +2,9 @@ package eu.toop.demoui.form;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
-import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
+
 import eu.toop.demoui.bean.NewCompany;
 
 public class NewCompanyForm extends FormLayout {

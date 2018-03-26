@@ -1,15 +1,14 @@
 package eu.toop.demoui.pages;
 
+import java.time.LocalDate;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
+
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.view.HomeView;
-
-import java.time.LocalDate;
 
 public class ConfirmPersonalDetailsPage extends CustomLayout {
   public ConfirmPersonalDetailsPage (HomeView view) {

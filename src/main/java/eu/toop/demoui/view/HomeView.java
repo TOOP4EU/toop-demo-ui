@@ -1,8 +1,8 @@
 package eu.toop.demoui.view;
 
-import com.vaadin.event.ContextClickEvent;
 import com.vaadin.navigator.View;
-import com.vaadin.ui.*;
+import com.vaadin.ui.CustomLayout;
+
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.bean.NewCompany;
