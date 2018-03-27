@@ -18,74 +18,51 @@ package eu.toop.demoui.bean;
 import java.io.Serializable;
 
 public class MainCompany implements Serializable {
-  private String company;
-  private String undertakingIdentification;
-  private String registrationNumber;
-  private String companyCode;
-  private String companyDesignation;
-  private String companyName;
-  private String legalForm;
+
+  private String address;
+  private String SSNumber;
+  private String businessCode;
+  private String VATNumber;
   private String companyType;
-  private String companyStatus;
   private String legalStatus;
-  private String addressData;
-  private String telephoneNumber;
-  private String emailAddress;
+  private String legalStatusEffectiveDate;
+  private String registrationDate;
+  private String registrationNumber;
+  private String companyName;
+  private String companyNaceCode;
+  private String activityDeclaration;
+  private String registrationAuthority;
 
-  public String getCompany () {
-    return company;
+  public String getAddress () {
+    return address;
   }
 
-  public void setCompany (String company) {
-    this.company = company;
+  public void setAddress (String address) {
+    this.address = address;
   }
 
-  public String getUndertakingIdentification () {
-    return undertakingIdentification;
+  public String getSSNumber () {
+    return SSNumber;
   }
 
-  public void setUndertakingIdentification (String undertakingIdentification) {
-    this.undertakingIdentification = undertakingIdentification;
+  public void setSSNumber (String SSNumber) {
+    this.SSNumber = SSNumber;
   }
 
-  public String getRegistrationNumber () {
-    return registrationNumber;
+  public String getBusinessCode () {
+    return businessCode;
   }
 
-  public void setRegistrationNumber (String registrationNumber) {
-    this.registrationNumber = registrationNumber;
+  public void setBusinessCode (String businessCode) {
+    this.businessCode = businessCode;
   }
 
-  public String getCompanyCode () {
-    return companyCode;
+  public String getVATNumber () {
+    return VATNumber;
   }
 
-  public void setCompanyCode (String companyCode) {
-    this.companyCode = companyCode;
-  }
-
-  public String getCompanyDesignation () {
-    return companyDesignation;
-  }
-
-  public void setCompanyDesignation (String companyDesignation) {
-    this.companyDesignation = companyDesignation;
-  }
-
-  public String getCompanyName () {
-    return companyName;
-  }
-
-  public void setCompanyName (String companyName) {
-    this.companyName = companyName;
-  }
-
-  public String getLegalForm () {
-    return legalForm;
-  }
-
-  public void setLegalForm (String legalForm) {
-    this.legalForm = legalForm;
+  public void setVATNumber (String VATNumber) {
+    this.VATNumber = VATNumber;
   }
 
   public String getCompanyType () {
@@ -96,14 +73,6 @@ public class MainCompany implements Serializable {
     this.companyType = companyType;
   }
 
-  public String getCompanyStatus () {
-    return companyStatus;
-  }
-
-  public void setCompanyStatus (String companyStatus) {
-    this.companyStatus = companyStatus;
-  }
-
   public String getLegalStatus () {
     return legalStatus;
   }
@@ -112,27 +81,59 @@ public class MainCompany implements Serializable {
     this.legalStatus = legalStatus;
   }
 
-  public String getAddressData () {
-    return addressData;
+  public String getLegalStatusEffectiveDate () {
+    return legalStatusEffectiveDate;
   }
 
-  public void setAddressData (String addressData) {
-    this.addressData = addressData;
+  public void setLegalStatusEffectiveDate (String legalStatusEffectiveDate) {
+    this.legalStatusEffectiveDate = legalStatusEffectiveDate;
   }
 
-  public String getTelephoneNumber () {
-    return telephoneNumber;
+  public String getRegistrationDate () {
+    return registrationDate;
   }
 
-  public void setTelephoneNumber (String telephoneNumber) {
-    this.telephoneNumber = telephoneNumber;
+  public void setRegistrationDate (String registrationDate) {
+    this.registrationDate = registrationDate;
   }
 
-  public String getEmailAddress () {
-    return emailAddress;
+  public String getRegistrationNumber () {
+    return registrationNumber;
   }
 
-  public void setEmailAddress (String emailAddress) {
-    this.emailAddress = emailAddress;
+  public void setRegistrationNumber (String registrationNumber) {
+    this.registrationNumber = registrationNumber;
+  }
+
+  public String getCompanyName () {
+    return companyName;
+  }
+
+  public void setCompanyName (String companyName) {
+    this.companyName = companyName;
+  }
+
+  public String getCompanyNaceCode () {
+    return companyNaceCode;
+  }
+
+  public void setCompanyNaceCode (String companyNaceCode) {
+    this.companyNaceCode = companyNaceCode;
+  }
+
+  public String getActivityDeclaration () {
+    return activityDeclaration;
+  }
+
+  public void setActivityDeclaration (String activityDeclaration) {
+    this.activityDeclaration = activityDeclaration;
+  }
+
+  public String getRegistrationAuthority () {
+    return registrationAuthority;
+  }
+
+  public void setRegistrationAuthority (String registrationAuthority) {
+    this.registrationAuthority = registrationAuthority;
   }
 }

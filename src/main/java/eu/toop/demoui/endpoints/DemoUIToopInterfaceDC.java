@@ -16,10 +16,13 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.annotation.Nonnull;
 
 import com.helger.commons.error.level.EErrorLevel;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.ui.UI;
 
 import eu.toop.commons.dataexchange.TDEConceptRequestType;
@@ -27,6 +30,9 @@ import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
 import eu.toop.demoui.bean.MainCompany;
+import eu.toop.demoui.form.MainCompanyForm;
+import eu.toop.demoui.pages.RegisterWithWEEEMainPage;
+import eu.toop.demoui.pages.RegisterWithWEEENewDetailsPage;
 import eu.toop.demoui.view.HomeView;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
@@ -46,21 +52,23 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
       + " DPName: " + aResponse.getDataProvider ().getDPName ().getValue () + ", "
       + " DPElectronicAddressIdentifier: " + aResponse.getDataProvider ().getDPElectronicAddressIdentifier ().getValue ());
 
-    //
-
-
-
     // Push a new organization bean to the UI
     try {
-      _ui.accessSynchronously (new Runnable() {
+      _ui.access (new Runnable() {
         @Override
         public void run() {
 
-          final HomeView homeView = (HomeView) _ui.getNavigator ().getCurrentView ();
+          UI threadUI = UI.getCurrent ();
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Current UI: " + threadUI);
+          Navigator threadUINavigator = threadUI.getNavigator ();
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Current Navigator: " + threadUINavigator);
+          //System.out.println("Trying to navigate to TempView!");
 
-          if (_ui.getNavigator ().getCurrentView () instanceof HomeView) {
+          final HomeView homeView = (HomeView) threadUINavigator.getCurrentView ();
 
-            MainCompany bean = homeView.getMainCompany ();
+          if (threadUINavigator.getCurrentView () instanceof HomeView) {
+
+            MainCompany bean = new MainCompany ();
 
             // Inspect all mapped values
             for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
@@ -82,26 +90,84 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                   for (TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
                     ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Received a mapped concept ( " + mappedConcept + " ), response: " + aThirdLevelConceptDERValue);
 
-                    if (sourceConceptName.equals ("FreedoniaBusinessCode")) {
-                      bean.setCompanyCode (aThirdLevelConceptDERValue.getResponseCode ().getValue ());
+                    String aValue = "";
+                    if (aThirdLevelConceptDERValue.getResponseCode () != null) {
+                      aValue = aThirdLevelConceptDERValue.getResponseCode ().getValue ();
+                    } else if (aThirdLevelConceptDERValue.getResponseIdentifier () != null) {
+                      aValue = aThirdLevelConceptDERValue.getResponseIdentifier ().getValue ();
+                    } else if (aThirdLevelConceptDERValue.getResponseNumeric () != null &&
+                               aThirdLevelConceptDERValue.getResponseNumeric ().getValue () != null) {
+                      aValue = aThirdLevelConceptDERValue.getResponseNumeric ().getValue ().toString ();
                     }
+
                     if (sourceConceptName.equals ("FreedoniaAddress")) {
-                      bean.setAddressData (aThirdLevelConceptDERValue.getResponseCode ().getValue ());
+                      bean.setAddress (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaSSNumber")) {
+                      bean.setSSNumber (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaBusinessCode")) {
+                      bean.setBusinessCode (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaVATNumber")) {
+                      bean.setVATNumber (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaCompanyType")) {
+                      bean.setCompanyType (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaRegistrationDate")) {
+                      bean.setRegistrationDate (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaRegistrationNumber")) {
+                      bean.setRegistrationNumber (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaCompanyName")) {
+                      bean.setCompanyName (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaCompanyNaceCode")) {
+                      bean.setCompanyNaceCode (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaActivityDeclaration")) {
+                      bean.setActivityDeclaration (aValue);
+                    }
+                    if (sourceConceptName.equals ("FreedoniaRegistrationAuthority")) {
+                      bean.setRegistrationAuthority (aValue);
                     }
                   }
                 }
               }
             }
 
-            homeView.getMainCompanyForm ().setOrganizationBean (bean);
-            homeView.getMainCompanyForm ().save ();
+            //ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] homeView: " + homeView);
+            //ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] homeView.getMainCompanyForm (): " + homeView.getMainCompanyForm ());
 
-            _ui.push ();
+
+            //MainCompanyForm mainCompanyForm = new MainCompanyForm (bean, false, null);
+            //homeView.setMainCompanyForm (mainCompanyForm);
+
+            //homeView.getCurrentPage ().addComponent (mainCompanyForm);
+
+            if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
+              homeView.setMainCompany (bean);
+              RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage)homeView.getCurrentPage ();
+              page.addMainCompanyForm ();
+            }
+
+            //_ui.push ();
+            ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Pushed new bean data to the Demo UI: " + bean);
+
+            //threadUINavigator.navigateTo ("TempView");
+            //threadUI.push ();
           }
         }
       });
     } catch (final Exception e) {
-
+      StringWriter sw = new StringWriter ();
+      PrintWriter pw = new PrintWriter (sw);
+      e.printStackTrace(pw);
+      String sStackTrace = sw.toString(); // stack trace as a string
+      System.out.println(sStackTrace);
+      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Failed to push new bean data to the Demo UI: " + e.getStackTrace ());
     }
   }
 }

@@ -35,6 +35,10 @@ public class HomeView extends CustomLayout implements View {
     _page = page;
   }
 
+  public CustomLayout getCurrentPage () {
+    return _page;
+  }
+
   public Identity getIdentity () {
     return identity;
   }

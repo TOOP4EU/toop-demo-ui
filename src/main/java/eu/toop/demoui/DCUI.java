@@ -28,6 +28,7 @@ import com.vaadin.ui.UI;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
 import eu.toop.demoui.view.HomeView;
+import eu.toop.demoui.view.TempView;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
@@ -49,6 +50,7 @@ public class DCUI extends UI {
 
   @Override
   protected void init (final VaadinRequest vaadinRequest) {
+    setPollInterval(1000);
     getPage ().setTitle ("TOOP Demo User Interface");
 
     ToopInterfaceManager.setInterfaceDC (new DemoUIToopInterfaceDC (this));
@@ -58,6 +60,7 @@ public class DCUI extends UI {
     navigator = new Navigator (this, this);
     navigator.addView ("", new HomeView ());
     navigator.addView (HomeView.class.getName (), new HomeView ());
+    navigator.addView ("TempView", new TempView ());
   }
 
   @Override

@@ -51,23 +51,32 @@ public class ConfirmToopDataFetchingPage extends Window {
       onConsent ();
       subWindow.close ();
 
-      { // Adding mockup data to the main company form for a live demo purpose
-        /*view.getMainCompany ().setCompanyName ("Zizi mat");
-        view.getMainCompany ().setCompanyCode ("JF 234556-6213");
-        view.getMainCompany ().setCompanyType ("Limited");
-        view.getMainCompany ().setLegalStatus ("Active");
-        view.getMainCompany ().setRegistrationNumber ("009987 665543");
-        view.getMainCompanyForm ().setOrganizationBean (view.getMainCompany ());
-        view.getMainCompanyForm ().save ();*/
-      }
-
       // Send the request to the Message-Processor
       try {
         final List<ConceptValue> conceptList = new ArrayList<> ();
+
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaBusinessCode"));
+          "FreedoniaAddress"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaAddress"));
+          "FreedoniaSSNumber"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "FreedoniaBusinessCode"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "FreedoniaVATNumber"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "FreedoniaCompanyType"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "FreedoniaRegistrationDate"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "FreedoniaRegistrationNumber"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "FreedoniaCompanyName"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "FreedoniaCompanyNaceCode"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "FreedoniaActivityDeclaration"));
+        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
+          "FreedoniaRegistrationAuthority"));
 
         // Notify the logger and Package-Tracker that we are sending a TOOP Message!
         ToopKafkaClient.send (EErrorLevel.INFO,

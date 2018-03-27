@@ -15273,3 +15273,7 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 2px;
 	border: 1px solid grey;
 }
+
+.DCUITheme .v-caption-spinner {
+	padding-right: 16px;
+}
