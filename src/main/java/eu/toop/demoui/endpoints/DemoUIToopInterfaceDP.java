@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2018 toop.eu
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,6 +41,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
   private final UI _ui;
 
   public DemoUIToopInterfaceDP (final UI ui) {
+
     this._ui = ui;
   }
 
@@ -50,6 +51,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
   }
 
   private static void _searchAndApplyValue (@Nonnull final TDEConceptRequestType aConcept) {
+
     final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
     // Whatsoever
     aValue.setAlternativeResponseIndicator (ToopXSDHelper.createIndicator (false));
@@ -89,31 +91,32 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // Document type must be switch from request to response
     final EToopDocumentType eRequestDocType = EToopDocumentType.getFromIDOrNull (aRequest.getDocumentTypeIdentifier ()
-                                                                                         .getSchemeID (),
-                                                                                 aRequest.getDocumentTypeIdentifier ()
-                                                                                         .getValue ());
+            .getSchemeID (),
+        aRequest.getDocumentTypeIdentifier ()
+            .getValue ());
     boolean bFoundNewDocType = false;
     if (eRequestDocType != null) {
       final EToopDocumentType eResponseDocType = eRequestDocType.getMatchingResponseDocumentType ();
       if (eResponseDocType != null) {
         // Set new doc type in response
         ToopKafkaClient.send (EErrorLevel.INFO, () -> "Switching document type '" + eRequestDocType.getURIEncoded ()
-                                                      + "' to '" + eResponseDocType.getURIEncoded () + "'");
+            + "' to '" + eResponseDocType.getURIEncoded () + "'");
         aResponse.setDocumentTypeIdentifier (ToopXSDHelper.createIdentifier (eResponseDocType.getScheme (),
-                                                                             eResponseDocType.getValue ()));
+            eResponseDocType.getValue ()));
         bFoundNewDocType = true;
       }
     }
     if (!bFoundNewDocType) {
       ToopKafkaClient.send (EErrorLevel.INFO,
-                            () -> "Found no response document type for '"
-                                  + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
-                                  + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
+          () -> "Found no response document type for '"
+              + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
+              + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
     }
     return aResponse;
   }
 
   public void onToopRequest (@Nonnull final TDETOOPDataRequestType aRequest) throws IOException {
+
     final String sRequestID = aRequest.getDataRequestIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] ";
     ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received DP Backend Request");
@@ -137,8 +140,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
               } else {
                 // 3 level nesting is maximum
                 ToopKafkaClient.send (EErrorLevel.ERROR,
-                                      () -> sLogPrefix + "A third level concept that is unusable - weird: "
-                                            + aThirdLevelConcept);
+                    () -> sLogPrefix + "A third level concept that is unusable - weird: "
+                        + aThirdLevelConcept);
               }
     }
 

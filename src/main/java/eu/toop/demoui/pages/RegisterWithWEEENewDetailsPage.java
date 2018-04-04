@@ -5,10 +5,12 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import eu.toop.demoui.form.NewCompanyForm;
-import eu.toop.demoui.view.HomeView;
+import eu.toop.demoui.view.BaseView;
+import eu.toop.demoui.view.PhaseOne;
 
 public class RegisterWithWEEENewDetailsPage extends CustomLayout {
-  public RegisterWithWEEENewDetailsPage (HomeView view) {
+  public RegisterWithWEEENewDetailsPage (BaseView view) {
+
     super ("RegisterWithWEEENewDetailsPage");
 
     setHeight ("100%");
@@ -20,8 +22,9 @@ public class RegisterWithWEEENewDetailsPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener(new Button.ClickListener() {
-      public void buttonClick(Button.ClickEvent event) {
+    nextButton.addClickListener (new Button.ClickListener () {
+      public void buttonClick (Button.ClickEvent event) {
+
         newCompanyForm.save ();
         view.setCurrentPage (new ReviewPage (view));
       }

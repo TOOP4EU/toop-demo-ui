@@ -8,14 +8,16 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.demoui.form.FreedoniaForm;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.form.MainCompanyForm;
-import eu.toop.demoui.view.HomeView;
+import eu.toop.demoui.view.BaseView;
+import eu.toop.demoui.view.PhaseOne;
 
 public class RegisterWithWEEEMainPage extends CustomLayout {
 
-  HomeView _view;
+  BaseView _view;
   ProgressBar spinner = new ProgressBar ();
 
-  public RegisterWithWEEEMainPage (HomeView view) {
+  public RegisterWithWEEEMainPage (BaseView view) {
+
     super ("RegisterWithWEEEMainPage");
     _view = view;
 
@@ -51,7 +53,8 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     });
   }
 
-  public void addMainCompanyForm() {
+  public void addMainCompanyForm () {
+
     spinner.setVisible (false);
 
     MainCompanyForm mainCompanyForm = new MainCompanyForm (_view.getMainCompany (), false, null);
@@ -64,8 +67,9 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener(new Button.ClickListener() {
-      public void buttonClick(Button.ClickEvent event) {
+    nextButton.addClickListener (new Button.ClickListener () {
+      public void buttonClick (Button.ClickEvent event) {
+
         mainCompanyForm.save ();
         _view.setCurrentPage (new RegisterWithWEEENewDetailsPage (_view));
       }

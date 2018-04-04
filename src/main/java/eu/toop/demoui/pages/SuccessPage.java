@@ -3,10 +3,12 @@ package eu.toop.demoui.pages;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 
-import eu.toop.demoui.view.HomeView;
+import eu.toop.demoui.view.BaseView;
+import eu.toop.demoui.view.PhaseOne;
 
 public class SuccessPage extends CustomLayout {
-  public SuccessPage (HomeView view) {
+  public SuccessPage (BaseView view) {
+
     super ("SuccessPage");
 
     setHeight ("100%");

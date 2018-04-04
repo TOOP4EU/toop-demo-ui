@@ -8,10 +8,12 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.form.IdentityForm;
-import eu.toop.demoui.view.HomeView;
+import eu.toop.demoui.view.BaseView;
+import eu.toop.demoui.view.PhaseOne;
 
 public class ConfirmPersonalDetailsPage extends CustomLayout {
-  public ConfirmPersonalDetailsPage (HomeView view) {
+  public ConfirmPersonalDetailsPage (BaseView view) {
+
     super ("ConfirmPersonalDetailsPage");
 
     setHeight ("100%");
@@ -19,13 +21,14 @@ public class ConfirmPersonalDetailsPage extends CustomLayout {
     Identity identity = new Identity ();
     identity.setFirstName ("Maximillian");
     identity.setFamilyName ("Stern");
-    identity.setBirthPlace("");
-    identity.setBirthDate (LocalDate.parse("1986-02-01"));
+    identity.setBirthPlace ("");
+    identity.setBirthDate (LocalDate.parse ("1986-02-01"));
     identity.setIdentifier ("EL/EL/12345");
     identity.setNationality ("");
     view.setIdentity (identity);
 
-    IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {});
+    IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {
+    });
     addComponent (identityForm, "identityForm");
 
     Button nextButton = new Button ("Confirm and proceed");
@@ -33,8 +36,9 @@ public class ConfirmPersonalDetailsPage extends CustomLayout {
     nextButton.addStyleName (" elonia");
     nextButton.setWidth ("200px");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener(new Button.ClickListener() {
-      public void buttonClick(Button.ClickEvent event) {
+    nextButton.addClickListener (new Button.ClickListener () {
+      public void buttonClick (Button.ClickEvent event) {
+
         identityForm.save ();
         view.setCurrentPage (new RegisterWithWEEEMainPage (view));
       }

@@ -8,10 +8,12 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-import eu.toop.demoui.view.HomeView;
+import eu.toop.demoui.view.BaseView;
+import eu.toop.demoui.view.PhaseOne;
 
 public class ChooseCountryPage extends CustomLayout {
-  public ChooseCountryPage (final HomeView view) {
+  public ChooseCountryPage (final BaseView view) {
+
     super ("ChooseCountryPage");
 
     setHeight ("100%");

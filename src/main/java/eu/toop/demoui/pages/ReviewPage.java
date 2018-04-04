@@ -7,15 +7,18 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.demoui.form.IdentityForm;
 import eu.toop.demoui.form.MainCompanyForm;
 import eu.toop.demoui.form.NewCompanyForm;
-import eu.toop.demoui.view.HomeView;
+import eu.toop.demoui.view.BaseView;
+import eu.toop.demoui.view.PhaseOne;
 
 public class ReviewPage extends CustomLayout {
-  public ReviewPage (HomeView view) {
+  public ReviewPage (BaseView view) {
+
     super ("ReviewPage");
 
     setHeight ("100%");
 
-    IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {});
+    IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {
+    });
     addComponent (identityForm, "identityForm");
 
     NewCompanyForm newCompanyForm = new NewCompanyForm (view.getNewCompany (), true);
@@ -28,8 +31,9 @@ public class ReviewPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener(new Button.ClickListener() {
-      public void buttonClick(Button.ClickEvent event) {
+    nextButton.addClickListener (new Button.ClickListener () {
+      public void buttonClick (Button.ClickEvent event) {
+
         view.setCurrentPage (new SuccessPage (view));
       }
     });

@@ -14,10 +14,10 @@ public class NewCompanyForm extends FormLayout {
 
   public NewCompanyForm (NewCompany newCompany, boolean readOnly) {
 
-    TextField wasteDisposalProcess = new TextField("Waste disposal process");
-    TextField hazardousMaterials = new TextField("Hazardous materials");
-    TextField exemptions = new TextField("Exemptions");
-    TextField producerComplianceScheme = new TextField("Producer compliance scheme");
+    TextField wasteDisposalProcess = new TextField ("Waste disposal process");
+    TextField hazardousMaterials = new TextField ("Hazardous materials");
+    TextField exemptions = new TextField ("Exemptions");
+    TextField producerComplianceScheme = new TextField ("Producer compliance scheme");
 
     binder.bind (wasteDisposalProcess, NewCompany::getWasteDisposalProcess, NewCompany::setWasteDisposalProcess);
     binder.bind (hazardousMaterials, NewCompany::getHazardousMaterials, NewCompany::setHazardousMaterials);
@@ -37,12 +37,14 @@ public class NewCompanyForm extends FormLayout {
     setNewCompanyBean (newCompany);
   }
 
-  public void setNewCompanyBean(NewCompany _newCompany) {
+  public void setNewCompanyBean (NewCompany _newCompany) {
+
     newCompany = _newCompany;
-    binder.readBean(newCompany);
+    binder.readBean (newCompany);
   }
 
-  public void save() {
+  public void save () {
+
     try {
       binder.writeBean (newCompany);
     } catch (ValidationException e) {
