@@ -13,7 +13,7 @@ public class ReviewPage extends CustomLayout {
 
     setHeight ("100%");
 
-    final IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {
+    final IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, event -> {
 
     });
     addComponent (identityForm, "identityForm");
@@ -28,11 +28,9 @@ public class ReviewPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener (new Button.ClickListener () {
-      public void buttonClick (final Button.ClickEvent event) {
+    nextButton.addClickListener ((event) -> {
 
-        view.setCurrentPage (new SuccessPage (view));
-      }
+      view.setCurrentPage (new SuccessPage (view));
     });
   }
 }

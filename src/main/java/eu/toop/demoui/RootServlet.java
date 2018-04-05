@@ -34,7 +34,7 @@ import com.helger.commons.string.StringHelper;
 public class RootServlet extends HttpServlet {
   @Override
   protected void doGet (final HttpServletRequest req, final HttpServletResponse resp)
-      throws ServletException, IOException {
+      throws IOException {
 
     String sRedirectURL = req.getContextPath () + "/ui";
 

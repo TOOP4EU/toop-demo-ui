@@ -44,7 +44,6 @@ import java.io.IOException;
  */
 @SuppressWarnings ("javadoc")
 @Theme ("DCUITheme")
-//@PreserveOnRefresh
 public class DCUI extends UI {
 
   private Navigator navigator;
@@ -54,20 +53,15 @@ public class DCUI extends UI {
   protected void init (final VaadinRequest vaadinRequest) {
 
     // Add a custom request handler
-    VaadinSession.getCurrent ().addRequestHandler (new RequestHandler () {
-      @Override
-      public boolean handleRequest (VaadinSession session,
-                                    VaadinRequest request, VaadinResponse response)
-          throws IOException {
+    VaadinSession.getCurrent ().addRequestHandler ((session, request, response) -> {
 
-        if ("/redirectToEidModule".equals (request.getPathInfo ())) {
-          response.setStatus (307); // Temporary Redirect
-          response.setHeader ("Location", "http://193.10.8.213:9086/login"); // Redirect to eID Module
+      if ("/redirectToEidModule".equals (request.getPathInfo ())) {
+        response.setStatus (307); // Temporary Redirect
+        response.setHeader ("Location", "http://193.10.8.213:9086/login"); // Redirect to eID Module
 
-          return true;
-        }
-        return false;
+        return true;
       }
+      return false;
     });
 
     setPollInterval (1000);

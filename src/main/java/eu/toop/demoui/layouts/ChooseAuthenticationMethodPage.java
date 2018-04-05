@@ -28,14 +28,12 @@ public class ChooseAuthenticationMethodPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia-auth-method-button");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener (new Button.ClickListener () {
-      public void buttonClick (Button.ClickEvent event) {
+    nextButton.addClickListener ((even) -> {
 
-        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Redirecting to eID Module for authentication");
+      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Redirecting to eID Module for authentication");
 
-        final Resource redirectResource = new ExternalResource ("/ui/redirectToEidModule");
-        Page.getCurrent ().open (redirectResource, "_self", false);
-      }
+      final Resource redirectResource = new ExternalResource ("/ui/redirectToEidModule");
+      Page.getCurrent ().open (redirectResource, "_self", false);
     });
   }
 }

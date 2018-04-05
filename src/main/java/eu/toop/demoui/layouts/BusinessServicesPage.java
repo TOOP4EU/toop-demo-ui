@@ -18,12 +18,10 @@ public class BusinessServicesPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_LINK);
     nextButton.setSizeUndefined ();
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener (new Button.ClickListener () {
-      public void buttonClick (Button.ClickEvent event) {
+    nextButton.addClickListener ((event) -> {
 
         nextButton.setCaption ("clicked");
         view.setCurrentPage (new TradeLicensesAndRegistrationsPage (view));
-      }
     });
   }
 }

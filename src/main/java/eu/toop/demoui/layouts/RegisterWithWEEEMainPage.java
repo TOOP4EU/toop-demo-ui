@@ -35,18 +35,16 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     spinner.setCaption ("Please wait while your request for data is processed...");
     addComponent (spinner, "spinner");
 
-    toopButton.addClickListener (new Button.ClickListener () {
-      public void buttonClick (final Button.ClickEvent event) {
+    toopButton.addClickListener ((event) -> {
 
-        final ConfirmToopDataFetchingPage consentWindow = new ConfirmToopDataFetchingPage (view) {
-          @Override
-          public void onConsent () {
-            // Show a loading icon while toop data is being retrieved.
-            spinner.setVisible (true);
-            toopButton.setEnabled (false);
-          }
-        };
-      }
+      final ConfirmToopDataFetchingPage consentWindow = new ConfirmToopDataFetchingPage (view) {
+        @Override
+        public void onConsent () {
+          // Show a loading icon while toop data is being retrieved.
+          spinner.setVisible (true);
+          toopButton.setEnabled (false);
+        }
+      };
     });
   }
 
@@ -64,12 +62,10 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener (new Button.ClickListener () {
-      public void buttonClick (Button.ClickEvent event) {
+    nextButton.addClickListener ((event) -> {
 
-        mainCompanyForm.save ();
-        _view.setCurrentPage (new RegisterWithWEEENewDetailsPage (_view));
-      }
+      mainCompanyForm.save ();
+      _view.setCurrentPage (new RegisterWithWEEENewDetailsPage (_view));
     });
   }
 }

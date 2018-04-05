@@ -44,9 +44,9 @@ public class ConfirmToopDataFetchingPage extends Window {
     final ConfirmToopDataFetchingTable confirmToopDataFetchingTable = new ConfirmToopDataFetchingTable ();
     subContent.addComponent (confirmToopDataFetchingTable);
 
-    final Button cancelButton = new Button ("I don't agree", (ClickListener) event -> subWindow.close ());
+    final Button cancelButton = new Button ("I don't agree", (event) -> subWindow.close ());
 
-    final Button proceedButton = new Button ("I AGREE", (ClickListener) event -> {
+    final Button proceedButton = new Button ("I AGREE", (event) -> {
       onConsent ();
       subWindow.close ();
 
