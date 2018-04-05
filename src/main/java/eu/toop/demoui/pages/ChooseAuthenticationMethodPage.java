@@ -36,9 +36,6 @@ public class ChooseAuthenticationMethodPage extends CustomLayout {
 
         final Resource redirectResource = new ExternalResource ("/ui/redirectToEidModule");
         Page.getCurrent ().open (redirectResource, "_self", false);
-
-//        nextButton.setCaption ("clicked");
-//        view.setCurrentPage (new ChooseCountryPage (view));
       }
     });
   }
