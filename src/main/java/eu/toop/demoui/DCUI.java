@@ -62,7 +62,8 @@ public class DCUI extends UI {
 
         if ("/redirectToEidModule".equals (request.getPathInfo ())) {
           response.setStatus (307); // Temporary Redirect
-          response.setHeader ("Location", "http://192.168.163.6:9090/login"); // Redirect to eID Module
+          response.setHeader ("Location", "http://193.10.8.213:9086/login"); // Redirect to eID Module
+
           return true;
         }
         return false;
