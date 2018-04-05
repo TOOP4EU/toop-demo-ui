@@ -17,7 +17,6 @@ package eu.toop.demoui;
 
 import javax.servlet.annotation.WebServlet;
 
-import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
@@ -30,8 +29,6 @@ import eu.toop.demoui.view.PhaseOne;
 import eu.toop.demoui.view.PhaseTwo;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
-
-import java.io.IOException;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser

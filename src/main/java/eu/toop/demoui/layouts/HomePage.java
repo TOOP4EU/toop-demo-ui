@@ -1,6 +1,5 @@
 package eu.toop.demoui.layouts;
 
-import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.CustomLayout;
 
 import eu.toop.demoui.view.BaseView;
