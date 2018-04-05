@@ -6,7 +6,7 @@ import com.vaadin.ui.Label;
 import eu.toop.demoui.view.BaseView;
 
 public class SuccessPage extends CustomLayout {
-  public SuccessPage (BaseView view) {
+  public SuccessPage (final BaseView view) {
 
     super ("SuccessPage");
 

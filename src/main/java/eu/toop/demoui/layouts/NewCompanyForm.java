@@ -10,14 +10,14 @@ import eu.toop.demoui.bean.NewCompany;
 public class NewCompanyForm extends FormLayout {
 
   private final Binder<NewCompany> binder = new Binder<> ();
-  NewCompany newCompany;
+  private NewCompany newCompany;
 
-  public NewCompanyForm (NewCompany newCompany, boolean readOnly) {
+  public NewCompanyForm (final NewCompany newCompany, boolean readOnly) {
 
-    TextField wasteDisposalProcess = new TextField ("Waste disposal process");
-    TextField hazardousMaterials = new TextField ("Hazardous materials");
-    TextField exemptions = new TextField ("Exemptions");
-    TextField producerComplianceScheme = new TextField ("Producer compliance scheme");
+    final TextField wasteDisposalProcess = new TextField ("Waste disposal process");
+    final TextField hazardousMaterials = new TextField ("Hazardous materials");
+    final TextField exemptions = new TextField ("Exemptions");
+    final TextField producerComplianceScheme = new TextField ("Producer compliance scheme");
 
     binder.bind (wasteDisposalProcess, NewCompany::getWasteDisposalProcess, NewCompany::setWasteDisposalProcess);
     binder.bind (hazardousMaterials, NewCompany::getHazardousMaterials, NewCompany::setHazardousMaterials);
@@ -37,7 +37,7 @@ public class NewCompanyForm extends FormLayout {
     setNewCompanyBean (newCompany);
   }
 
-  public void setNewCompanyBean (NewCompany _newCompany) {
+  public void setNewCompanyBean (final NewCompany _newCompany) {
 
     newCompany = _newCompany;
     binder.readBean (newCompany);

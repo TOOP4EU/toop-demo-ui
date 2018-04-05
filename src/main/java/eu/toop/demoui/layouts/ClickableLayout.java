@@ -4,7 +4,7 @@ import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.VerticalLayout;
 
 public class ClickableLayout extends VerticalLayout {
-  public ClickableLayout (LayoutEvents.LayoutClickListener clickListener) {
+  public ClickableLayout (final LayoutEvents.LayoutClickListener clickListener) {
 
     setMargin (false);
     setStyleName ("clickableLayout");

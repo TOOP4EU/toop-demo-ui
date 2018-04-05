@@ -24,8 +24,8 @@ import com.vaadin.ui.TextField;
 import eu.toop.demoui.bean.MainCompany;
 
 public class MainCompanyForm extends FormLayout {
-  private final Binder<MainCompany> binder = new Binder<> ();
 
+  private final Binder<MainCompany> binder = new Binder<> ();
   private MainCompany mainCompany;
 
   public MainCompanyForm (final MainCompany mainCompany, final boolean readOnly, final Button.ClickListener onSubmit) {

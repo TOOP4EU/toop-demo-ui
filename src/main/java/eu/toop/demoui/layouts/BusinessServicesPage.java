@@ -8,13 +8,13 @@ import eu.toop.demoui.view.BaseView;
 
 public class BusinessServicesPage extends CustomLayout {
 
-  public BusinessServicesPage (BaseView view) {
+  public BusinessServicesPage (final BaseView view) {
 
     super ("BusinessServicesPage");
 
     setHeight ("100%");
 
-    Button nextButton = new Button ("Trade licenses and registrations");
+    final Button nextButton = new Button ("Trade licenses and registrations");
     nextButton.addStyleName (ValoTheme.BUTTON_LINK);
     nextButton.setSizeUndefined ();
     addComponent (nextButton, "nextButton");

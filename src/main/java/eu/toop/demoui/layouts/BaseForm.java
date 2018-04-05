@@ -5,7 +5,7 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 
 public class BaseForm extends CustomLayout {
-  public BaseForm (AbstractLayout form, String title) {
+  public BaseForm (final AbstractLayout form, final String title) {
 
     super ("BaseForm");
     setSizeUndefined ();

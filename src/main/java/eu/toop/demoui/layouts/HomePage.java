@@ -13,14 +13,14 @@ public class HomePage extends CustomLayout {
 
     setHeight ("100%");
 
-    ClickableLayout serviceChoicePanel = new ClickableLayout (new LayoutEvents.LayoutClickListener () {
+    final ClickableLayout serviceChoicePanel = new ClickableLayout (new LayoutEvents.LayoutClickListener () {
       @Override
-      public void layoutClick (LayoutEvents.LayoutClickEvent layoutClickEvent) {
+      public void layoutClick (final LayoutEvents.LayoutClickEvent layoutClickEvent) {
 
         view.setCurrentPage (new BusinessServicesPage (view));
       }
     });
-    serviceChoicePanel.addComponent (new ServiceChoicePanel ("BUSINESS SERVICES", ""));
+    serviceChoicePanel.addComponent (new ServiceChoicePanel ("BUSINESS SERVICES"));
     addComponent (serviceChoicePanel, "serviceChoicePanel");
   }
 }

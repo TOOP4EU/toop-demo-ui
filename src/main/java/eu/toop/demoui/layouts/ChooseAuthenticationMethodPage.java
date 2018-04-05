@@ -13,18 +13,18 @@ import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class ChooseAuthenticationMethodPage extends CustomLayout {
 
-  public ChooseAuthenticationMethodPage (BaseView view) {
+  public ChooseAuthenticationMethodPage (final BaseView view) {
 
     super ("ChooseAuthenticationMethodPage");
 
     setHeight ("100%");
 
-    Button freedoniaCredentialsButton = new Button ("Freedonia credentials");
+    final Button freedoniaCredentialsButton = new Button ("Freedonia credentials");
     freedoniaCredentialsButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     freedoniaCredentialsButton.addStyleName (" freedonia-auth-method-button");
     addComponent (freedoniaCredentialsButton, "freedoniaCredentialsButton");
 
-    Button nextButton = new Button ("European eID");
+    final Button nextButton = new Button ("European eID");
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia-auth-method-button");
     addComponent (nextButton, "nextButton");

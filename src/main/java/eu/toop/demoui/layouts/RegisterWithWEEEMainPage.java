@@ -9,21 +9,22 @@ import eu.toop.demoui.view.BaseView;
 
 public class RegisterWithWEEEMainPage extends CustomLayout {
 
-  BaseView _view;
-  ProgressBar spinner = new ProgressBar ();
+  private final BaseView _view;
+  private final ProgressBar spinner = new ProgressBar ();
 
-  public RegisterWithWEEEMainPage (BaseView view) {
+  public RegisterWithWEEEMainPage (final BaseView view) {
 
     super ("RegisterWithWEEEMainPage");
     _view = view;
 
     setHeight ("100%");
 
-    IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {
+    final IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {
+
     });
     addComponent (identityForm, "identityForm");
 
-    Button toopButton = new Button ("Get company info");
+    final Button toopButton = new Button ("Get company info");
     toopButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     toopButton.addStyleName (" freedonia");
     addComponent (toopButton, "toopButton");
@@ -35,9 +36,9 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     addComponent (spinner, "spinner");
 
     toopButton.addClickListener (new Button.ClickListener () {
-      public void buttonClick (Button.ClickEvent event) {
+      public void buttonClick (final Button.ClickEvent event) {
 
-        ConfirmToopDataFetchingPage consentWindow = new ConfirmToopDataFetchingPage (view) {
+        final ConfirmToopDataFetchingPage consentWindow = new ConfirmToopDataFetchingPage (view) {
           @Override
           public void onConsent () {
             // Show a loading icon while toop data is being retrieved.
@@ -53,13 +54,13 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
 
     spinner.setVisible (false);
 
-    MainCompanyForm mainCompanyForm = new MainCompanyForm (_view.getMainCompany (), false, null);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (_view.getMainCompany (), false, null);
 
-    BaseForm baseForm = new BaseForm (mainCompanyForm, "Preview of company details");
+    final BaseForm baseForm = new BaseForm (mainCompanyForm, "Preview of company details");
     addComponent (baseForm, "mainCompanyForm");
     _view.setMainCompanyForm (mainCompanyForm);
 
-    Button nextButton = new Button ("I have previewed and want to proceed");
+    final Button nextButton = new Button ("I have previewed and want to proceed");
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");

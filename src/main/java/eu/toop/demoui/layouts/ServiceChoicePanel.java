@@ -4,7 +4,7 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 
 public class ServiceChoicePanel extends CustomLayout {
-  public ServiceChoicePanel (String title, String image) {
+  public ServiceChoicePanel (final String title) {
 
     super ("ServiceChoicePanel");
 
