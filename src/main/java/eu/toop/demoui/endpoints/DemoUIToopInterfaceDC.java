@@ -30,8 +30,7 @@ import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
 import eu.toop.demoui.bean.MainCompany;
-import eu.toop.demoui.pages.RegisterWithWEEEMainPage;
-import eu.toop.demoui.view.PhaseOne;
+import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
 import eu.toop.demoui.view.PhaseTwo;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
@@ -45,8 +44,6 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   }
 
   public void onToopResponse (@Nonnull final TDETOOPDataResponseType aResponse) throws IOException {
-
-    ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] TDETOOPDataResponseType (raw object dump): " + aResponse);
 
     ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Received data from Data Provider: "
         + " DPIdentifier: " + aResponse.getDataProvider ().getDPIdentifier ().getValue () + ", "
@@ -138,26 +135,13 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
               }
             }
 
-            //ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] homeView: " + homeView);
-            //ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] homeView.getMainCompanyForm (): " + homeView.getMainCompanyForm ());
-
-
-            //MainCompanyForm mainCompanyForm = new MainCompanyForm (bean, false, null);
-            //homeView.setMainCompanyForm (mainCompanyForm);
-
-            //homeView.getCurrentPage ().addComponent (mainCompanyForm);
-
             if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
               homeView.setMainCompany (bean);
               RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
               page.addMainCompanyForm ();
             }
 
-            //_ui.push ();
             ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Pushed new bean data to the Demo UI: " + bean);
-
-            //threadUINavigator.navigateTo ("PhaseTwo");
-            //threadUI.push ();
           }
         }
       });

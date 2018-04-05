@@ -1,4 +1,4 @@
-package eu.toop.demoui.components;
+package eu.toop.demoui.layouts;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.VerticalLayout;

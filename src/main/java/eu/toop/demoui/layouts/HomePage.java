@@ -1,18 +1,9 @@
-package eu.toop.demoui.pages;
+package eu.toop.demoui.layouts;
 
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Page;
-import com.vaadin.server.Resource;
 import com.vaadin.ui.CustomLayout;
 
-import eu.toop.demoui.components.ClickableLayout;
-import eu.toop.demoui.components.ServiceChoicePanel;
 import eu.toop.demoui.view.BaseView;
-import eu.toop.demoui.view.PhaseOne;
-
-import java.io.IOException;
-import java.net.*;
 
 public class HomePage extends CustomLayout {
 

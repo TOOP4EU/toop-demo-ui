@@ -1,10 +1,9 @@
-package eu.toop.demoui.pages;
+package eu.toop.demoui.layouts;
 
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 
 import eu.toop.demoui.view.BaseView;
-import eu.toop.demoui.view.PhaseOne;
 
 public class SuccessPage extends CustomLayout {
   public SuccessPage (BaseView view) {

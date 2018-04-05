@@ -5,8 +5,7 @@ import com.vaadin.ui.CustomLayout;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.bean.NewCompany;
-import eu.toop.demoui.form.MainCompanyForm;
-import eu.toop.demoui.pages.HomePage;
+import eu.toop.demoui.layouts.MainCompanyForm;
 
 public class BaseView extends CustomLayout implements View {
 

@@ -1,4 +1,4 @@
-package eu.toop.demoui.pages;
+package eu.toop.demoui.layouts;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.toop.demoui.view.BaseView;
-import eu.toop.demoui.view.PhaseOne;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,6 @@ import eu.toop.commons.concept.ConceptValue;
 import eu.toop.commons.doctype.EToopDocumentType;
 import eu.toop.commons.doctype.EToopProcess;
 import eu.toop.commons.jaxb.ToopXSDHelper;
-import eu.toop.demoui.components.ConfirmToopDataFetchingTable;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
 

@@ -1,4 +1,4 @@
-package eu.toop.demoui.form;
+package eu.toop.demoui.layouts;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;

@@ -1,13 +1,13 @@
-package eu.toop.demoui.form;
+package eu.toop.demoui.layouts;
 
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 
-public class FreedoniaForm extends CustomLayout {
-  public FreedoniaForm (AbstractLayout form, String title) {
+public class BaseForm extends CustomLayout {
+  public BaseForm (AbstractLayout form, String title) {
 
-    super ("FreedoniaForm");
+    super ("BaseForm");
     setSizeUndefined ();
     addComponent (new Label (title), "title");
     addComponent (form, "form");

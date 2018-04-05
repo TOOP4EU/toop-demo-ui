@@ -54,21 +54,20 @@ public class DCUI extends UI {
   protected void init (final VaadinRequest vaadinRequest) {
 
     // Add a custom request handler
-    VaadinSession.getCurrent ().addRequestHandler (
-        new RequestHandler () {
-          @Override
-          public boolean handleRequest (VaadinSession session,
-                                        VaadinRequest request, VaadinResponse response)
-              throws IOException {
+    VaadinSession.getCurrent ().addRequestHandler (new RequestHandler () {
+      @Override
+      public boolean handleRequest (VaadinSession session,
+                                    VaadinRequest request, VaadinResponse response)
+          throws IOException {
 
-            if ("/redirectToEidModule".equals (request.getPathInfo ())) {
-              response.setStatus (307); // Temporary Redirect
-              response.setHeader ("Location", "http://192.168.163.6:9090/login"); // Redirect to eID Module
-              return true;
-            }
-            return false;
-          }
-        });
+        if ("/redirectToEidModule".equals (request.getPathInfo ())) {
+          response.setStatus (307); // Temporary Redirect
+          response.setHeader ("Location", "http://192.168.163.6:9090/login"); // Redirect to eID Module
+          return true;
+        }
+        return false;
+      }
+    });
 
     setPollInterval (1000);
     getPage ().setTitle ("TOOP Demo User Interface");
@@ -85,7 +84,6 @@ public class DCUI extends UI {
 
     String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
     if (eidasAttributes != null) {
-      System.out.println ("eIDAS Attributes: " + eidasAttributes);
       phaseTwo.eidasAttributes = eidasAttributes;
       navigator.navigateTo ("loginSuccess");
     }
@@ -101,5 +99,6 @@ public class DCUI extends UI {
   @WebServlet (urlPatterns = {"/ui/*", "/VAADIN/*"}, asyncSupported = true)
   @VaadinServletConfiguration (ui = DCUI.class, productionMode = false)
   public static class DCUIServlet extends VaadinServlet {
+
   }
 }

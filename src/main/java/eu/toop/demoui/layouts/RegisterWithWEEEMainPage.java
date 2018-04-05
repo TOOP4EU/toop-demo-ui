@@ -1,15 +1,11 @@
-package eu.toop.demoui.pages;
+package eu.toop.demoui.layouts;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.themes.ValoTheme;
 
-import eu.toop.demoui.form.FreedoniaForm;
-import eu.toop.demoui.form.IdentityForm;
-import eu.toop.demoui.form.MainCompanyForm;
 import eu.toop.demoui.view.BaseView;
-import eu.toop.demoui.view.PhaseOne;
 
 public class RegisterWithWEEEMainPage extends CustomLayout {
 
@@ -59,8 +55,8 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
 
     MainCompanyForm mainCompanyForm = new MainCompanyForm (_view.getMainCompany (), false, null);
 
-    FreedoniaForm freedoniaForm = new FreedoniaForm (mainCompanyForm, "Preview of company details");
-    addComponent (freedoniaForm, "mainCompanyForm");
+    BaseForm baseForm = new BaseForm (mainCompanyForm, "Preview of company details");
+    addComponent (baseForm, "mainCompanyForm");
     _view.setMainCompanyForm (mainCompanyForm);
 
     Button nextButton = new Button ("I have previewed and want to proceed");

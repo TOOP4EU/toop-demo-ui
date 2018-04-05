@@ -2,17 +2,9 @@ package eu.toop.demoui.view;
 
 import com.google.gson.*;
 import com.helger.commons.error.level.EErrorLevel;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 import eu.toop.demoui.bean.Identity;
-import eu.toop.demoui.bean.MainCompany;
-import eu.toop.demoui.bean.NewCompany;
-import eu.toop.demoui.form.MainCompanyForm;
-import eu.toop.demoui.pages.HomePage;
-import eu.toop.demoui.pages.RegisterWithWEEEMainPage;
+import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class PhaseTwo extends BaseView {

@@ -1,14 +1,10 @@
-package eu.toop.demoui.pages;
+package eu.toop.demoui.layouts;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-import eu.toop.demoui.form.IdentityForm;
-import eu.toop.demoui.form.MainCompanyForm;
-import eu.toop.demoui.form.NewCompanyForm;
 import eu.toop.demoui.view.BaseView;
-import eu.toop.demoui.view.PhaseOne;
 
 public class ReviewPage extends CustomLayout {
   public ReviewPage (BaseView view) {

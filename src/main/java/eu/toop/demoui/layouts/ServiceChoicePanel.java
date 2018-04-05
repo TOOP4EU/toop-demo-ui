@@ -1,4 +1,4 @@
-package eu.toop.demoui.components;
+package eu.toop.demoui.layouts;
 
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;

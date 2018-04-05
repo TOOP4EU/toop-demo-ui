@@ -1,4 +1,4 @@
-package eu.toop.demoui.pages;
+package eu.toop.demoui.layouts;
 
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.server.ExternalResource;
@@ -9,7 +9,6 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import eu.toop.demoui.view.BaseView;
-import eu.toop.demoui.view.PhaseOne;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class ChooseAuthenticationMethodPage extends CustomLayout {
