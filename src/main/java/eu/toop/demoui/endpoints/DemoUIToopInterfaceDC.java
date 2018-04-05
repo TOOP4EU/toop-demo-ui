@@ -16,8 +16,6 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import javax.annotation.Nonnull;
 
@@ -44,114 +42,107 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   }
 
   public void onToopResponse (@Nonnull final TDETOOPDataResponseType aResponse) throws IOException {
+    final String sRequestID = aResponse.getDataRequestIdentifier ().getValue ();
+    final String sLogPrefix = "[" + sRequestID + "] [DC] ";
 
-    ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Received data from Data Provider: "
-        + " DPIdentifier: " + aResponse.getDataProvider ().getDPIdentifier ().getValue () + ", "
-        + " DPName: " + aResponse.getDataProvider ().getDPName ().getValue () + ", "
-        + " DPElectronicAddressIdentifier: " + aResponse.getDataProvider ().getDPElectronicAddressIdentifier ().getValue ());
+    ToopKafkaClient.send (EErrorLevel.INFO,
+                          () -> sLogPrefix + "Received data from Data Provider: " + " DPIdentifier: "
+                                + aResponse.getDataProvider ().getDPIdentifier ().getValue () + ", " + " DPName: "
+                                + aResponse.getDataProvider ().getDPName ().getValue () + ", "
+                                + " DPElectronicAddressIdentifier: "
+                                + aResponse.getDataProvider ().getDPElectronicAddressIdentifier ().getValue ());
 
     // Push a new organization bean to the UI
     try {
-      _ui.access (new Runnable () {
-        @Override
-        public void run () {
+      _ui.access ( () -> {
 
-          UI threadUI = UI.getCurrent ();
-          ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Current UI: " + threadUI);
-          Navigator threadUINavigator = threadUI.getNavigator ();
-          ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Current Navigator: " + threadUINavigator);
+        final UI threadUI = UI.getCurrent ();
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Current UI: " + threadUI);
+        final Navigator threadUINavigator = threadUI.getNavigator ();
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Current Navigator: " + threadUINavigator);
 
-          final PhaseTwo homeView = (PhaseTwo) threadUINavigator.getCurrentView ();
+        final PhaseTwo homeView = (PhaseTwo) threadUINavigator.getCurrentView ();
 
-          if (threadUINavigator.getCurrentView () instanceof PhaseTwo) {
+        if (threadUINavigator.getCurrentView () instanceof PhaseTwo) {
 
-            MainCompany bean = new MainCompany ();
+          final MainCompany bean = new MainCompany ();
 
-            // Inspect all mapped values
-            for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
+          // Inspect all mapped values
+          for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
 
-              final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
+            final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
 
-              final String sourceConceptName = aFirstLevelConcept.getConceptName ().getValue ();
+            final String sourceConceptName = aFirstLevelConcept.getConceptName ().getValue ();
 
-              for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
+            for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
 
-                final String toopConceptName = aSecondLevelConcept.getConceptName ().getValue ();
+              final String toopConceptName = aSecondLevelConcept.getConceptName ().getValue ();
 
-                for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
+              for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
 
-                  final String destinationConceptName = aThirdLevelConcept.getConceptName ().getValue ();
+                final String destinationConceptName = aThirdLevelConcept.getConceptName ().getValue ();
 
-                  String mappedConcept = sourceConceptName + " - " + toopConceptName + " - " + destinationConceptName;
+                final String mappedConcept = sourceConceptName + " - " + toopConceptName + " - "
+                                             + destinationConceptName;
 
-                  for (TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
-                    ToopKafkaClient.send (EErrorLevel.INFO, "[DC] Received a mapped concept ( " + mappedConcept + " ), response: " + aThirdLevelConceptDERValue);
+                for (final TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
+                  ToopKafkaClient.send (EErrorLevel.INFO, sLogPrefix + "Received a mapped concept ( " + mappedConcept
+                                                          + " ), response: " + aThirdLevelConceptDERValue);
 
-                    String aValue = "";
-                    if (aThirdLevelConceptDERValue.getResponseCode () != null) {
-                      aValue = aThirdLevelConceptDERValue.getResponseCode ().getValue ();
-                    } else if (aThirdLevelConceptDERValue.getResponseIdentifier () != null) {
-                      aValue = aThirdLevelConceptDERValue.getResponseIdentifier ().getValue ();
-                    } else if (aThirdLevelConceptDERValue.getResponseNumeric () != null &&
-                        aThirdLevelConceptDERValue.getResponseNumeric ().getValue () != null) {
-                      aValue = aThirdLevelConceptDERValue.getResponseNumeric ().getValue ().toString ();
-                    }
-
-                    if (sourceConceptName.equals ("FreedoniaAddress")) {
-                      bean.setAddress (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaSSNumber")) {
-                      bean.setSSNumber (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaBusinessCode")) {
-                      bean.setBusinessCode (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaVATNumber")) {
-                      bean.setVATNumber (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaCompanyType")) {
-                      bean.setCompanyType (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaRegistrationDate")) {
-                      bean.setRegistrationDate (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaRegistrationNumber")) {
-                      bean.setRegistrationNumber (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaCompanyName")) {
-                      bean.setCompanyName (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaCompanyNaceCode")) {
-                      bean.setCompanyNaceCode (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaActivityDeclaration")) {
-                      bean.setActivityDeclaration (aValue);
-                    }
-                    if (sourceConceptName.equals ("FreedoniaRegistrationAuthority")) {
-                      bean.setRegistrationAuthority (aValue);
-                    }
+                  String aValue = "";
+                  if (aThirdLevelConceptDERValue.getResponseCode () != null) {
+                    aValue = aThirdLevelConceptDERValue.getResponseCode ().getValue ();
+                  } else if (aThirdLevelConceptDERValue.getResponseIdentifier () != null) {
+                    aValue = aThirdLevelConceptDERValue.getResponseIdentifier ().getValue ();
+                  } else if (aThirdLevelConceptDERValue.getResponseNumeric () != null
+                             && aThirdLevelConceptDERValue.getResponseNumeric ().getValue () != null) {
+                    aValue = aThirdLevelConceptDERValue.getResponseNumeric ().getValue ().toString ();
+                  } else {
+                    ToopKafkaClient.send (EErrorLevel.WARN, () -> sLogPrefix + "Unsupported response value provided: "
+                                                                  + aThirdLevelConceptDERValue.toString ());
                   }
+
+                  if (sourceConceptName.equals ("FreedoniaAddress")) {
+                    bean.setAddress (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaSSNumber")) {
+                    bean.setSSNumber (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaBusinessCode")) {
+                    bean.setBusinessCode (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaVATNumber")) {
+                    bean.setVATNumber (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaCompanyType")) {
+                    bean.setCompanyType (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaRegistrationDate")) {
+                    bean.setRegistrationDate (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaRegistrationNumber")) {
+                    bean.setRegistrationNumber (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaCompanyName")) {
+                    bean.setCompanyName (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaCompanyNaceCode")) {
+                    bean.setCompanyNaceCode (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaActivityDeclaration")) {
+                    bean.setActivityDeclaration (aValue);
+                  } else if (sourceConceptName.equals ("FreedoniaRegistrationAuthority")) {
+                    bean.setRegistrationAuthority (aValue);
+                  } else
+                    ToopKafkaClient.send (EErrorLevel.WARN, () -> sLogPrefix + "Unsupported source concept name: '"
+                                                                  + sourceConceptName + "'");
                 }
               }
             }
-
-            if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
-              homeView.setMainCompany (bean);
-              RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
-              page.addMainCompanyForm ();
-            }
-
-            ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Pushed new bean data to the Demo UI: " + bean);
           }
+
+          if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
+            homeView.setMainCompany (bean);
+            final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
+            page.addMainCompanyForm ();
+          }
+
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Pushed new bean data to the Demo UI: " + bean);
         }
       });
     } catch (final Exception e) {
-      StringWriter sw = new StringWriter ();
-      PrintWriter pw = new PrintWriter (sw);
-      e.printStackTrace (pw);
-      String sStackTrace = sw.toString (); // stack trace as a string
-      System.out.println (sStackTrace);
-      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Failed to push new bean data to the Demo UI: " + e.getStackTrace ());
+      ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Failed to push new bean data to the Demo UI", e);
     }
   }
 }

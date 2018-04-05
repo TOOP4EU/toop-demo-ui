@@ -74,7 +74,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
   }
 
   @Nonnull
-  private static TDETOOPDataResponseType _createResponseFromRequest (@Nonnull final TDETOOPDataRequestType aRequest) {
+  private static TDETOOPDataResponseType _createResponseFromRequest (@Nonnull final TDETOOPDataRequestType aRequest,
+                                                                     @Nonnull final String sLogPrefix) {
     // build response
     final TDETOOPDataResponseType aResponse = ToopMessageBuilder.createResponse (aRequest);
     {
@@ -91,26 +92,27 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // Document type must be switch from request to response
     final EToopDocumentType eRequestDocType = EToopDocumentType.getFromIDOrNull (aRequest.getDocumentTypeIdentifier ()
-            .getSchemeID (),
-        aRequest.getDocumentTypeIdentifier ()
-            .getValue ());
+                                                                                         .getSchemeID (),
+                                                                                 aRequest.getDocumentTypeIdentifier ()
+                                                                                         .getValue ());
     boolean bFoundNewDocType = false;
     if (eRequestDocType != null) {
       final EToopDocumentType eResponseDocType = eRequestDocType.getMatchingResponseDocumentType ();
       if (eResponseDocType != null) {
         // Set new doc type in response
-        ToopKafkaClient.send (EErrorLevel.INFO, () -> "Switching document type '" + eRequestDocType.getURIEncoded ()
-            + "' to '" + eResponseDocType.getURIEncoded () + "'");
+        ToopKafkaClient.send (EErrorLevel.INFO,
+                              () -> sLogPrefix + "Switching document type '" + eRequestDocType.getURIEncoded ()
+                                    + "' to '" + eResponseDocType.getURIEncoded () + "'");
         aResponse.setDocumentTypeIdentifier (ToopXSDHelper.createIdentifier (eResponseDocType.getScheme (),
-            eResponseDocType.getValue ()));
+                                                                             eResponseDocType.getValue ()));
         bFoundNewDocType = true;
       }
     }
     if (!bFoundNewDocType) {
       ToopKafkaClient.send (EErrorLevel.INFO,
-          () -> "Found no response document type for '"
-              + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
-              + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
+                            () -> sLogPrefix + "Found no response document type for '"
+                                  + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
+                                  + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
     }
     return aResponse;
   }
@@ -122,7 +124,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received DP Backend Request");
 
     // build response
-    final TDETOOPDataResponseType aResponse = _createResponseFromRequest (aRequest);
+    final TDETOOPDataResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
 
     // add all the mapped values in the response
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
@@ -140,8 +142,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
               } else {
                 // 3 level nesting is maximum
                 ToopKafkaClient.send (EErrorLevel.ERROR,
-                    () -> sLogPrefix + "A third level concept that is unusable - weird: "
-                        + aThirdLevelConcept);
+                                      () -> sLogPrefix + "A third level concept that is unusable - weird: "
+                                            + aThirdLevelConcept);
               }
     }
 
