@@ -26,17 +26,17 @@ public class PhaseTwo extends BaseView {
     for (JsonElement element : attr) {
       JsonObject jsonObj = element.getAsJsonObject ();
 
+      if (jsonObj.get ("friendlyName").getAsString ().equals ("personIdentifier")) {
+        newIdentity.setIdentifier (jsonObj.get ("value").getAsString ());
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Identifier: " + newIdentity.getIdentifier ());
+      }
       if (jsonObj.get ("friendlyName").getAsString ().equals ("firstName")) {
         newIdentity.setFirstName (jsonObj.get ("value").getAsString ());
-        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Identifier: " + newIdentity.getFirstName ());
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID First name: " + newIdentity.getFirstName ());
       }
       if (jsonObj.get ("friendlyName").getAsString ().equals ("familyName")) {
         newIdentity.setFamilyName (jsonObj.get ("value").getAsString ());
-        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID First name: " + newIdentity.getFamilyName ());
-      }
-      if (jsonObj.get ("friendlyName").getAsString ().equals ("personIdentifier")) {
-        newIdentity.setIdentifier (jsonObj.get ("value").getAsString ());
-        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Family name: " + newIdentity.getIdentifier ());
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Family name: " + newIdentity.getFamilyName ());
       }
     }
     setIdentity (newIdentity);
