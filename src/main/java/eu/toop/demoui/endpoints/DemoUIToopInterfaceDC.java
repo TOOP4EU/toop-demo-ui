@@ -97,6 +97,9 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                   } else if (aThirdLevelConceptDERValue.getResponseNumeric () != null
                              && aThirdLevelConceptDERValue.getResponseNumeric ().getValue () != null) {
                     aValue = aThirdLevelConceptDERValue.getResponseNumeric ().getValue ().toString ();
+                  } else if (aThirdLevelConceptDERValue.getResponseDescription () != null
+                             && aThirdLevelConceptDERValue.getResponseDescription ().getValue () != null) {
+                    aValue = aThirdLevelConceptDERValue.getResponseDescription ().getValue ();
                   } else {
                     ToopKafkaClient.send (EErrorLevel.WARN, () -> sLogPrefix + "Unsupported response value provided: "
                                                                   + aThirdLevelConceptDERValue.toString ());

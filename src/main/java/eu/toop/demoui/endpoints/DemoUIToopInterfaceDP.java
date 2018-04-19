@@ -36,6 +36,7 @@ import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
+import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
   private final UI _ui;
@@ -71,6 +72,48 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         aValue.setResponseCode (ToopXSDHelper.createCode ("DemoDP-Code-" + Math.random ()));
     }
     aConcept.getDataElementResponseValue ().add (aValue);
+  }
+
+  private static void _applyStaticDataset(@Nonnull final TDEConceptRequestType aConcept) {
+
+    final TextType conceptName = aConcept.getConceptName ();
+    final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
+
+    aValue.setAlternativeResponseIndicator (ToopXSDHelper.createIndicator (false));
+    aValue.setErrorIndicator (ToopXSDHelper.createIndicator (false));
+
+    if (conceptName != null && conceptName.getValue () != null) {
+      switch (conceptName.getValue ()) {
+        case "EloniaAddress":
+          aValue.setResponseDescription (ToopXSDHelper.createText ("Gamlavegen 234, 321 44, Velma, Elonia"));
+          break;
+        case "EloniaBusinessCode":
+          aValue.setResponseDescription (ToopXSDHelper.createText ("JF 234556-6213"));
+          break;
+        case "EloniaCompanyType":
+          aValue.setResponseDescription (ToopXSDHelper.createText ("Limited"));
+          break;
+        case "EloniaRegistrationDate":
+          aValue.setResponseDescription (ToopXSDHelper.createText ("2012-01-12"));
+          break;
+        case "EloniaCompanyName":
+          aValue.setResponseDescription (ToopXSDHelper.createText ("Zizi mat"));
+          break;
+        case "EloniaCompanyNaceCode":
+          aValue.setResponseDescription (ToopXSDHelper.createText ("C27.9"));
+          break;
+        case "EloniaActivityDeclaration":
+          aValue.setResponseDescription (ToopXSDHelper.createText ("Manufacture of other electrical equipment"));
+          break;
+        case "EloniaRegistrationAuthority":
+          aValue.setResponseDescription (ToopXSDHelper.createText ("Elonia Tax Agency"));
+          break;
+        default:
+          aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
+          aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP"));
+      }
+      aConcept.getDataElementResponseValue ().add (aValue);
+    }
   }
 
   @Nonnull
@@ -138,7 +181,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
           } else
             for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ())
               if (_canUseConcept (aThirdLevelConcept)) {
-                _searchAndApplyValue (aThirdLevelConcept);
+                _applyStaticDataset(aThirdLevelConcept);
+                //_searchAndApplyValue (aThirdLevelConcept);
               } else {
                 // 3 level nesting is maximum
                 ToopKafkaClient.send (EErrorLevel.ERROR,
