@@ -28,8 +28,8 @@ import eu.toop.commons.dataexchange.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.TDEDataProviderType;
-import eu.toop.commons.dataexchange.TDETOOPDataRequestType;
-import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
+import eu.toop.commons.dataexchange.TDETOOPRequestType;
+import eu.toop.commons.dataexchange.TDETOOPResponseType;
 import eu.toop.commons.doctype.EToopDocumentType;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
@@ -74,7 +74,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     aConcept.getDataElementResponseValue ().add (aValue);
   }
 
-  private static void _applyStaticDataset(@Nonnull final TDEConceptRequestType aConcept) {
+  private static void _applyStaticDataset (@Nonnull final TDEConceptRequestType aConcept) {
 
     final TextType conceptName = aConcept.getConceptName ();
     final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
@@ -84,43 +84,43 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     if (conceptName != null && conceptName.getValue () != null) {
       switch (conceptName.getValue ()) {
-        case "EloniaAddress":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Gamlavegen 234, 321 44, Velma, Elonia"));
-          break;
-        case "EloniaBusinessCode":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("JF 234556-6213"));
-          break;
-        case "EloniaCompanyType":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Limited"));
-          break;
-        case "EloniaRegistrationDate":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("2012-01-12"));
-          break;
-        case "EloniaCompanyName":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Zizi mat"));
-          break;
-        case "EloniaCompanyNaceCode":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("C27.9"));
-          break;
-        case "EloniaActivityDeclaration":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Manufacture of other electrical equipment"));
-          break;
-        case "EloniaRegistrationAuthority":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Elonia Tax Agency"));
-          break;
-        default:
-          aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
-          aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP"));
+      case "EloniaAddress":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Gamlavegen 234, 321 44, Velma, Elonia"));
+        break;
+      case "EloniaBusinessCode":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("JF 234556-6213"));
+        break;
+      case "EloniaCompanyType":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Limited"));
+        break;
+      case "EloniaRegistrationDate":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("2012-01-12"));
+        break;
+      case "EloniaCompanyName":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Zizi mat"));
+        break;
+      case "EloniaCompanyNaceCode":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("C27.9"));
+        break;
+      case "EloniaActivityDeclaration":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Manufacture of other electrical equipment"));
+        break;
+      case "EloniaRegistrationAuthority":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Elonia Tax Agency"));
+        break;
+      default:
+        aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
+        aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP"));
       }
       aConcept.getDataElementResponseValue ().add (aValue);
     }
   }
 
   @Nonnull
-  private static TDETOOPDataResponseType _createResponseFromRequest (@Nonnull final TDETOOPDataRequestType aRequest,
-                                                                     @Nonnull final String sLogPrefix) {
+  private static TDETOOPResponseType _createResponseFromRequest (@Nonnull final TDETOOPRequestType aRequest,
+                                                                 @Nonnull final String sLogPrefix) {
     // build response
-    final TDETOOPDataResponseType aResponse = ToopMessageBuilder.createResponse (aRequest);
+    final TDETOOPResponseType aResponse = ToopMessageBuilder.createResponse (aRequest);
     {
       // Required for response
       final TDEDataProviderType p = new TDEDataProviderType ();
@@ -160,14 +160,14 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     return aResponse;
   }
 
-  public void onToopRequest (@Nonnull final TDETOOPDataRequestType aRequest) throws IOException {
+  public void onToopRequest (@Nonnull final TDETOOPRequestType aRequest) throws IOException {
 
     final String sRequestID = aRequest.getDataRequestIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] ";
     ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received DP Backend Request");
 
     // build response
-    final TDETOOPDataResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
+    final TDETOOPResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
 
     // add all the mapped values in the response
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
@@ -181,8 +181,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
           } else
             for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ())
               if (_canUseConcept (aThirdLevelConcept)) {
-                _applyStaticDataset(aThirdLevelConcept);
-                //_searchAndApplyValue (aThirdLevelConcept);
+                _applyStaticDataset (aThirdLevelConcept);
+                // _searchAndApplyValue (aThirdLevelConcept);
               } else {
                 // 3 level nesting is maximum
                 ToopKafkaClient.send (EErrorLevel.ERROR,
