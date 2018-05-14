@@ -86,7 +86,7 @@ public class ConfirmToopDataFetchingPage extends Window {
             "9999:freedonia"),
             "SV",
             EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST,
-            EToopProcess.PROCESS_REQUEST_RESPONSE, conceptList);
+            EToopProcess.REQUEST_RESPONSE_DATA, conceptList);
       } catch (final IOException ex) {
         // Convert from checked to unchecked
         throw new UncheckedIOException (ex);
