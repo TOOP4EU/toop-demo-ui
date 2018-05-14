@@ -52,7 +52,6 @@
     <vaadin.plugin.version>8.3.2</vaadin.plugin.version>
     <!-- If there are no local customizations, this can also be "fetch" or "cdn" -->
     <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
-    <jetty.version>9.4.10.v20180503</jetty.version>
   </properties>
 
   <repositories>
@@ -74,7 +73,7 @@
       <dependency>
         <groupId>com.helger</groupId>
         <artifactId>ph-commons-parent-pom</artifactId>
-        <version>9.1.0</version>
+        <version>9.1.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -179,7 +178,6 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-continuation</artifactId>
-      <version>${jetty.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
