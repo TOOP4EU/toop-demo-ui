@@ -52,6 +52,7 @@
     <vaadin.plugin.version>8.3.2</vaadin.plugin.version>
     <!-- If there are no local customizations, this can also be "fetch" or "cdn" -->
     <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
+    <jetty.version>9.4.9.v20180320</jetty.version>
   </properties>
 
   <repositories>
