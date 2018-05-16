@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.ui.UI;
 
+import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
+import eu.toop.commons.codelist.ReverseDocumentTypeMapping;
 import eu.toop.commons.dataexchange.TDEAddressType;
 import eu.toop.commons.dataexchange.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementRequestType;
@@ -30,7 +32,6 @@ import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.TDEDataProviderType;
 import eu.toop.commons.dataexchange.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.TDETOOPResponseType;
-import eu.toop.commons.doctype.EToopDocumentType;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.iface.IToopInterfaceDP;
@@ -134,20 +135,20 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     }
 
     // Document type must be switch from request to response
-    final EToopDocumentType eRequestDocType = EToopDocumentType.getFromIDOrNull (aRequest.getDocumentTypeIdentifier ()
-                                                                                         .getSchemeID (),
-                                                                                 aRequest.getDocumentTypeIdentifier ()
-                                                                                         .getValue ());
+    final EPredefinedDocumentTypeIdentifier eRequestDocType = EPredefinedDocumentTypeIdentifier.getFromDocumentTypeIdentifierOrNull (aRequest.getDocumentTypeIdentifier ()
+                                                                                                                                             .getSchemeID (),
+                                                                                                                                     aRequest.getDocumentTypeIdentifier ()
+                                                                                                                                             .getValue ());
     boolean bFoundNewDocType = false;
     if (eRequestDocType != null) {
-      final EToopDocumentType eResponseDocType = eRequestDocType.getMatchingResponseDocumentType ();
+      final EPredefinedDocumentTypeIdentifier eResponseDocType = ReverseDocumentTypeMapping.getReverseDocumentTypeOrNull (eRequestDocType);
       if (eResponseDocType != null) {
         // Set new doc type in response
         ToopKafkaClient.send (EErrorLevel.INFO,
                               () -> sLogPrefix + "Switching document type '" + eRequestDocType.getURIEncoded ()
                                     + "' to '" + eResponseDocType.getURIEncoded () + "'");
         aResponse.setDocumentTypeIdentifier (ToopXSDHelper.createIdentifier (eResponseDocType.getScheme (),
-                                                                             eResponseDocType.getValue ()));
+                                                                             eResponseDocType.getID ()));
         bFoundNewDocType = true;
       }
     }
