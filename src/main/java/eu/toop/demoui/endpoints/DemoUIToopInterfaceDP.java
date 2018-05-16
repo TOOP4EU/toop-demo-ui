@@ -139,24 +139,22 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
                                                                                                                                              .getSchemeID (),
                                                                                                                                      aRequest.getDocumentTypeIdentifier ()
                                                                                                                                              .getValue ());
-    boolean bFoundNewDocType = false;
     if (eRequestDocType != null) {
-      final EPredefinedDocumentTypeIdentifier eResponseDocType = ReverseDocumentTypeMapping.getReverseDocumentTypeOrNull (eRequestDocType);
-      if (eResponseDocType != null) {
+      try {
+        final EPredefinedDocumentTypeIdentifier eResponseDocType = ReverseDocumentTypeMapping.getReverseDocumentType (eRequestDocType);
         // Set new doc type in response
         ToopKafkaClient.send (EErrorLevel.INFO,
                               () -> sLogPrefix + "Switching document type '" + eRequestDocType.getURIEncoded ()
                                     + "' to '" + eResponseDocType.getURIEncoded () + "'");
         aResponse.setDocumentTypeIdentifier (ToopXSDHelper.createIdentifier (eResponseDocType.getScheme (),
                                                                              eResponseDocType.getID ()));
-        bFoundNewDocType = true;
+      } catch (final IllegalArgumentException ex) {
+        // Found no reverse document type
+        ToopKafkaClient.send (EErrorLevel.INFO,
+                              () -> sLogPrefix + "Found no response document type for '"
+                                    + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
+                                    + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
       }
-    }
-    if (!bFoundNewDocType) {
-      ToopKafkaClient.send (EErrorLevel.INFO,
-                            () -> sLogPrefix + "Found no response document type for '"
-                                  + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
-                                  + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
     }
     return aResponse;
   }
