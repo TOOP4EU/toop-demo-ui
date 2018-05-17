@@ -14,6 +14,7 @@ import com.vaadin.ui.Window;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
+import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
@@ -76,9 +77,11 @@ public class ConfirmToopDataFetchingPage extends Window {
                                     + StringHelper.getImplodedMapped (", ", conceptList,
                                                                       x -> x.getNamespace () + "#" + x.getValue ()));
 
-        ToopInterfaceClient.createRequestAndSendToToopConnector (ToopXSDHelper.createIdentifier ("iso6523-actorid-upis",
+        final String sCountryCode = "SV";
+        ToopInterfaceClient.createRequestAndSendToToopConnector (ToopMessageBuilder.createMockDataRequestSubject (sCountryCode),
+                                                                 ToopXSDHelper.createIdentifier ("iso6523-actorid-upis",
                                                                                                  "9999:freedonia"),
-                                                                 "SV",
+                                                                 sCountryCode,
                                                                  EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
                                                                  EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
                                                                  conceptList);
