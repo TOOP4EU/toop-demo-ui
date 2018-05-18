@@ -44,6 +44,12 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
           spinner.setVisible (true);
           toopButton.setEnabled (false);
         }
+
+        @Override
+        public void onSelfProvide () {
+          toopButton.setEnabled (false);
+          addMainCompanyForm ();
+        }
       };
     });
   }
@@ -58,14 +64,15 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     addComponent (baseForm, "mainCompanyForm");
     _view.setMainCompanyForm (mainCompanyForm);
 
-    final Button nextButton = new Button ("I have previewed and want to proceed");
+    final Button nextButton = new Button ("I have previewed this information and want to proceed");
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
     nextButton.addClickListener ((event) -> {
 
       mainCompanyForm.save ();
-      _view.setCurrentPage (new RegisterWithWEEENewDetailsPage (_view));
+      //_view.setCurrentPage (new RegisterWithWEEENewDetailsPage (_view));
+      _view.setCurrentPage (new SuccessPage (_view));
     });
   }
 }

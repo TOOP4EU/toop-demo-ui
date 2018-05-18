@@ -14,7 +14,7 @@ public class TradeLicensesAndRegistrationsPage extends CustomLayout {
 
     setHeight ("100%");
 
-    final Button nextButton = new Button ("Waste Electrical and Electronic Equipment - WEEE Register");
+    final Button nextButton = new Button ("Registration of Business activity");
     nextButton.addStyleName (ValoTheme.BUTTON_LINK);
     nextButton.setSizeUndefined ();
     addComponent (nextButton, "nextButton");

@@ -26,7 +26,7 @@ import com.vaadin.ui.UI;
 import eu.toop.commons.dataexchange.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
-import eu.toop.commons.dataexchange.TDETOOPDataResponseType;
+import eu.toop.commons.dataexchange.TDETOOPResponseType;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
 import eu.toop.demoui.view.PhaseTwo;
@@ -41,7 +41,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     this._ui = ui;
   }
 
-  public void onToopResponse (@Nonnull final TDETOOPDataResponseType aResponse) throws IOException {
+  public void onToopResponse (@Nonnull TDETOOPResponseType aResponse) throws IOException {
     final String sRequestID = aResponse.getDataRequestIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] [DC] ";
 

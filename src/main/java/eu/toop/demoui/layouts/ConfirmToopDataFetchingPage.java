@@ -2,10 +2,21 @@ package eu.toop.demoui.layouts;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.helger.datetime.util.PDTXMLConverter;
+import com.vaadin.ui.themes.ValoTheme;
+import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
+import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
+import eu.toop.commons.dataexchange.TDEAddressType;
+import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.TDENaturalPersonType;
 import eu.toop.demoui.view.BaseView;
+import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.CodeType;
+import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
+import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,11 +27,13 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.doctype.EToopDocumentType;
-import eu.toop.commons.doctype.EToopProcess;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 public class ConfirmToopDataFetchingPage extends Window {
 
@@ -43,9 +56,7 @@ public class ConfirmToopDataFetchingPage extends Window {
     final ConfirmToopDataFetchingTable confirmToopDataFetchingTable = new ConfirmToopDataFetchingTable ();
     subContent.addComponent (confirmToopDataFetchingTable);
 
-    final Button cancelButton = new Button ("I don't agree", (event) -> subWindow.close ());
-
-    final Button proceedButton = new Button ("I AGREE", (event) -> {
+    final Button proceedButton = new Button ("Please request this information through TOOP", (event) -> {
       onConsent ();
       subWindow.close ();
 
@@ -82,19 +93,66 @@ public class ConfirmToopDataFetchingPage extends Window {
                 + StringHelper.getImplodedMapped (", ", conceptList,
                 x -> x.getNamespace () + "#" + x.getValue ()));
 
-        ToopInterfaceClient.createRequestAndSendToToopConnector (ToopXSDHelper.createIdentifier ("iso6523-actorid-upis",
+/*
+        TDENaturalPersonType naturalPersonType = new TDENaturalPersonType ();
+
+        if (view.getIdentity ().getFamilyName () != null) {
+          naturalPersonType.setFamilyName (new TextType(view.getIdentity ().getFamilyName ()));
+        }
+        if (view.getIdentity ().getFirstName () != null) {
+          naturalPersonType.setFirstName (new TextType(view.getIdentity ().getFirstName ()));
+        }
+        if (view.getIdentity ().getIdentifier () != null) {
+          IdentifierType identifierType = new IdentifierType(view.getIdentity ().getIdentifier ());
+          naturalPersonType.setPersonIdentifier (identifierType);
+        }
+        if (view.getIdentity ().getBirthDate () != null) {
+          XMLGregorianCalendar birthDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(view.getIdentity ().getBirthDate ().toString());
+          naturalPersonType.setBirthDate (birthDate);
+        } else {
+          LocalDate date = LocalDate.parse("1999-11-11");
+          XMLGregorianCalendar birthDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(date.toString ());
+          naturalPersonType.setBirthDate (birthDate);
+        }*/
+
+        final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
+        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper.createCode ("12345"));
+        {
+          final TDENaturalPersonType aNP = new TDENaturalPersonType ();
+          aNP.setPersonIdentifier (ToopXSDHelper.createIdentifier (view.getIdentity ().getIdentifier ()));
+          aNP.setFamilyName (ToopXSDHelper.createText (view.getIdentity ().getFamilyName ()));
+          aNP.setFirstName (ToopXSDHelper.createText (view.getIdentity ().getFirstName ()));
+          aNP.setBirthDate (PDTXMLConverter.getXMLCalendarDateNow ());
+          final TDEAddressType aAddress = new TDEAddressType ();
+          // Destination country to use
+          aAddress.setCountryCode (ToopXSDHelper.createCode ("SV"));
+          aNP.setNaturalPersonLegalAddress (aAddress);
+          aDS.setNaturalPerson (aNP);
+        }
+
+        ToopInterfaceClient.createRequestAndSendToToopConnector (aDS,
+            ToopXSDHelper.createIdentifier ("iso6523-actorid-upis",
             "9999:freedonia"),
             "SV",
-            EToopDocumentType.DOCTYPE_REGISTERED_ORGANIZATION_REQUEST,
-            EToopProcess.PROCESS_REQUEST_RESPONSE, conceptList);
+            EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
+            EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
       } catch (final IOException ex) {
         // Convert from checked to unchecked
         throw new UncheckedIOException (ex);
       }
     });
+    proceedButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    proceedButton.addStyleName ("ConsentAgreeButton");
 
-    subContent.addComponent (cancelButton);
+    final Button cancelButton = new Button ("Thanks, I will provide this information myself", (event) -> {
+      onSelfProvide ();
+      subWindow.close ();
+    });
+    cancelButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    cancelButton.addStyleName ("ConsentCancelButton");
+
     subContent.addComponent (proceedButton);
+    subContent.addComponent (cancelButton);
 
     // Center it in the browser window
     subWindow.center ();
@@ -104,6 +162,10 @@ public class ConfirmToopDataFetchingPage extends Window {
   }
 
   protected void onConsent () {
+
+  }
+
+  protected void onSelfProvide () {
 
   }
 }

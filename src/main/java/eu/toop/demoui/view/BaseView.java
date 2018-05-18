@@ -1,6 +1,7 @@
 package eu.toop.demoui.view;
 
 import com.vaadin.navigator.View;
+import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.CustomLayout;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.bean.MainCompany;
@@ -9,7 +10,7 @@ import eu.toop.demoui.layouts.MainCompanyForm;
 
 public class BaseView extends CustomLayout implements View {
 
-  private CustomLayout _page;
+  private AbstractLayout _page;
   private Identity identity = new Identity ();
   private MainCompany mainCompany = new MainCompany ();
   private NewCompany newCompany = new NewCompany ();
@@ -22,7 +23,7 @@ public class BaseView extends CustomLayout implements View {
     setHeight ("100%");
   }
 
-  public void setCurrentPage (CustomLayout page) {
+  public void setCurrentPage (AbstractLayout page) {
 
     if (_page != null) {
       replaceComponent (_page, page);
@@ -32,7 +33,7 @@ public class BaseView extends CustomLayout implements View {
     _page = page;
   }
 
-  public CustomLayout getCurrentPage () {
+  public AbstractLayout getCurrentPage () {
 
     return _page;
   }

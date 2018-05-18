@@ -214,6 +214,17 @@
     margin-bottom: 8px;
   }
 
+  .ConsentAgreeButton {
+    background-color: #003f85;
+    color: white;
+    border-radius: 0;
+  }
+
+  .ConsentCancelButton {
+    border: 1px solid #003f85;
+    border-radius: 0;
+  }
+
   .attributesTable {
     padding: 2px;
     .title {
