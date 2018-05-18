@@ -26,8 +26,12 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
+import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
+import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
+import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
@@ -36,9 +40,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 public class ConfirmToopDataFetchingPage extends Window {
-
-  private static final Logger s_aLogger = LoggerFactory.getLogger (ConfirmToopDataFetchingPage.class);
-
   public ConfirmToopDataFetchingPage (final BaseView view) {
 
     final Window subWindow = new Window ("Sub-window");
@@ -65,55 +66,33 @@ public class ConfirmToopDataFetchingPage extends Window {
         final List<ConceptValue> conceptList = new ArrayList<> ();
 
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaAddress"));
+                                           "FreedoniaAddress"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaSSNumber"));
+                                           "FreedoniaSSNumber"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaBusinessCode"));
+                                           "FreedoniaBusinessCode"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaVATNumber"));
+                                           "FreedoniaVATNumber"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaCompanyType"));
+                                           "FreedoniaCompanyType"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaRegistrationDate"));
+                                           "FreedoniaRegistrationDate"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaRegistrationNumber"));
+                                           "FreedoniaRegistrationNumber"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaCompanyName"));
+                                           "FreedoniaCompanyName"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaCompanyNaceCode"));
+                                           "FreedoniaCompanyNaceCode"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaActivityDeclaration"));
+                                           "FreedoniaActivityDeclaration"));
         conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-            "FreedoniaRegistrationAuthority"));
+                                           "FreedoniaRegistrationAuthority"));
 
         // Notify the logger and Package-Tracker that we are sending a TOOP Message!
         ToopKafkaClient.send (EErrorLevel.INFO,
             () -> "[DC] Requesting concepts: "
                 + StringHelper.getImplodedMapped (", ", conceptList,
                 x -> x.getNamespace () + "#" + x.getValue ()));
-
-/*
-        TDENaturalPersonType naturalPersonType = new TDENaturalPersonType ();
-
-        if (view.getIdentity ().getFamilyName () != null) {
-          naturalPersonType.setFamilyName (new TextType(view.getIdentity ().getFamilyName ()));
-        }
-        if (view.getIdentity ().getFirstName () != null) {
-          naturalPersonType.setFirstName (new TextType(view.getIdentity ().getFirstName ()));
-        }
-        if (view.getIdentity ().getIdentifier () != null) {
-          IdentifierType identifierType = new IdentifierType(view.getIdentity ().getIdentifier ());
-          naturalPersonType.setPersonIdentifier (identifierType);
-        }
-        if (view.getIdentity ().getBirthDate () != null) {
-          XMLGregorianCalendar birthDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(view.getIdentity ().getBirthDate ().toString());
-          naturalPersonType.setBirthDate (birthDate);
-        } else {
-          LocalDate date = LocalDate.parse("1999-11-11");
-          XMLGregorianCalendar birthDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(date.toString ());
-          naturalPersonType.setBirthDate (birthDate);
-        }*/
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
         aDS.setDataRequestSubjectTypeCode (ToopXSDHelper.createCode ("12345"));

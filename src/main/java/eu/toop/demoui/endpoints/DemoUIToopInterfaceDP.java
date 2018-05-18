@@ -25,7 +25,13 @@ import com.vaadin.ui.UI;
 
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.ReverseDocumentTypeMapping;
-import eu.toop.commons.dataexchange.*;
+import eu.toop.commons.dataexchange.TDEAddressType;
+import eu.toop.commons.dataexchange.TDEConceptRequestType;
+import eu.toop.commons.dataexchange.TDEDataElementRequestType;
+import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
+import eu.toop.commons.dataexchange.TDEDataProviderType;
+import eu.toop.commons.dataexchange.TDETOOPRequestType;
+import eu.toop.commons.dataexchange.TDETOOPResponseType;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.iface.IToopInterfaceDP;
@@ -69,7 +75,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     aConcept.getDataElementResponseValue ().add (aValue);
   }
 
-  private static void _applyStaticDataset(@Nonnull final TDEConceptRequestType aConcept) {
+  private static void _applyStaticDataset (@Nonnull final TDEConceptRequestType aConcept) {
 
     final TextType conceptName = aConcept.getConceptName ();
     final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
@@ -79,33 +85,33 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     if (conceptName != null && conceptName.getValue () != null) {
       switch (conceptName.getValue ()) {
-        case "EloniaAddress":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Gamlavegen 234, 321 44, Velma, Elonia"));
-          break;
-        case "EloniaBusinessCode":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("JF 234556-6213"));
-          break;
-        case "EloniaCompanyType":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Limited"));
-          break;
-        case "EloniaRegistrationDate":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("2012-01-12"));
-          break;
-        case "EloniaCompanyName":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Zizi mat"));
-          break;
-        case "EloniaCompanyNaceCode":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("C27.9"));
-          break;
-        case "EloniaActivityDeclaration":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Manufacture of other electrical equipment"));
-          break;
-        case "EloniaRegistrationAuthority":
-          aValue.setResponseDescription (ToopXSDHelper.createText ("Elonia Tax Agency"));
-          break;
-        default:
-          aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
-          aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP"));
+      case "EloniaAddress":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Gamlavegen 234, 321 44, Velma, Elonia"));
+        break;
+      case "EloniaBusinessCode":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("JF 234556-6213"));
+        break;
+      case "EloniaCompanyType":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Limited"));
+        break;
+      case "EloniaRegistrationDate":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("2012-01-12"));
+        break;
+      case "EloniaCompanyName":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Zizi mat"));
+        break;
+      case "EloniaCompanyNaceCode":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("C27.9"));
+        break;
+      case "EloniaActivityDeclaration":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Manufacture of other electrical equipment"));
+        break;
+      case "EloniaRegistrationAuthority":
+        aValue.setResponseDescription (ToopXSDHelper.createText ("Elonia Tax Agency"));
+        break;
+      default:
+        aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
+        aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP"));
       }
       aConcept.getDataElementResponseValue ().add (aValue);
     }
@@ -113,7 +119,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
   @Nonnull
   private static TDETOOPResponseType _createResponseFromRequest (@Nonnull final TDETOOPRequestType aRequest,
-                                                                     @Nonnull final String sLogPrefix) {
+                                                                 @Nonnull final String sLogPrefix) {
     // build response
     final TDETOOPResponseType aResponse = ToopMessageBuilder.createResponse (aRequest);
     {
@@ -130,34 +136,32 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // Document type must be switch from request to response
 
-    final EPredefinedDocumentTypeIdentifier eRequestDocType = EPredefinedDocumentTypeIdentifier.getFromDocumentTypeIdentifierOrNull (aRequest.getDocumentTypeIdentifier ().getSchemeID (),
-                                                                                 aRequest.getDocumentTypeIdentifier ().getValue ());
-    boolean bFoundNewDocType = false;
+    final EPredefinedDocumentTypeIdentifier eRequestDocType = EPredefinedDocumentTypeIdentifier.getFromDocumentTypeIdentifierOrNull (aRequest.getDocumentTypeIdentifier ()
+                                                                                                                                             .getSchemeID (),
+                                                                                                                                     aRequest.getDocumentTypeIdentifier ()
+                                                                                                                                             .getValue ());
     if (eRequestDocType != null) {
-      final EPredefinedDocumentTypeIdentifier eResponseDocType = ReverseDocumentTypeMapping.getReverseDocumentType (eRequestDocType);
+      try {
+        final EPredefinedDocumentTypeIdentifier eResponseDocType = ReverseDocumentTypeMapping.getReverseDocumentType (eRequestDocType);
 
-      if (eResponseDocType != null) {
         // Set new doc type in response
         ToopKafkaClient.send (EErrorLevel.INFO,
                               () -> sLogPrefix + "Switching document type '" + eRequestDocType.getURIEncoded ()
                                     + "' to '" + eResponseDocType.getURIEncoded () + "'");
         aResponse.setDocumentTypeIdentifier (ToopXSDHelper.createIdentifier (eResponseDocType.getScheme (),
                                                                              eResponseDocType.getID ()));
-        bFoundNewDocType = true;
+      } catch (final IllegalArgumentException ex) {
+        // Found no reverse document type
+        ToopKafkaClient.send (EErrorLevel.INFO,
+                              () -> sLogPrefix + "Found no response document type for '"
+                                    + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
+                                    + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
       }
-    }
-    if (!bFoundNewDocType) {
-      ToopKafkaClient.send (EErrorLevel.INFO,
-                            () -> sLogPrefix + "Found no response document type for '"
-                                  + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
-                                  + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
     }
     return aResponse;
   }
 
-  @Override
-  public void onToopRequest (@Nonnull TDETOOPRequestType aRequest) throws IOException {
-//  public void onToopRequest (@Nonnull final TDETOOPDataRequestType aRequest) throws IOException {
+  public void onToopRequest (@Nonnull final TDETOOPRequestType aRequest) throws IOException {
 
     final String sRequestID = aRequest.getDataRequestIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] ";
@@ -178,8 +182,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
           } else
             for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ())
               if (_canUseConcept (aThirdLevelConcept)) {
-                _applyStaticDataset(aThirdLevelConcept);
-                //_searchAndApplyValue (aThirdLevelConcept);
+                _applyStaticDataset (aThirdLevelConcept);
+                // _searchAndApplyValue (aThirdLevelConcept);
               } else {
                 // 3 level nesting is maximum
                 ToopKafkaClient.send (EErrorLevel.ERROR,
