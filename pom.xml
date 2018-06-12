@@ -27,7 +27,7 @@
   <groupId>eu.toop</groupId>
   <artifactId>toop-demo-ui</artifactId>
   <packaging>war</packaging>
-  <version>0.9.1-SNAPSHOT</version>
+  <version>0.9.2-SNAPSHOT</version>
   <name>toop-demo-ui</name>
   <url>https://github.com/toop4eu/toop-demo-ui</url>
   <inceptionYear>2018</inceptionYear>
@@ -52,7 +52,7 @@
     <vaadin.plugin.version>8.3.2</vaadin.plugin.version>
     <!-- If there are no local customizations, this can also be "fetch" or "cdn" -->
     <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
-    <jetty.version>9.4.10.v20180503</jetty.version>
+    <jetty.version>9.4.11.v20180605</jetty.version>
   </properties>
 
   <repositories>
