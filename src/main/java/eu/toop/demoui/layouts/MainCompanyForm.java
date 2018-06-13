@@ -22,8 +22,12 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
 import eu.toop.demoui.bean.MainCompany;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MainCompanyForm extends FormLayout {
+
+  private static final Logger logger = LoggerFactory.getLogger (MainCompanyForm.class);
 
   private final Binder<MainCompany> binder = new Binder<> ();
   private MainCompany mainCompany;
@@ -100,7 +104,7 @@ public class MainCompanyForm extends FormLayout {
     try {
       binder.writeBean (mainCompany);
     } catch (final ValidationException e) {
-      e.printStackTrace ();
+      logger.error ("Failed to write to 'mainCompany' bean");
     }
   }
 }

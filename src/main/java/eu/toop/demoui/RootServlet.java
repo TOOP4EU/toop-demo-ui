@@ -32,8 +32,7 @@ import com.helger.commons.string.StringHelper;
 @WebServlet ("")
 public class RootServlet extends HttpServlet {
   @Override
-  protected void doGet (final HttpServletRequest req, final HttpServletResponse resp)
-      throws IOException {
+  protected void doGet (final HttpServletRequest req, final HttpServletResponse resp) {
 
     String sRedirectURL = req.getContextPath () + "/ui";
 
@@ -41,6 +40,11 @@ public class RootServlet extends HttpServlet {
     if (StringHelper.hasText (sQueryString))
       sRedirectURL += "?" + sQueryString;
 
-    resp.sendRedirect (sRedirectURL);
+    try {
+      resp.sendRedirect (sRedirectURL);
+    } catch (IOException e) {
+      resp.setStatus (307);
+      resp.setHeader ("Location", sRedirectURL);
+    }
   }
 }

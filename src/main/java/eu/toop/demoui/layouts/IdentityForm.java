@@ -23,8 +23,12 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
 import eu.toop.demoui.bean.Identity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IdentityForm extends FormLayout {
+
+  private static final Logger logger = LoggerFactory.getLogger (IdentityForm.class);
 
   private Binder<Identity> binder = new Binder<> ();
 
@@ -74,7 +78,7 @@ public class IdentityForm extends FormLayout {
     try {
       binder.writeBean (identity);
     } catch (ValidationException e) {
-      e.printStackTrace ();
+      logger.error ("Failed to write to 'identity' bean");
     }
   }
 }

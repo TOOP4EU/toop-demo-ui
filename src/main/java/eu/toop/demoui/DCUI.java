@@ -78,7 +78,7 @@ public class DCUI extends UI {
 
     String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
     if (eidasAttributes != null) {
-      phaseTwo.eidasAttributes = eidasAttributes;
+      phaseTwo.setEidasAttributes (eidasAttributes);
       navigator.navigateTo ("loginSuccess");
     }
   }

@@ -9,7 +9,7 @@ import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class PhaseTwo extends BaseView {
 
-  public String eidasAttributes = "";
+  private String eidasAttributes = "";
 
   public PhaseTwo () {
 
@@ -42,5 +42,15 @@ public class PhaseTwo extends BaseView {
     setIdentity (newIdentity);
 
     setCurrentPage (new RegisterWithWEEEMainPage (this));
+  }
+
+  public String getEidasAttributes () {
+
+    return eidasAttributes;
+  }
+
+  public void setEidasAttributes (String eidasAttributes) {
+
+    this.eidasAttributes = eidasAttributes;
   }
 }

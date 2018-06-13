@@ -6,8 +6,12 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
 import eu.toop.demoui.bean.NewCompany;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NewCompanyForm extends FormLayout {
+
+  private static final Logger logger = LoggerFactory.getLogger (NewCompanyForm.class);
 
   private final Binder<NewCompany> binder = new Binder<> ();
   private NewCompany newCompany;
@@ -48,7 +52,7 @@ public class NewCompanyForm extends FormLayout {
     try {
       binder.writeBean (newCompany);
     } catch (ValidationException e) {
-      e.printStackTrace ();
+      logger.error ("Failed to write to 'newCompany' bean");
     }
   }
 }
