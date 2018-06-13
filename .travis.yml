@@ -1,3 +1,5 @@
+dist: trusty
+sudo: required
 language: java
 
 env:
@@ -8,6 +10,16 @@ vYDryqhT9ODVkMQFlxNFj2A3tBab/KvzpPITUj7T/EF7FgwqyoMjqWV3V2F+VMY1EA3Vfo12kY9tJsei
 yfy2K29lWsZmkOVa1iLR7fOwITz+4cum9TJ7/vDbwhVKd0AHDqx/GowbF3I6B0XniJG73CTzDrWTmYOFLGXr6fbu/YPz4lUBXqgJeWpDRgpRvSScQO7K1iKEIIiArBqE/zzIwPSXOmdJjPhDkeAfOPLgyoqmvazZ
 /xJN/6mtQCBYfpzMREXApd4NlxsZWPkuMfia4aPPcjwjx1ManQmU48NwTD7yTFRf9nB8+jQSYQiD8fi1x4YzLRwW0hoRJ0WZfxnXfqA5nMZXQsfhn+B1PZJiVdTfw+EYpYByyN7AOgu7ysJdv5pW+yjidIenxhoL
 Ayb8KKMk2XlShXeESIgO+jndVa/0zcAesk8/uMSyRu2pa8Rlp72Vcs="
+
+addons:
+  sonarcloud:
+    organization: "toop4eu"
+    token:
+      secure: "puW+mUcA+ejZbC2YsdN0ZqaPJgEUZRQCPGYzakVUiBQmpcILc2xdNBxsP4/ZK1qeZf7NbvCL5UTv93fXOvt9zRcRUm0005k7uKjBx7Zp/t5v1Qnu/b1vNvjVQo4Zw0lhXohTPcFrISAPC67hO7wM0
+ThhgnVvjtOwBN9Dpy3tFv7cTzutTRue17OhlwYpiLsgYBNv9C8QvvBFZUq65slg/g0ihimgN1gyAcKQ4l02dOMBTijNay063ozzw7TdGkmTuaGffED2msjrohf2wta/gJDkftUbxqPsGLVW43kHh4uwpqFwVkl1V
+pffc4SxFMlvowcm0enmY2MQBUTLAquV/UWhjF8ubtHjyx/TY2836xmiQ7mAL5HOtLnDP9Nh93U5eDQ0UzuaENg+iCpqqtqA7QEuAgw3NXtj1U54VywhwJXrsjDHnr23Dl4mH4VZLA7cEroFgjtATNwIDPvXIJGkE
+5LPzINdcBN34iH1/tchk/+ru2/dnqh/6HfsV6PgaTrUUuWNyovDoa874jz2Lcp2d6i+/t4KiTUjJiYlqVivWlfsapbsWbBttkVU6ICnHiWoK15J1103/VFPFjDiwBgZDiiQnAnbfygsDjtJovvhsajMGcdGi6yam
+eGqrGDa/s6i2CCE+Hb3kldUYRKOmbOmobNoSmRK0ZDZx4eVWlbw4eI="
    
 jdk:
   - oraclejdk8
@@ -16,7 +28,7 @@ install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -U -P jdeps
 
 script:
-  -  mvn test -B -P coverage
+  -  mvn test -B -P coverage sonar:sonar
   
 cache:
   directories:
