@@ -48,7 +48,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
         @Override
         public void onSelfProvide () {
           toopButton.setEnabled (false);
-          addMainCompanyForm ();
+          _view.setCurrentPage (new ManualDataEntry (_view));
         }
       };
     });
@@ -73,6 +73,16 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
       mainCompanyForm.save ();
       //_view.setCurrentPage (new RegisterWithWEEENewDetailsPage (_view));
       _view.setCurrentPage (new SuccessPage (_view));
+    });
+
+    final Button gotoManualDataEntryButton = new Button("I do not wish this information to be used");
+    gotoManualDataEntryButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    gotoManualDataEntryButton.addStyleName (" freedonia");
+    gotoManualDataEntryButton.addStyleName (" gotoManualDataEntryButton");
+    addComponent (gotoManualDataEntryButton, "gotoManualDataEntryButton");
+    gotoManualDataEntryButton.addClickListener ((event) -> {
+
+      _view.setCurrentPage (new ManualDataEntry (_view));
     });
   }
 }
