@@ -18,10 +18,9 @@ public class TradeLicensesAndRegistrationsPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_LINK);
     nextButton.setSizeUndefined ();
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener ((event) -> {
-
+    nextButton.addClickListener (event -> {
       nextButton.setCaption ("clicked");
-      view.setCurrentPage (new ChooseAuthenticationMethodPage (view));
+      view.setCurrentPage (new ChooseAuthenticationMethodPage ());
     });
   }
 }

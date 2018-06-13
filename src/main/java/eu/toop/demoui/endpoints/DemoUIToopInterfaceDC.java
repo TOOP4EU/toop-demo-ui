@@ -34,11 +34,11 @@ import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
-  private final UI _ui;
+  private final UI ui;
 
   public DemoUIToopInterfaceDC (final UI ui) {
 
-    this._ui = ui;
+    this.ui = ui;
   }
 
   public void onToopResponse (@Nonnull final TDETOOPResponseType aResponse) throws IOException {
@@ -55,7 +55,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
     // Push a new organization bean to the UI
     try {
-      _ui.access ( () -> {
+      ui.access ( () -> {
 
         final UI threadUI = UI.getCurrent ();
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Current UI: " + threadUI);
@@ -128,9 +128,10 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                     bean.setActivityDeclaration (aValue);
                   } else if (sourceConceptName.equals ("FreedoniaRegistrationAuthority")) {
                     bean.setRegistrationAuthority (aValue);
-                  } else
+                  } else {
                     ToopKafkaClient.send (EErrorLevel.WARN, () -> sLogPrefix + "Unsupported source concept name: '"
-                                                                  + sourceConceptName + "'");
+                        + sourceConceptName + "'");
+                  }
                 }
               }
             }

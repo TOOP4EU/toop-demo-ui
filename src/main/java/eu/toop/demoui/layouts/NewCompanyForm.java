@@ -41,10 +41,10 @@ public class NewCompanyForm extends FormLayout {
     setNewCompanyBean (newCompany);
   }
 
-  public void setNewCompanyBean (final NewCompany _newCompany) {
+  public void setNewCompanyBean (final NewCompany newCompany) {
 
-    newCompany = _newCompany;
-    binder.readBean (newCompany);
+    this.newCompany = newCompany;
+    binder.readBean (this.newCompany);
   }
 
   public void save () {

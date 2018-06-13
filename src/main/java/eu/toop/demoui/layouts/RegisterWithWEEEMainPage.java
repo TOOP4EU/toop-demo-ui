@@ -9,19 +9,17 @@ import eu.toop.demoui.view.BaseView;
 
 public class RegisterWithWEEEMainPage extends CustomLayout {
 
-  private final BaseView _view;
+  private final BaseView view;
   private final ProgressBar spinner = new ProgressBar ();
 
   public RegisterWithWEEEMainPage (final BaseView view) {
 
     super ("RegisterWithWEEEMainPage");
-    _view = view;
+    this.view = view;
 
     setHeight ("100%");
 
-    final IdentityForm identityForm = new IdentityForm (view.getIdentity (), true, clickEvent -> {
-
-    });
+    final IdentityForm identityForm = new IdentityForm (view.getIdentity (), true);
     addComponent (identityForm, "identityForm");
 
     final Button toopButton = new Button ("Get company info");
@@ -37,7 +35,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
 
     toopButton.addClickListener ((event) -> {
 
-      final ConfirmToopDataFetchingPage consentWindow = new ConfirmToopDataFetchingPage (view) {
+      new ConfirmToopDataFetchingPage (view) {
         @Override
         public void onConsent () {
           // Show a loading icon while toop data is being retrieved.
@@ -48,7 +46,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
         @Override
         public void onSelfProvide () {
           toopButton.setEnabled (false);
-          _view.setCurrentPage (new ManualDataEntry (_view));
+          RegisterWithWEEEMainPage.this.view.setCurrentPage (new ManualDataEntry (RegisterWithWEEEMainPage.this.view));
         }
       };
     });
@@ -58,21 +56,21 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
 
     spinner.setVisible (false);
 
-    final MainCompanyForm mainCompanyForm = new MainCompanyForm (_view.getMainCompany (), false, null);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), false, null);
 
     final BaseForm baseForm = new BaseForm (mainCompanyForm, "Preview of company details");
     addComponent (baseForm, "mainCompanyForm");
-    _view.setMainCompanyForm (mainCompanyForm);
+    view.setMainCompanyForm (mainCompanyForm);
 
     final Button nextButton = new Button ("I have previewed this information and want to proceed");
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener ((event) -> {
+    nextButton.addClickListener (event -> {
 
       mainCompanyForm.save ();
-      //_view.setCurrentPage (new RegisterWithWEEENewDetailsPage (_view));
-      _view.setCurrentPage (new SuccessPage (_view));
+      //view.setCurrentPage (new RegisterWithWEEENewDetailsPage (view));
+      view.setCurrentPage (new SuccessPage (view));
     });
 
     final Button gotoManualDataEntryButton = new Button("I do not wish this information to be used");
@@ -80,9 +78,6 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     gotoManualDataEntryButton.addStyleName (" freedonia");
     gotoManualDataEntryButton.addStyleName (" gotoManualDataEntryButton");
     addComponent (gotoManualDataEntryButton, "gotoManualDataEntryButton");
-    gotoManualDataEntryButton.addClickListener ((event) -> {
-
-      _view.setCurrentPage (new ManualDataEntry (_view));
-    });
+    gotoManualDataEntryButton.addClickListener (event -> view.setCurrentPage (new ManualDataEntry (view)));
   }
 }

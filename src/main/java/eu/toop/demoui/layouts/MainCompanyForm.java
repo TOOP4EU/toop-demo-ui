@@ -35,9 +35,9 @@ public class MainCompanyForm extends FormLayout {
   public MainCompanyForm (final MainCompany mainCompany, final boolean readOnly, final Button.ClickListener onSubmit) {
 
     final TextField addressField = new TextField ("Address:");
-    final TextField SSNumberField = new TextField ("SS Number:");
+    final TextField ssNumberField = new TextField ("SS Number:");
     final TextField businessCodeField = new TextField ("Company Code:");
-    final TextField VATNumberField = new TextField ("VAT Number:");
+    final TextField vatNumberField = new TextField ("VAT Number:");
     final TextField companyTypeField = new TextField ("Company Type:");
     final TextField legalStatusField = new TextField ("Legal Status:");
     final TextField legalStatusEffectiveDateField = new TextField ("Legal Status Effective Date:");
@@ -49,9 +49,9 @@ public class MainCompanyForm extends FormLayout {
     final TextField registrationAuthorityField = new TextField ("Registration Authority:");
 
     binder.bind (addressField, MainCompany::getAddress, MainCompany::setAddress);
-    binder.bind (SSNumberField, MainCompany::getSSNumber, MainCompany::setSSNumber);
+    binder.bind (ssNumberField, MainCompany::getSSNumber, MainCompany::setSSNumber);
     binder.bind (businessCodeField, MainCompany::getBusinessCode, MainCompany::setBusinessCode);
-    binder.bind (VATNumberField, MainCompany::getVATNumber, MainCompany::setVATNumber);
+    binder.bind (vatNumberField, MainCompany::getVATNumber, MainCompany::setVATNumber);
     binder.bind (companyTypeField, MainCompany::getCompanyType, MainCompany::setCompanyType);
     binder.bind (legalStatusField, MainCompany::getLegalStatus, MainCompany::setLegalStatus);
     binder.bind (legalStatusEffectiveDateField, MainCompany::getLegalStatusEffectiveDate, MainCompany::setLegalStatusEffectiveDate);
@@ -63,9 +63,9 @@ public class MainCompanyForm extends FormLayout {
     binder.bind (registrationAuthorityField, MainCompany::getRegistrationAuthority, MainCompany::setRegistrationAuthority);
 
     addressField.setReadOnly (readOnly);
-    SSNumberField.setReadOnly (readOnly);
+    ssNumberField.setReadOnly (readOnly);
     businessCodeField.setReadOnly (readOnly);
-    VATNumberField.setReadOnly (readOnly);
+    vatNumberField.setReadOnly (readOnly);
     companyTypeField.setReadOnly (readOnly);
     legalStatusField.setReadOnly (readOnly);
     legalStatusEffectiveDateField.setReadOnly (readOnly);
@@ -77,9 +77,9 @@ public class MainCompanyForm extends FormLayout {
     registrationAuthorityField.setReadOnly (readOnly);
 
     addComponent (addressField);
-    addComponent (SSNumberField);
+    addComponent (ssNumberField);
     addComponent (businessCodeField);
-    addComponent (VATNumberField);
+    addComponent (vatNumberField);
     addComponent (companyTypeField);
     addComponent (legalStatusField);
     addComponent (legalStatusEffectiveDateField);
@@ -93,10 +93,10 @@ public class MainCompanyForm extends FormLayout {
     setOrganizationBean (mainCompany);
   }
 
-  public void setOrganizationBean (final MainCompany _mainCompany) {
+  public void setOrganizationBean (final MainCompany mainCompany) {
 
-    mainCompany = _mainCompany;
-    binder.readBean (mainCompany);
+    this.mainCompany = mainCompany;
+    binder.readBean (this.mainCompany);
   }
 
   public void save () {

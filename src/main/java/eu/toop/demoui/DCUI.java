@@ -44,9 +44,6 @@ import eu.toop.kafkaclient.ToopKafkaClient;
 @Theme ("DCUITheme")
 public class DCUI extends UI {
 
-  private Navigator navigator;
-  private PhaseTwo phaseTwo;
-
   @Override
   protected void init (final VaadinRequest vaadinRequest) {
 
@@ -66,13 +63,13 @@ public class DCUI extends UI {
     getPage ().setTitle ("TOOP Demo User Interface");
 
     ToopInterfaceManager.setInterfaceDC (new DemoUIToopInterfaceDC (this));
-    ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP (this));
+    ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP ());
     ToopKafkaClient.setKafkaEnabled (true);
 
-    navigator = new Navigator (this, this);
+    Navigator navigator = new Navigator (this, this);
     navigator.addView ("", new PhaseOne ());
     navigator.addView ("PhaseOne", new PhaseOne ());
-    phaseTwo = new PhaseTwo ();
+    PhaseTwo phaseTwo = new PhaseTwo ();
     navigator.addView ("loginSuccess", phaseTwo);
     navigator.addView ("test", new TestView ());
 

@@ -1,7 +1,6 @@
 package eu.toop.demoui.fields;
 
 import com.vaadin.ui.*;
-import eu.toop.commons.jaxb.ToopXSDHelper;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 
 public class IdentifierTypeField extends CustomField<IdentifierType> {

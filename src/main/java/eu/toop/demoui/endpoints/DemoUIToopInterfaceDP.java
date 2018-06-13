@@ -40,11 +40,9 @@ import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
-  private final UI _ui;
 
-  public DemoUIToopInterfaceDP (final UI ui) {
+  public DemoUIToopInterfaceDP () {
 
-    this._ui = ui;
   }
 
   private static boolean _canUseConcept (@Nonnull final TDEConceptRequestType aConcept) {
@@ -175,21 +173,25 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
       if (_canUseConcept (aFirstLevelConcept)) {
         _searchAndApplyValue (aFirstLevelConcept);
-      } else
-        for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ())
+      } else {
+        for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
           if (_canUseConcept (aSecondLevelConcept)) {
             _searchAndApplyValue (aSecondLevelConcept);
-          } else
-            for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ())
+          } else {
+            for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
               if (_canUseConcept (aThirdLevelConcept)) {
                 _applyStaticDataset (aThirdLevelConcept);
                 // _searchAndApplyValue (aThirdLevelConcept);
               } else {
                 // 3 level nesting is maximum
                 ToopKafkaClient.send (EErrorLevel.ERROR,
-                                      () -> sLogPrefix + "A third level concept that is unusable - weird: "
-                                            + aThirdLevelConcept);
+                    () -> sLogPrefix + "A third level concept that is unusable - weird: "
+                        + aThirdLevelConcept);
               }
+            }
+          }
+        }
+      }
     }
 
     // send back to toop-connector at /from-dp

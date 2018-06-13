@@ -13,7 +13,7 @@ import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class ChooseAuthenticationMethodPage extends CustomLayout {
 
-  public ChooseAuthenticationMethodPage (final BaseView view) {
+  public ChooseAuthenticationMethodPage () {
 
     super ("ChooseAuthenticationMethodPage");
 
@@ -28,7 +28,7 @@ public class ChooseAuthenticationMethodPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia-auth-method-button");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener ((even) -> {
+    nextButton.addClickListener (event -> {
 
       ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Redirecting to eID Module for authentication");
 

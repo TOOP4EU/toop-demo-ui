@@ -26,15 +26,16 @@ public class PhaseTwo extends BaseView {
     for (JsonElement element : attr) {
       JsonObject jsonObj = element.getAsJsonObject ();
 
-      if (jsonObj.get ("friendlyName").getAsString ().equals ("personIdentifier")) {
+      final String friendlyName = jsonObj.get ("friendlyName").getAsString ();
+      if (friendlyName.equals ("personIdentifier")) {
         newIdentity.setIdentifier (jsonObj.get ("value").getAsString ());
         ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Identifier: " + newIdentity.getIdentifier ());
       }
-      if (jsonObj.get ("friendlyName").getAsString ().equals ("firstName")) {
+      if (friendlyName.equals ("firstName")) {
         newIdentity.setFirstName (jsonObj.get ("value").getAsString ());
         ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID First name: " + newIdentity.getFirstName ());
       }
-      if (jsonObj.get ("friendlyName").getAsString ().equals ("familyName")) {
+      if (friendlyName.equals ("familyName")) {
         newIdentity.setFamilyName (jsonObj.get ("value").getAsString ());
         ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Family name: " + newIdentity.getFamilyName ());
       }

@@ -20,8 +20,7 @@ public class RegisterWithWEEENewDetailsPage extends CustomLayout {
     nextButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     nextButton.addStyleName (" freedonia");
     addComponent (nextButton, "nextButton");
-    nextButton.addClickListener ((event) -> {
-
+    nextButton.addClickListener (event -> {
       newCompanyForm.save ();
       view.setCurrentPage (new ReviewPage (view));
     });

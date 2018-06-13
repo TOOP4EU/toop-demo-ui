@@ -34,7 +34,7 @@ public class IdentityForm extends FormLayout {
 
   private Identity identity;
 
-  public IdentityForm (final Identity identity, final boolean readOnly, final Button.ClickListener onSubmit) {
+  public IdentityForm (final Identity identity, final boolean readOnly) {
 
     final TextField firstNameField = new TextField ("First name");
     final TextField familyNameField = new TextField ("Family Name");
@@ -67,10 +67,10 @@ public class IdentityForm extends FormLayout {
     setIdentityBean (identity);
   }
 
-  public void setIdentityBean (final Identity _identity) {
+  public void setIdentityBean (final Identity identity) {
 
-    identity = _identity;
-    binder.readBean (identity);
+    this.identity = identity;
+    binder.readBean (this.identity);
   }
 
   public void save () {

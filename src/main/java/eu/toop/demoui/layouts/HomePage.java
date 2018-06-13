@@ -12,10 +12,8 @@ public class HomePage extends CustomLayout {
 
     setHeight ("100%");
 
-    final ClickableLayout serviceChoicePanel = new ClickableLayout ( (event) -> {
-
-        view.setCurrentPage (new BusinessServicesPage (view));
-    });
+    final ClickableLayout serviceChoicePanel = new ClickableLayout ( event ->
+        view.setCurrentPage (new BusinessServicesPage (view)));
     serviceChoicePanel.addComponent (new ServiceChoicePanel ("BUSINESS SERVICES"));
     addComponent (serviceChoicePanel, "serviceChoicePanel");
   }

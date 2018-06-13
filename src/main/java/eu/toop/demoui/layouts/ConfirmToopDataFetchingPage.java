@@ -2,7 +2,6 @@ package eu.toop.demoui.layouts;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +13,6 @@ import eu.toop.commons.dataexchange.TDEAddressType;
 import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.TDENaturalPersonType;
 import eu.toop.demoui.view.BaseView;
-import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.CodeType;
-import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
-import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
@@ -26,18 +20,10 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
-import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
-import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 public class ConfirmToopDataFetchingPage extends Window {
   public ConfirmToopDataFetchingPage (final BaseView view) {
@@ -57,7 +43,7 @@ public class ConfirmToopDataFetchingPage extends Window {
     final ConfirmToopDataFetchingTable confirmToopDataFetchingTable = new ConfirmToopDataFetchingTable ();
     subContent.addComponent (confirmToopDataFetchingTable);
 
-    final Button proceedButton = new Button ("Please request this information through TOOP", (event) -> {
+    final Button proceedButton = new Button ("Please request this information through TOOP", event -> {
       onConsent ();
       subWindow.close ();
 
@@ -123,7 +109,7 @@ public class ConfirmToopDataFetchingPage extends Window {
     proceedButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     proceedButton.addStyleName ("ConsentAgreeButton");
 
-    final Button cancelButton = new Button ("Thanks, I will provide this information myself", (event) -> {
+    final Button cancelButton = new Button ("Thanks, I will provide this information myself", event -> {
       onSelfProvide ();
       subWindow.close ();
     });
@@ -141,10 +127,10 @@ public class ConfirmToopDataFetchingPage extends Window {
   }
 
   protected void onConsent () {
-
+    // The user may override this method to execute their own code when the user click on the 'consent'-button.
   }
 
   protected void onSelfProvide () {
-
+    // The user may override this method to execute their own code when the user click on the 'self-provide'-button.
   }
 }

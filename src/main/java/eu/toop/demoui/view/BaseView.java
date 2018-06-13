@@ -10,7 +10,7 @@ import eu.toop.demoui.layouts.MainCompanyForm;
 
 public class BaseView extends CustomLayout implements View {
 
-  private AbstractLayout _page;
+  private AbstractLayout page;
   private Identity identity = new Identity ();
   private MainCompany mainCompany = new MainCompany ();
   private NewCompany newCompany = new NewCompany ();
@@ -25,17 +25,17 @@ public class BaseView extends CustomLayout implements View {
 
   public void setCurrentPage (AbstractLayout page) {
 
-    if (_page != null) {
-      replaceComponent (_page, page);
+    if (this.page != null) {
+      replaceComponent (this.page, page);
     } else {
       addComponent (page, "page");
     }
-    _page = page;
+    this.page = page;
   }
 
   public AbstractLayout getCurrentPage () {
 
-    return _page;
+    return page;
   }
 
   public Identity getIdentity () {

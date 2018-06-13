@@ -25,10 +25,6 @@ public class Identity implements java.io.Serializable {
   private String identifier;
   private String nationality;
 
-  public Identity () {
-
-  }
-
   public String getFirstName () {
 
     return firstName;

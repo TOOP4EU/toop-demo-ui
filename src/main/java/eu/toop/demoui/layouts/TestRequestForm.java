@@ -10,16 +10,11 @@ import eu.toop.demoui.bean.TestRequest;
 import eu.toop.demoui.fields.IdentifierTypeField;
 
 import eu.toop.commons.jaxb.ToopXSDHelper;
-import eu.toop.iface.ToopInterfaceClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class TestRequestForm extends FormLayout {
-
-  private Binder<TestRequest> binder = new Binder<> ();
 
   public TestRequestForm(final TestRequest testRequest, final boolean readOnly, final Button.ClickListener onSubmit) {
 
@@ -41,20 +36,21 @@ public class TestRequestForm extends FormLayout {
     toopProcessList.add(EPredefinedProcessIdentifier.DATAREQUESTRESPONSE);
     toopProcessList.add(EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE);
 
+    final String conceptNamespace =  "http://example.register.fre/freedonia-business-register";
     List<ConceptValue> conceptValueList = new ArrayList<> ();
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaAddress"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaSSNumber"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaBusinessCode"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaVATNumber"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaCompanyType"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaRegistrationDate"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaRegistrationNumber"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaCompanyName"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaCompanyNaceCode"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaActivityDeclaration"));
-    conceptValueList.add(new ConceptValue ("http://example.register.fre/freedonia-business-register", "FreedoniaRegistrationAuthority"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaAddress"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaSSNumber"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaBusinessCode"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaVATNumber"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaCompanyType"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaRegistrationDate"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaRegistrationNumber"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaCompanyName"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaCompanyNaceCode"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaActivityDeclaration"));
+    conceptValueList.add(new ConceptValue (conceptNamespace, "FreedoniaRegistrationAuthority"));
 
-    final IdentityForm identityForm = new IdentityForm(identity, false, null);
+    final IdentityForm identityForm = new IdentityForm(identity, false);
     identityForm.setCaption ("Identity");
     addComponent (identityForm);
 

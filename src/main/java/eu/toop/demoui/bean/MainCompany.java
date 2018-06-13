@@ -20,9 +20,9 @@ import java.io.Serializable;
 public class MainCompany implements Serializable {
 
   private String address;
-  private String SSNumber;
+  private String ssNumber;
   private String businessCode;
-  private String VATNumber;
+  private String vatNumber;
   private String companyType;
   private String legalStatus;
   private String legalStatusEffectiveDate;
@@ -45,12 +45,12 @@ public class MainCompany implements Serializable {
 
   public String getSSNumber () {
 
-    return SSNumber;
+    return ssNumber;
   }
 
-  public void setSSNumber (String SSNumber) {
+  public void setSSNumber (String ssNumber) {
 
-    this.SSNumber = SSNumber;
+    this.ssNumber = ssNumber;
   }
 
   public String getBusinessCode () {
@@ -65,12 +65,12 @@ public class MainCompany implements Serializable {
 
   public String getVATNumber () {
 
-    return VATNumber;
+    return vatNumber;
   }
 
-  public void setVATNumber (String VATNumber) {
+  public void setVATNumber (String vatNumber) {
 
-    this.VATNumber = VATNumber;
+    this.vatNumber = vatNumber;
   }
 
   public String getCompanyType () {
