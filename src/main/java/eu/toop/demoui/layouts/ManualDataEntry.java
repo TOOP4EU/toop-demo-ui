@@ -34,7 +34,7 @@ public class ManualDataEntry extends CustomLayout {
 
   public void addMainCompanyForm () {
 
-    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), false, null);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), false);
 
     final BaseForm baseForm = new BaseForm (mainCompanyForm, "Enter company details");
     addComponent (baseForm, "mainCompanyForm");
@@ -49,5 +49,9 @@ public class ManualDataEntry extends CustomLayout {
       //view.setCurrentPage (new RegisterWithWEEENewDetailsPage (view));
       view.setCurrentPage (new SuccessPage (view));
     });
+  }
+
+  public boolean equals(Object obj) {
+    return super.equals (obj);
   }
 }

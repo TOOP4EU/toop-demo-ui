@@ -57,7 +57,7 @@ public class MainCompanyFormTest {
     mainCompany.setSSNumber (ssNumber);
     mainCompany.setVATNumber (vatNumber);
 
-    final MainCompanyForm mainCompanyForm = new MainCompanyForm (mainCompany, false, null);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (mainCompany, false);
 
     for (Iterator<Component> iterator = mainCompanyForm.iterator(); iterator.hasNext();) {
       Component comp = (Component) iterator.next();

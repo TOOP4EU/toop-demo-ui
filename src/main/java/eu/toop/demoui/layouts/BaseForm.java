@@ -12,4 +12,8 @@ public class BaseForm extends CustomLayout {
     addComponent (new Label (title), "title");
     addComponent (form, "form");
   }
+
+  public boolean equals(Object obj) {
+    return super.equals (obj);
+  }
 }

@@ -27,16 +27,18 @@ public class PhaseTwo extends BaseView {
       JsonObject jsonObj = element.getAsJsonObject ();
 
       final String friendlyName = jsonObj.get ("friendlyName").getAsString ();
+      final String value = jsonObj.get ("value").getAsString ();
+
       if (friendlyName.equals ("personIdentifier")) {
-        newIdentity.setIdentifier (jsonObj.get ("value").getAsString ());
+        newIdentity.setIdentifier (value);
         ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Identifier: " + newIdentity.getIdentifier ());
       }
       if (friendlyName.equals ("firstName")) {
-        newIdentity.setFirstName (jsonObj.get ("value").getAsString ());
+        newIdentity.setFirstName (value);
         ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID First name: " + newIdentity.getFirstName ());
       }
       if (friendlyName.equals ("familyName")) {
-        newIdentity.setFamilyName (jsonObj.get ("value").getAsString ());
+        newIdentity.setFamilyName (value);
         ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Family name: " + newIdentity.getFamilyName ());
       }
     }
@@ -53,5 +55,9 @@ public class PhaseTwo extends BaseView {
   public void setEidasAttributes (String eidasAttributes) {
 
     this.eidasAttributes = eidasAttributes;
+  }
+
+  public boolean equals(Object obj) {
+    return super.equals (obj);
   }
 }

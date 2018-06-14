@@ -27,7 +27,6 @@ import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
 import eu.toop.demoui.view.PhaseOne;
 import eu.toop.demoui.view.PhaseTwo;
-import eu.toop.demoui.view.TestView;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
@@ -71,7 +70,6 @@ public class DCUI extends UI {
     navigator.addView ("PhaseOne", new PhaseOne ());
     PhaseTwo phaseTwo = new PhaseTwo ();
     navigator.addView ("loginSuccess", phaseTwo);
-    navigator.addView ("test", new TestView ());
 
     String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
     if (eidasAttributes != null) {

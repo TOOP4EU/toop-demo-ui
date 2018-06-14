@@ -81,4 +81,8 @@ public class IdentityForm extends FormLayout {
       logger.error ("Failed to write to 'identity' bean");
     }
   }
+
+  public boolean equals(Object obj) {
+    return super.equals (obj);
+  }
 }

@@ -77,4 +77,8 @@ public class BaseView extends CustomLayout implements View {
 
     this.mainCompanyForm = mainCompanyForm;
   }
+
+  public boolean equals(Object obj) {
+    return super.equals (obj);
+  }
 }

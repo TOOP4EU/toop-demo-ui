@@ -32,7 +32,7 @@ public class MainCompanyForm extends FormLayout {
   private final Binder<MainCompany> binder = new Binder<> ();
   private MainCompany mainCompany;
 
-  public MainCompanyForm (final MainCompany mainCompany, final boolean readOnly, final Button.ClickListener onSubmit) {
+  public MainCompanyForm (final MainCompany mainCompany, final boolean readOnly) {
 
     final TextField addressField = new TextField ("Address");
     final TextField ssNumberField = new TextField ("SS number");
@@ -106,5 +106,9 @@ public class MainCompanyForm extends FormLayout {
     } catch (final ValidationException e) {
       logger.error ("Failed to write to 'mainCompany' bean");
     }
+  }
+
+  public boolean equals(Object obj) {
+    return super.equals (obj);
   }
 }

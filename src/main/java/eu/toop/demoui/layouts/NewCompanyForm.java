@@ -55,4 +55,8 @@ public class NewCompanyForm extends FormLayout {
       logger.error ("Failed to write to 'newCompany' bean");
     }
   }
+
+  public boolean equals(Object obj) {
+    return super.equals (obj);
+  }
 }
