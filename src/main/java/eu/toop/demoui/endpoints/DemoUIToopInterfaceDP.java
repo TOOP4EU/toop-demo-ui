@@ -16,7 +16,6 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,7 +120,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     return aResponse;
   }
 
-  private void applyConceptValues (final TDEDataElementRequestType aDER, final String sLogPrefix) {
+  private static void applyConceptValues (final TDEDataElementRequestType aDER, final String sLogPrefix) {
 
     final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
     if (aFirstLevelConcept != null) {
