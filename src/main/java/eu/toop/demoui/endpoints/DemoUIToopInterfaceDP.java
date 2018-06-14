@@ -17,6 +17,8 @@ package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -45,29 +47,6 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     return aConcept.hasNoConceptRequestEntries () && "DP".equals (aConcept.getConceptTypeCode ().getValue ());
   }
 
-  private static void _searchAndApplyValue (@Nonnull final TDEConceptRequestType aConcept) {
-
-    final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
-    // Whatsoever
-    aValue.setAlternativeResponseIndicator (ToopXSDHelper.createIndicator (false));
-    if (Math.random () < 0.1) {
-      // Dummy error
-      aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
-      aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP"));
-    } else {
-      // Dummy no error
-      // Default value for error does not work
-      aValue.setErrorIndicator (ToopXSDHelper.createIndicator (false));
-      if (Math.random () < 0.3)
-        aValue.setResponseNumeric (ToopXSDHelper.createNumeric (BigDecimal.valueOf (Math.random () * 100)));
-      else if (Math.random () < 0.5)
-        aValue.setResponseIdentifier (ToopXSDHelper.createIdentifier ("DemoDP-Identifier-" + Math.random ()));
-      else
-        aValue.setResponseCode (ToopXSDHelper.createCode ("DemoDP-Code-" + Math.random ()));
-    }
-    aConcept.getDataElementResponseValue ().add (aValue);
-  }
-
   private static void _applyStaticDataset (@Nonnull final TDEConceptRequestType aConcept) {
 
     final TextType conceptName = aConcept.getConceptName ();
@@ -76,36 +55,25 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     aValue.setAlternativeResponseIndicator (ToopXSDHelper.createIndicator (false));
     aValue.setErrorIndicator (ToopXSDHelper.createIndicator (false));
 
+    final Map<String, String> conceptValues = new HashMap<> ();
+    conceptValues.put("EloniaAddress", "Gamlavegen 234, 321 44, Velma, Elonia");
+    conceptValues.put("EloniaBusinessCode", "JF 234556-6213");
+    conceptValues.put("EloniaCompanyType", "Limited");
+    conceptValues.put("EloniaRegistrationDate", "2012-01-12");
+    conceptValues.put("EloniaCompanyName", "Zizi mat");
+    conceptValues.put("EloniaCompanyNaceCode", "C27.9");
+    conceptValues.put("EloniaActivityDeclaration", "Manufacture of other electrical equipment");
+    conceptValues.put("EloniaRegistrationAuthority", "Elonia Tax Agency");
+
     if (conceptName != null && conceptName.getValue () != null) {
-      switch (conceptName.getValue ()) {
-      case "EloniaAddress":
-        aValue.setResponseDescription (ToopXSDHelper.createText ("Gamlavegen 234, 321 44, Velma, Elonia"));
-        break;
-      case "EloniaBusinessCode":
-        aValue.setResponseDescription (ToopXSDHelper.createText ("JF 234556-6213"));
-        break;
-      case "EloniaCompanyType":
-        aValue.setResponseDescription (ToopXSDHelper.createText ("Limited"));
-        break;
-      case "EloniaRegistrationDate":
-        aValue.setResponseDescription (ToopXSDHelper.createText ("2012-01-12"));
-        break;
-      case "EloniaCompanyName":
-        aValue.setResponseDescription (ToopXSDHelper.createText ("Zizi mat"));
-        break;
-      case "EloniaCompanyNaceCode":
-        aValue.setResponseDescription (ToopXSDHelper.createText ("C27.9"));
-        break;
-      case "EloniaActivityDeclaration":
-        aValue.setResponseDescription (ToopXSDHelper.createText ("Manufacture of other electrical equipment"));
-        break;
-      case "EloniaRegistrationAuthority":
-        aValue.setResponseDescription (ToopXSDHelper.createText ("Elonia Tax Agency"));
-        break;
-      default:
+
+      if (conceptValues.containsKey (conceptName.getValue ())) {
+        aValue.setResponseDescription (ToopXSDHelper.createText (conceptValues.get(conceptName.getValue ())));
+      } else {
         aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
         aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP"));
       }
+
       aConcept.getDataElementResponseValue ().add (aValue);
     }
   }
@@ -128,7 +96,6 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     }
 
     // Document type must be switch from request to response
-
     final EPredefinedDocumentTypeIdentifier eRequestDocType = EPredefinedDocumentTypeIdentifier.getFromDocumentTypeIdentifierOrNull (aRequest.getDocumentTypeIdentifier ()
                                                                                                                                              .getSchemeID (),
                                                                                                                                      aRequest.getDocumentTypeIdentifier ()
@@ -154,21 +121,19 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     return aResponse;
   }
 
-  public void applyConceptValuesToResponse (final TDETOOPResponseType aResponse, final String sLogPrefix) {
+  private void applyConceptValues (final TDEDataElementRequestType aDER, final String sLogPrefix) {
 
-    for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
-      final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
-      if (aFirstLevelConcept != null) {
-        for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
-          for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
-            if (_canUseConcept (aThirdLevelConcept)) {
-              _applyStaticDataset (aThirdLevelConcept);
-            } else {
-              // 3 level nesting is maximum
-              ToopKafkaClient.send (EErrorLevel.ERROR,
-                  () -> sLogPrefix + "A third level concept that is unusable - weird: "
-                      + aThirdLevelConcept);
-            }
+    final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
+    if (aFirstLevelConcept != null) {
+      for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
+        for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
+          if (_canUseConcept (aThirdLevelConcept)) {
+            _applyStaticDataset (aThirdLevelConcept);
+          } else {
+            // 3 level nesting is maximum
+            ToopKafkaClient.send (EErrorLevel.ERROR,
+                () -> sLogPrefix + "A third level concept that is unusable - weird: "
+                    + aThirdLevelConcept);
           }
         }
       }
@@ -185,7 +150,9 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     final TDETOOPResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
 
     // add all the mapped values in the response
-    applyConceptValuesToResponse (aResponse, sLogPrefix);
+    for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
+      applyConceptValues (aDER, sLogPrefix);
+    }
 
     // send back to toop-connector at /from-dp
     // The URL must be configured in toop-interface.properties file
