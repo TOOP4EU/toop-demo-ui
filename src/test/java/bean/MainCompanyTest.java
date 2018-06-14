@@ -1,6 +1,7 @@
 package bean;
 
 import eu.toop.demoui.bean.MainCompany;
+import eu.toop.demoui.layouts.IdentityForm;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

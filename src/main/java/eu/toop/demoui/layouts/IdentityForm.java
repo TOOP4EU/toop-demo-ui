@@ -37,7 +37,7 @@ public class IdentityForm extends FormLayout {
   public IdentityForm (final Identity identity, final boolean readOnly) {
 
     final TextField firstNameField = new TextField ("First name");
-    final TextField familyNameField = new TextField ("Family Name");
+    final TextField familyNameField = new TextField ("Family name");
     final TextField birthPlaceField = new TextField ("Birth place");
     final TextField identifierField = new TextField ("Identifier");
     final DateField birthDateField = new DateField ("Birth date");

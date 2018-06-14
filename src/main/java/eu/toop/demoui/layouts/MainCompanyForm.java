@@ -34,19 +34,19 @@ public class MainCompanyForm extends FormLayout {
 
   public MainCompanyForm (final MainCompany mainCompany, final boolean readOnly, final Button.ClickListener onSubmit) {
 
-    final TextField addressField = new TextField ("Address:");
-    final TextField ssNumberField = new TextField ("SS Number:");
-    final TextField businessCodeField = new TextField ("Company Code:");
-    final TextField vatNumberField = new TextField ("VAT Number:");
-    final TextField companyTypeField = new TextField ("Company Type:");
-    final TextField legalStatusField = new TextField ("Legal Status:");
-    final TextField legalStatusEffectiveDateField = new TextField ("Legal Status Effective Date:");
-    final TextField registrationDateField = new TextField ("Registration Date:");
-    final TextField registrationNumberField = new TextField ("Registration Number:");
-    final TextField companyNameField = new TextField ("Company Name:");
-    final TextField companyNaceCodeField = new TextField ("Company Name Code:");
-    final TextField activityDeclarationField = new TextField ("Activity Declaration:");
-    final TextField registrationAuthorityField = new TextField ("Registration Authority:");
+    final TextField addressField = new TextField ("Address");
+    final TextField ssNumberField = new TextField ("SS number");
+    final TextField businessCodeField = new TextField ("Company code");
+    final TextField vatNumberField = new TextField ("VAT number");
+    final TextField companyTypeField = new TextField ("Company type");
+    final TextField legalStatusField = new TextField ("Legal status");
+    final TextField legalStatusEffectiveDateField = new TextField ("Legal status effective date");
+    final TextField registrationDateField = new TextField ("Registration date");
+    final TextField registrationNumberField = new TextField ("Registration number");
+    final TextField companyNameField = new TextField ("Company name");
+    final TextField companyNaceCodeField = new TextField ("Company nace code");
+    final TextField activityDeclarationField = new TextField ("Activity declaration");
+    final TextField registrationAuthorityField = new TextField ("Registration authority");
 
     binder.bind (addressField, MainCompany::getAddress, MainCompany::setAddress);
     binder.bind (ssNumberField, MainCompany::getSSNumber, MainCompany::setSSNumber);
