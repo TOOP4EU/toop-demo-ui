@@ -12,7 +12,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
   private final BaseView view;
   private final ProgressBar spinner = new ProgressBar ();
 
-  private static final String toopButtonStyle = ValoTheme.BUTTON_BORDERLESS + " freedonia";
+  private static final String TOOP_BUTTON_STYLE = ValoTheme.BUTTON_BORDERLESS + " freedonia";
 
   public RegisterWithWEEEMainPage (final BaseView view) {
 
@@ -25,7 +25,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     addComponent (identityForm, "identityForm");
 
     final Button toopButton = new Button ("Get company info");
-    toopButton.addStyleName (toopButtonStyle);
+    toopButton.addStyleName (TOOP_BUTTON_STYLE);
     addComponent (toopButton, "toopButton");
 
     spinner.setStyleName ("spinner");
@@ -63,7 +63,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     view.setMainCompanyForm (mainCompanyForm);
 
     final Button nextButton = new Button ("I have previewed this information and want to proceed");
-    nextButton.addStyleName (toopButtonStyle);
+    nextButton.addStyleName (TOOP_BUTTON_STYLE);
     addComponent (nextButton, "nextButton");
     nextButton.addClickListener (event -> {
 
@@ -73,7 +73,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     });
 
     final Button gotoManualDataEntryButton = new Button("I do not wish this information to be used");
-    gotoManualDataEntryButton.addStyleName (toopButtonStyle);
+    gotoManualDataEntryButton.addStyleName (TOOP_BUTTON_STYLE);
     gotoManualDataEntryButton.addStyleName (" gotoManualDataEntryButton");
     addComponent (gotoManualDataEntryButton, "gotoManualDataEntryButton");
     gotoManualDataEntryButton.addClickListener (event -> view.setCurrentPage (new ManualDataEntry (view)));

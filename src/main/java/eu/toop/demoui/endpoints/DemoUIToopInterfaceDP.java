@@ -40,10 +40,6 @@ import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
-  public DemoUIToopInterfaceDP () {
-
-  }
-
   private static boolean _canUseConcept (@Nonnull final TDEConceptRequestType aConcept) {
     // This class can only deliver to "DP" concept types without child entries
     return aConcept.hasNoConceptRequestEntries () && "DP".equals (aConcept.getConceptTypeCode ().getValue ());
@@ -158,6 +154,27 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     return aResponse;
   }
 
+  public void applyConceptValuesToResponse (final TDETOOPResponseType aResponse, final String sLogPrefix) {
+
+    for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
+      final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
+      if (aFirstLevelConcept != null) {
+        for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
+          for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
+            if (_canUseConcept (aThirdLevelConcept)) {
+              _applyStaticDataset (aThirdLevelConcept);
+            } else {
+              // 3 level nesting is maximum
+              ToopKafkaClient.send (EErrorLevel.ERROR,
+                  () -> sLogPrefix + "A third level concept that is unusable - weird: "
+                      + aThirdLevelConcept);
+            }
+          }
+        }
+      }
+    }
+  }
+
   public void onToopRequest (@Nonnull final TDETOOPRequestType aRequest) throws IOException {
 
     final String sRequestID = aRequest.getDataRequestIdentifier ().getValue ();
@@ -168,30 +185,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     final TDETOOPResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
 
     // add all the mapped values in the response
-    for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
-      final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
-      if (_canUseConcept (aFirstLevelConcept)) {
-        _searchAndApplyValue (aFirstLevelConcept);
-      } else {
-        for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
-          if (_canUseConcept (aSecondLevelConcept)) {
-            _searchAndApplyValue (aSecondLevelConcept);
-          } else {
-            for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
-              if (_canUseConcept (aThirdLevelConcept)) {
-                _applyStaticDataset (aThirdLevelConcept);
-                // _searchAndApplyValue (aThirdLevelConcept);
-              } else {
-                // 3 level nesting is maximum
-                ToopKafkaClient.send (EErrorLevel.ERROR,
-                    () -> sLogPrefix + "A third level concept that is unusable - weird: "
-                        + aThirdLevelConcept);
-              }
-            }
-          }
-        }
-      }
-    }
+    applyConceptValuesToResponse (aResponse, sLogPrefix);
 
     // send back to toop-connector at /from-dp
     // The URL must be configured in toop-interface.properties file

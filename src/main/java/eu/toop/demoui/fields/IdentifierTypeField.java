@@ -51,6 +51,7 @@ public class IdentifierTypeField extends CustomField<IdentifierType> {
     if (identifierType.getValue () != null) value.setValue (identifierType.getValue ());
   }
 
+  @Override
   public boolean equals(Object obj) {
     return super.equals (obj);
   }
