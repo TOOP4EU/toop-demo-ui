@@ -17,4 +17,9 @@ public class BaseForm extends CustomLayout {
   public boolean equals(Object obj) {
     return super.equals (obj);
   }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode ();
+  }
 }
