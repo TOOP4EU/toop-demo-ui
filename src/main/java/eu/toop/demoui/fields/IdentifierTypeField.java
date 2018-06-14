@@ -50,4 +50,8 @@ public class IdentifierTypeField extends CustomField<IdentifierType> {
     if (identifierType.getSchemeAgencyID () != null) schemeAgencyID.setValue (identifierType.getSchemeAgencyID ());
     if (identifierType.getValue () != null) value.setValue (identifierType.getValue ());
   }
+
+  public boolean equals(Object obj) {
+    return super.equals (obj);
+  }
 }

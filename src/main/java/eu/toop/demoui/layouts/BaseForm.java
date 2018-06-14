@@ -13,6 +13,7 @@ public class BaseForm extends CustomLayout {
     addComponent (form, "form");
   }
 
+  @Override
   public boolean equals(Object obj) {
     return super.equals (obj);
   }

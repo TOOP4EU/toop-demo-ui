@@ -9,6 +9,7 @@ public class PhaseOne extends BaseView {
     setCurrentPage (new HomePage (this));
   }
 
+  @Override
   public boolean equals(Object obj) {
     return super.equals (obj);
   }

@@ -51,6 +51,7 @@ public class ManualDataEntry extends CustomLayout {
     });
   }
 
+  @Override
   public boolean equals(Object obj) {
     return super.equals (obj);
   }

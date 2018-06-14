@@ -49,30 +49,22 @@ public class ConfirmToopDataFetchingPage extends Window {
 
       // Send the request to the Message-Processor
       try {
+
+        final String conceptNamespace = "http://example.register.fre/freedonia-business-register";
+
         final List<ConceptValue> conceptList = new ArrayList<> ();
 
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaAddress"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaSSNumber"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaBusinessCode"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaVATNumber"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaCompanyType"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaRegistrationDate"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaRegistrationNumber"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaCompanyName"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaCompanyNaceCode"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaActivityDeclaration"));
-        conceptList.add (new ConceptValue ("http://example.register.fre/freedonia-business-register",
-                                           "FreedoniaRegistrationAuthority"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaAddress"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaSSNumber"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaBusinessCode"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaVATNumber"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaCompanyType"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaRegistrationDate"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaRegistrationNumber"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaCompanyName"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaCompanyNaceCode"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaActivityDeclaration"));
+        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaRegistrationAuthority"));
 
         // Notify the logger and Package-Tracker that we are sending a TOOP Message!
         ToopKafkaClient.send (EErrorLevel.INFO,

@@ -17,7 +17,6 @@ package eu.toop.demoui.layouts;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
@@ -108,6 +107,7 @@ public class MainCompanyForm extends FormLayout {
     }
   }
 
+  @Override
   public boolean equals(Object obj) {
     return super.equals (obj);
   }

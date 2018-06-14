@@ -12,7 +12,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
   private final BaseView view;
   private final ProgressBar spinner = new ProgressBar ();
 
-  private final String toopButtonStyle = ValoTheme.BUTTON_BORDERLESS + " freedonia";
+  private static final String toopButtonStyle = ValoTheme.BUTTON_BORDERLESS + " freedonia";
 
   public RegisterWithWEEEMainPage (final BaseView view) {
 
@@ -79,6 +79,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
     gotoManualDataEntryButton.addClickListener (event -> view.setCurrentPage (new ManualDataEntry (view)));
   }
 
+  @Override
   public boolean equals(Object obj) {
     return super.equals (obj);
   }

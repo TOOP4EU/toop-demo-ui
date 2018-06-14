@@ -57,6 +57,7 @@ public class PhaseTwo extends BaseView {
     this.eidasAttributes = eidasAttributes;
   }
 
+  @Override
   public boolean equals(Object obj) {
     return super.equals (obj);
   }

@@ -56,6 +56,7 @@ public class NewCompanyForm extends FormLayout {
     }
   }
 
+  @Override
   public boolean equals(Object obj) {
     return super.equals (obj);
   }

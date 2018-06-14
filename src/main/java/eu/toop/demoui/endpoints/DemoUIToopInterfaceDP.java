@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import javax.annotation.Nonnull;
 
 import com.helger.commons.error.level.EErrorLevel;
-import com.vaadin.ui.UI;
 
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.ReverseDocumentTypeMapping;
