@@ -16,11 +16,15 @@
 package eu.toop.demoui;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletResponse;
 
+import com.helger.commons.http.CHttpHeader;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
-import com.vaadin.server.*;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
@@ -39,7 +43,6 @@ import eu.toop.kafkaclient.ToopKafkaClient;
  * intended to be overridden to add component to the user interface and
  * initialize non-component functionality.
  */
-@SuppressWarnings ("javadoc")
 @Theme ("DCUITheme")
 public class DCUI extends UI {
 
@@ -47,11 +50,12 @@ public class DCUI extends UI {
   protected void init (final VaadinRequest vaadinRequest) {
 
     // Add a custom request handler
-    VaadinSession.getCurrent ().addRequestHandler ((session, request, response) -> {
+    VaadinSession.getCurrent ().addRequestHandler ( (session, request, response) -> {
 
       if ("/redirectToEidModule".equals (request.getPathInfo ())) {
-        response.setStatus (307); // Temporary Redirect
-        response.setHeader ("Location", "http://193.10.8.213:9086/login"); // Redirect to eID Module
+        response.setStatus (HttpServletResponse.SC_TEMPORARY_REDIRECT);
+        // TODO this should be put in a config file
+        response.setHeader (CHttpHeader.LOCATION, "http://193.10.8.213:9086/login"); // Redirect to eID Module
 
         return true;
       }
@@ -65,13 +69,13 @@ public class DCUI extends UI {
     ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP ());
     ToopKafkaClient.setKafkaEnabled (true);
 
-    Navigator navigator = new Navigator (this, this);
+    final Navigator navigator = new Navigator (this, this);
     navigator.addView ("", new PhaseOne ());
     navigator.addView ("PhaseOne", new PhaseOne ());
-    PhaseTwo phaseTwo = new PhaseTwo ();
+    final PhaseTwo phaseTwo = new PhaseTwo ();
     navigator.addView ("loginSuccess", phaseTwo);
 
-    String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
+    final String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
     if (eidasAttributes != null) {
       phaseTwo.setEidasAttributes (eidasAttributes);
       navigator.navigateTo ("loginSuccess");
@@ -80,14 +84,16 @@ public class DCUI extends UI {
 
   @Override
   public void close () {
-
-    ToopKafkaClient.close ();
-    super.close ();
+    try {
+      ToopKafkaClient.close ();
+    } finally {
+      super.close ();
+    }
   }
 
-  @WebServlet (urlPatterns = {"/ui/*", "/VAADIN/*"}, asyncSupported = true)
+  @WebServlet (urlPatterns = { "/ui/*", "/VAADIN/*" }, asyncSupported = true)
   @VaadinServletConfiguration (ui = DCUI.class, productionMode = false)
   public static class DCUIServlet extends VaadinServlet {
-
+    // empty
   }
 }
