@@ -1,9 +1,10 @@
 package bean;
 
-import eu.toop.demoui.bean.NewCompany;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import eu.toop.demoui.bean.NewCompany;
 
 public class NewCompanyTest {
   @Test

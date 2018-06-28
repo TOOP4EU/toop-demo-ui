@@ -1,10 +1,10 @@
 package bean;
 
-import eu.toop.demoui.bean.MainCompany;
-import eu.toop.demoui.layouts.IdentityForm;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import eu.toop.demoui.bean.MainCompany;
 
 public class MainCompanyTest {
   @Test

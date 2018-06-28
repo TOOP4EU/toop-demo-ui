@@ -1,17 +1,17 @@
 package layouts;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.LocalDate;
+
+import org.junit.jupiter.api.Test;
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.TextField;
+
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.layouts.IdentityForm;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IdentityFormTest {
   @Test
@@ -40,11 +40,9 @@ public class IdentityFormTest {
     identity.setNationality (nationality);
 
     final IdentityForm identityForm = new IdentityForm (identity, false);
-    for (Iterator<Component> iterator = identityForm.iterator(); iterator.hasNext();) {
-      Component comp = (Component) iterator.next();
-
+    for (final Component comp : identityForm) {
       if (comp instanceof TextField) {
-        TextField textField = (TextField)comp;
+        final TextField textField = (TextField)comp;
         switch (textField.getCaption ()) {
           case "First name":
             textField.setValue (newFirstName);
@@ -64,7 +62,7 @@ public class IdentityFormTest {
         }
       }
       if (comp instanceof DateField) {
-        DateField dateField = (DateField)comp;
+        final DateField dateField = (DateField)comp;
         switch (dateField.getCaption ()) {
           case "Birth date":
             dateField.setValue (newBirthDate);
