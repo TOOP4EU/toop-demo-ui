@@ -60,6 +60,7 @@ public class MockRequestToSwedenDPOne extends VerticalLayout implements View {
       conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaCompanyNaceCode"));
       conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaActivityDeclaration"));
       conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaRegistrationAuthority"));
+      conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaLegalStatus"));
 
       // Notify the logger and Package-Tracker that we are sending a TOOP Message!
       ToopKafkaClient.send (EErrorLevel.INFO,
