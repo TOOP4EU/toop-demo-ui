@@ -1,14 +1,14 @@
 package layouts;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.TextField;
-import eu.toop.demoui.bean.MainCompany;
-import eu.toop.demoui.layouts.MainCompanyForm;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.Iterator;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.TextField;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import eu.toop.demoui.bean.MainCompany;
+import eu.toop.demoui.layouts.MainCompanyForm;
 
 public class MainCompanyFormTest {
   @Test
@@ -59,11 +59,9 @@ public class MainCompanyFormTest {
 
     final MainCompanyForm mainCompanyForm = new MainCompanyForm (mainCompany, false);
 
-    for (Iterator<Component> iterator = mainCompanyForm.iterator(); iterator.hasNext();) {
-      Component comp = (Component) iterator.next();
-
+    for (final Component comp : mainCompanyForm) {
       if (comp instanceof TextField) {
-        TextField textField = (TextField)comp;
+        final TextField textField = (TextField)comp;
         switch (textField.getCaption ()) {
           case "Address":
             textField.setValue (newAddress);

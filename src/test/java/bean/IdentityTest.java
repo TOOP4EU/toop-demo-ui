@@ -1,11 +1,12 @@
 package bean;
 
-import eu.toop.demoui.bean.Identity;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+import eu.toop.demoui.bean.Identity;
 
 public class IdentityTest {
   @Test
