@@ -11,6 +11,7 @@ import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.dataexchange.TDEAddressType;
 import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.TDELegalEntityType;
 import eu.toop.commons.dataexchange.TDENaturalPersonType;
 import eu.toop.demoui.view.BaseView;
 
@@ -50,6 +51,11 @@ public class ConfirmToopDataFetchingPage extends Window {
       // Send the request to the Message-Processor
       try {
 
+        String destinationCountryCode = view.getIdentity ().getNationality ();
+        if (destinationCountryCode == null) {
+          destinationCountryCode = "SV";
+        }
+
         final String conceptNamespace = "http://example.register.fre/freedonia-business-register";
 
         final List<ConceptValue> conceptList = new ArrayList<> ();
@@ -82,15 +88,27 @@ public class ConfirmToopDataFetchingPage extends Window {
           aNP.setBirthDate (PDTXMLConverter.getXMLCalendarDateNow ());
           final TDEAddressType aAddress = new TDEAddressType ();
           // Destination country to use
-          aAddress.setCountryCode (ToopXSDHelper.createCode ("SV"));
+          aAddress.setCountryCode (ToopXSDHelper.createCode (destinationCountryCode));
           aNP.setNaturalPersonLegalAddress (aAddress);
           aDS.setNaturalPerson (aNP);
+        }
+
+        if (view.getIdentity ().getLegalPersonIdentifier () != null && !view.getIdentity ().getLegalPersonIdentifier ().isEmpty ()) {
+          final TDELegalEntityType aLE = new TDELegalEntityType ();
+          aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper.createIdentifier (view.getIdentity ().getLegalPersonIdentifier ()));
+          aLE.setLegalEntityIdentifier (ToopXSDHelper.createIdentifier (view.getIdentity ().getLegalPersonIdentifier ()));
+          aLE.setLegalName (ToopXSDHelper.createText (view.getIdentity ().getLegalPersonName ()));
+          final TDEAddressType aAddress = new TDEAddressType ();
+          // Destination country to use
+          aAddress.setCountryCode (ToopXSDHelper.createCode (view.getIdentity ().getLegalPersonNationality ()));
+          aLE.setLegalEntityLegalAddress (aAddress);
+          aDS.setLegalEntity (aLE);
         }
 
         ToopInterfaceClient.createRequestAndSendToToopConnector (aDS,
             ToopXSDHelper.createIdentifier ("iso6523-actorid-upis",
             "9999:freedonia"),
-            "SV",
+            destinationCountryCode,
             EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
             EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
       } catch (final IOException ex) {

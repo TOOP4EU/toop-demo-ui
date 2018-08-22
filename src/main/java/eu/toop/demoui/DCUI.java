@@ -25,8 +25,7 @@ import com.vaadin.ui.UI;
 
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
-import eu.toop.demoui.view.PhaseOne;
-import eu.toop.demoui.view.PhaseTwo;
+import eu.toop.demoui.view.*;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
@@ -70,6 +69,17 @@ public class DCUI extends UI {
     navigator.addView ("PhaseOne", new PhaseOne ());
     PhaseTwo phaseTwo = new PhaseTwo ();
     navigator.addView ("loginSuccess", phaseTwo);
+    RequestToSwedenOne requestToSwedenOne = new RequestToSwedenOne ();
+    navigator.addView ("requestToSwedenOne", requestToSwedenOne);
+
+    RequestToSwedenTwo requestToSwedenTwo = new RequestToSwedenTwo ();
+    navigator.addView ("requestToSwedenTwo", requestToSwedenTwo);
+
+    // Temporary mock endpoints for ToopRequests to the Swedish pilot
+    MockRequestToSwedenDPOne mockRequestToSwedenDPOne = new MockRequestToSwedenDPOne ();
+    navigator.addView ("mockRequestToSwedenDPOne", mockRequestToSwedenDPOne);
+    MockRequestToSwedenDPTwo mockRequestToSwedenDPTwo = new MockRequestToSwedenDPTwo ();
+    navigator.addView ("mockRequestToSwedenDPTwo", mockRequestToSwedenDPTwo);
 
     String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
     if (eidasAttributes != null) {

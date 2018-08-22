@@ -63,6 +63,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     conceptValues.put("EloniaCompanyNaceCode", "C27.9");
     conceptValues.put("EloniaActivityDeclaration", "Manufacture of other electrical equipment");
     conceptValues.put("EloniaRegistrationAuthority", "Elonia Tax Agency");
+    conceptValues.put("EloniaLegalStatus", "Active");
 
     if (conceptName != null && conceptName.getValue () != null) {
 

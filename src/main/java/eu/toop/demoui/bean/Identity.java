@@ -24,6 +24,9 @@ public class Identity implements java.io.Serializable {
   private LocalDate birthDate;
   private String identifier;
   private String nationality;
+  private String legalPersonIdentifier;
+  private String legalPersonName;
+  private String legalPersonNationality;
 
   public String getFirstName () {
 
@@ -83,5 +86,35 @@ public class Identity implements java.io.Serializable {
   public void setNationality (final String nationality) {
 
     this.nationality = nationality;
+  }
+
+  public String getLegalPersonIdentifier () {
+
+    return legalPersonIdentifier;
+  }
+
+  public void setLegalPersonIdentifier (String legalPersonIdentifier) {
+
+    this.legalPersonIdentifier = legalPersonIdentifier;
+  }
+
+  public String getLegalPersonName () {
+
+    return legalPersonName;
+  }
+
+  public void setLegalPersonName (String legalPersonName) {
+
+    this.legalPersonName = legalPersonName;
+  }
+
+  public String getLegalPersonNationality () {
+
+    return legalPersonNationality;
+  }
+
+  public void setLegalPersonNationality (String legalPersonNationality) {
+
+    this.legalPersonNationality = legalPersonNationality;
   }
 }
