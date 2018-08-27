@@ -11,7 +11,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class ChooseAuthenticationMethodPage extends CustomLayout {
-
+  @SuppressWarnings ("deprecation")
   public ChooseAuthenticationMethodPage () {
 
     super ("ChooseAuthenticationMethodPage");
