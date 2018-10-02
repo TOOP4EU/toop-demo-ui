@@ -1,8 +1,12 @@
 package eu.toop.demoui.view;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.ViewChangeListener;
+
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
 import eu.toop.kafkaclient.ToopKafkaClient;

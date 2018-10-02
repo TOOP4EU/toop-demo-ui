@@ -15,6 +15,9 @@
  */
 package eu.toop.demoui.layouts;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.ui.DateField;
@@ -22,8 +25,6 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
 import eu.toop.demoui.bean.Identity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class IdentityForm extends FormLayout {
 
