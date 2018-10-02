@@ -1,11 +1,18 @@
 package eu.toop.demoui.view;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
 import com.helger.datetime.util.PDTXMLConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.VerticalLayout;
+
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
@@ -14,15 +21,8 @@ import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.TDELegalEntityType;
 import eu.toop.commons.dataexchange.TDENaturalPersonType;
 import eu.toop.commons.jaxb.ToopXSDHelper;
-import eu.toop.demoui.bean.Identity;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
-
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MockRequestToSwedenDPOne extends VerticalLayout implements View {
   public MockRequestToSwedenDPOne () {

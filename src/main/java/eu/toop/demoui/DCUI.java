@@ -29,7 +29,12 @@ import com.vaadin.ui.UI;
 
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
-import eu.toop.demoui.view.*;
+import eu.toop.demoui.view.MockRequestToSwedenDPOne;
+import eu.toop.demoui.view.MockRequestToSwedenDPTwo;
+import eu.toop.demoui.view.PhaseOne;
+import eu.toop.demoui.view.PhaseTwo;
+import eu.toop.demoui.view.RequestToSwedenOne;
+import eu.toop.demoui.view.RequestToSwedenTwo;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
 

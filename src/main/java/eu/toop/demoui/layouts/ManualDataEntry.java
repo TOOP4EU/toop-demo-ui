@@ -3,6 +3,7 @@ package eu.toop.demoui.layouts;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.view.BaseView;
 

@@ -15,14 +15,15 @@
  */
 package eu.toop.demoui.layouts;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
 import eu.toop.demoui.bean.MainCompany;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MainCompanyForm extends FormLayout {
 
