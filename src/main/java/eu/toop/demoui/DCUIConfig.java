@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class DCUIConfig {
 
@@ -35,8 +36,8 @@ public class DCUIConfig {
     List<Dataset> _datasets = new ArrayList<> ();
     for (Dataset dataset : datasets) {
 
-      if (dataset.getNaturalPersonIdentifier ().equals (naturalPersonIdentifier) ||
-          dataset.getLegalPersonIdentifier ().equals (legalPersonIdentifier)) {
+      if (dataset.getNaturalPersonIdentifier ().equals (stripCodesFromIdentifier(naturalPersonIdentifier)) ||
+          dataset.getLegalPersonIdentifier ().equals (stripCodesFromIdentifier(legalPersonIdentifier))) {
         _datasets.add (dataset);
       }
     }
@@ -49,7 +50,7 @@ public class DCUIConfig {
     List<Dataset> _datasets = new ArrayList<> ();
     for (Dataset dataset : datasets) {
 
-      if (dataset.getNaturalPersonIdentifier ().equals (naturalPersonIdentifier)) {
+      if (dataset.getNaturalPersonIdentifier ().equals (stripCodesFromIdentifier(naturalPersonIdentifier))) {
         _datasets.add (dataset);
       }
     }
@@ -62,12 +63,25 @@ public class DCUIConfig {
     List<Dataset> _datasets = new ArrayList<> ();
     for (Dataset dataset : datasets) {
 
-      if (dataset.getLegalPersonIdentifier ().equals (legalPersonIdentifier)) {
+      if (dataset.getLegalPersonIdentifier ().equals (stripCodesFromIdentifier(legalPersonIdentifier))) {
         _datasets.add (dataset);
       }
     }
 
     return _datasets;
+  }
+
+  private boolean isValidIdentifier(String identifier) {
+    return Pattern.matches("([A-Z][A-Z]\\/){2}.{1,}", identifier);
+  }
+
+  private String stripCodesFromIdentifier(String identifier) {
+
+    if (!isValidIdentifier(identifier)) {
+      return null;
+    }
+
+    return identifier.substring (6);
   }
 
   public class Dataset {

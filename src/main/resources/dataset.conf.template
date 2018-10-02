@@ -1,7 +1,7 @@
 Datasets = [
     {
-        NaturalPerson { identifier = "XX/YY/12345" }
-        LegalPerson { identifier = "XX/YY/54321" }
+        NaturalPerson { identifier = "12345" }
+        LegalPerson { identifier = "54321" }
         Concepts = [
             { name = "CONCEPT_NAME", value = "CONCEPT_VALUE" },
             { name = "CONCEPT_NAME", value = "CONCEPT_VALUE" },

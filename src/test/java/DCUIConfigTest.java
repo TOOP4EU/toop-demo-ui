@@ -17,7 +17,7 @@ public class DCUIConfigTest {
     assertEquals (dcuiConfig.getDatasets ().size (), 1);
 
     for (DCUIConfig.Dataset dataset : dcuiConfig.getDatasets ()) {
-      assertEquals (dataset.getNaturalPersonIdentifier (), "TE/ST/12345");
+      assertEquals (dataset.getNaturalPersonIdentifier (), "12345");
       assertEquals (dataset.getLegalPersonIdentifier (), "");
       assertEquals (dataset.getConcepts ().size(), 13);
 
