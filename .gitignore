@@ -28,3 +28,5 @@ target/
 /.settings/
 /.project
 /.classpath
+
+src/main/resources/dataset.conf

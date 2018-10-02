@@ -17,6 +17,7 @@ package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -25,18 +26,14 @@ import com.helger.commons.error.level.EErrorLevel;
 
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.ReverseDocumentTypeMapping;
-import eu.toop.commons.dataexchange.TDEAddressType;
-import eu.toop.commons.dataexchange.TDEConceptRequestType;
-import eu.toop.commons.dataexchange.TDEDataElementRequestType;
-import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
-import eu.toop.commons.dataexchange.TDEDataProviderType;
-import eu.toop.commons.dataexchange.TDETOOPRequestType;
-import eu.toop.commons.dataexchange.TDETOOPResponseType;
+import eu.toop.commons.dataexchange.*;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
+import eu.toop.demoui.DCUIConfig;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
+import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
@@ -46,36 +43,67 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     return aConcept.hasNoConceptRequestEntries () && "DP".equals (aConcept.getConceptTypeCode ().getValue ());
   }
 
-  private static void _applyStaticDataset (@Nonnull final TDEConceptRequestType aConcept) {
+  private static void _applyStaticDataset (final TDEDataRequestSubjectType ds, @Nonnull final TDEConceptRequestType aConcept, @Nonnull final String sLogPrefix) {
 
     final TextType conceptName = aConcept.getConceptName ();
     final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
+    aConcept.getDataElementResponseValue ().add (aValue);
+
+    if (conceptName == null) {
+      aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
+      aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP: Concept name missing"));
+      ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Concept name missing: " + aConcept);
+      return;
+    }
 
     aValue.setAlternativeResponseIndicator (ToopXSDHelper.createIndicator (false));
     aValue.setErrorIndicator (ToopXSDHelper.createIndicator (false));
 
-    final Map<String, String> conceptValues = new HashMap<> ();
-    conceptValues.put("EloniaAddress", "Gamlavegen 234, 321 44, Velma, Elonia");
-    conceptValues.put("EloniaBusinessCode", "JF 234556-6213");
-    conceptValues.put("EloniaCompanyType", "Limited");
-    conceptValues.put("EloniaRegistrationDate", "2012-01-12");
-    conceptValues.put("EloniaCompanyName", "Zizi mat");
-    conceptValues.put("EloniaCompanyNaceCode", "C27.9");
-    conceptValues.put("EloniaActivityDeclaration", "Manufacture of other electrical equipment");
-    conceptValues.put("EloniaRegistrationAuthority", "Elonia Tax Agency");
-    conceptValues.put("EloniaLegalStatus", "Active");
+    // Get datasets from config
+    DCUIConfig dcuiConfig = new DCUIConfig ();
 
-    if (conceptName != null && conceptName.getValue () != null) {
+    // Try to find dataset for natural person
+    String naturalPersonIdentifier = null;
+    String legalEntityIdentifier = null;
 
-      if (conceptValues.containsKey (conceptName.getValue ())) {
-        aValue.setResponseDescription (ToopXSDHelper.createText (conceptValues.get(conceptName.getValue ())));
-      } else {
-        aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
-        aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP"));
+    if (ds.getNaturalPerson () != null) {
+      if (ds.getNaturalPerson ().getPersonIdentifier () != null) {
+        naturalPersonIdentifier = ds.getNaturalPerson ().getPersonIdentifier ().getValue ();
       }
-
-      aConcept.getDataElementResponseValue ().add (aValue);
     }
+
+    if (ds.getLegalEntity () != null) {
+      if (ds.getLegalEntity ().getLegalPersonUniqueIdentifier () != null) {
+        legalEntityIdentifier = ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ();
+      }
+    }
+
+    final List<DCUIConfig.Dataset> datasets = dcuiConfig.getDatasetsByIdentifier (naturalPersonIdentifier, legalEntityIdentifier);
+
+    if (datasets.size () == 0) {
+
+      aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
+      aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP: No dataset found"));
+
+      ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "No dataset found");
+      return;
+    }
+
+    DCUIConfig.Dataset dataset = datasets.get (0); // First dataset by default, ignore the rest
+
+    String conceptValue = dataset.getConceptValue (conceptName.getValue ());
+
+    if (conceptValue == null) {
+      aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
+      aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP: Concept [" + conceptName.getValue () + "] is missing in dataset"));
+      ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Failed to populate concept: Concept [" + conceptName.getValue () + "] is missing in dataset");
+      return;
+    }
+
+    aValue.setResponseDescription (ToopXSDHelper.createText (conceptValue));
+
+    ToopKafkaClient.send (EErrorLevel.INFO,
+        () -> sLogPrefix + "Populated concept [" + conceptName.getValue () + "]: [" + conceptValue + "]");
   }
 
   @Nonnull
@@ -121,14 +149,14 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     return aResponse;
   }
 
-  private static void applyConceptValues (final TDEDataElementRequestType aDER, final String sLogPrefix) {
+  private static void applyConceptValues (final TDEDataRequestSubjectType ds, final TDEDataElementRequestType aDER, final String sLogPrefix) {
 
     final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
     if (aFirstLevelConcept != null) {
       for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
         for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
           if (_canUseConcept (aThirdLevelConcept)) {
-            _applyStaticDataset (aThirdLevelConcept);
+            _applyStaticDataset (ds, aThirdLevelConcept, sLogPrefix);
           } else {
             // 3 level nesting is maximum
             ToopKafkaClient.send (EErrorLevel.ERROR,
@@ -151,7 +179,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // add all the mapped values in the response
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
-      applyConceptValues (aDER, sLogPrefix);
+      applyConceptValues (aRequest.getDataRequestSubject (), aDER, sLogPrefix);
     }
 
     // send back to toop-connector at /from-dp
