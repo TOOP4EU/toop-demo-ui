@@ -128,6 +128,8 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                   bean.setRegistrationAuthority (aValue);
                 }  else if (sourceConceptName.equals ("FreedoniaLegalStatus")) {
                   bean.setLegalStatus (aValue);
+                } else if (sourceConceptName.equals ("FreedoniaLegalStatusEffectiveDate")) {
+                  bean.setLegalStatusEffectiveDate (aValue);
                 } else {
                   ToopKafkaClient.send (EErrorLevel.WARN, () -> sLogPrefix + "Unsupported source concept name: '"
                       + sourceConceptName + "'");
