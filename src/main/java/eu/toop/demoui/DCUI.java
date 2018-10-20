@@ -37,6 +37,7 @@ import eu.toop.demoui.view.RequestToSwedenOne;
 import eu.toop.demoui.view.RequestToSwedenTwo;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
+import eu.toop.kafkaclient.ToopKafkaSettings;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -71,24 +72,24 @@ public class DCUI extends UI {
 
     ToopInterfaceManager.setInterfaceDC (new DemoUIToopInterfaceDC (this));
     ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP ());
-    ToopKafkaClient.setKafkaEnabled (true);
-    ToopKafkaClient.defaultProperties ().put ("bootstrap.servers", "193.10.8.211:7073");
+    ToopKafkaSettings.setKafkaEnabled (true);
+    ToopKafkaSettings.defaultProperties ().put ("bootstrap.servers", "193.10.8.211:7073");
 
     final Navigator navigator = new Navigator (this, this);
     navigator.addView ("", new PhaseOne ());
     navigator.addView ("PhaseOne", new PhaseOne ());
     final PhaseTwo phaseTwo = new PhaseTwo ();
     navigator.addView ("loginSuccess", phaseTwo);
-    RequestToSwedenOne requestToSwedenOne = new RequestToSwedenOne ();
+    final RequestToSwedenOne requestToSwedenOne = new RequestToSwedenOne ();
     navigator.addView ("requestToSwedenOne", requestToSwedenOne);
 
-    RequestToSwedenTwo requestToSwedenTwo = new RequestToSwedenTwo ();
+    final RequestToSwedenTwo requestToSwedenTwo = new RequestToSwedenTwo ();
     navigator.addView ("requestToSwedenTwo", requestToSwedenTwo);
 
     // Temporary mock endpoints for ToopRequests to the Swedish pilot
-    MockRequestToSwedenDPOne mockRequestToSwedenDPOne = new MockRequestToSwedenDPOne ();
+    final MockRequestToSwedenDPOne mockRequestToSwedenDPOne = new MockRequestToSwedenDPOne ();
     navigator.addView ("mockRequestToSwedenDPOne", mockRequestToSwedenDPOne);
-    MockRequestToSwedenDPTwo mockRequestToSwedenDPTwo = new MockRequestToSwedenDPTwo ();
+    final MockRequestToSwedenDPTwo mockRequestToSwedenDPTwo = new MockRequestToSwedenDPTwo ();
     navigator.addView ("mockRequestToSwedenDPTwo", mockRequestToSwedenDPTwo);
 
     final String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
