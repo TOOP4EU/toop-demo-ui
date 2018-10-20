@@ -32,6 +32,7 @@ import eu.toop.commons.dataexchange.TDEDataProviderType;
 import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.TDETOOPResponseType;
+import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.demoui.DCUIConfig;
@@ -64,7 +65,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     aValue.setErrorIndicator (ToopXSDHelper.createIndicator (false));
 
     // Get datasets from config
-    DCUIConfig dcuiConfig = new DCUIConfig ();
+    final DCUIConfig dcuiConfig = new DCUIConfig ();
 
     // Try to find dataset for natural person
     String naturalPersonIdentifier = null;
@@ -93,9 +94,9 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       return;
     }
 
-    DCUIConfig.Dataset dataset = datasets.get (0); // First dataset by default, ignore the rest
+    final DCUIConfig.Dataset dataset = datasets.get (0); // First dataset by default, ignore the rest
 
-    String conceptValue = dataset.getConceptValue (conceptName.getValue ());
+    final String conceptValue = dataset.getConceptValue (conceptName.getValue ());
 
     if (conceptValue == null) {
       aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
@@ -188,6 +189,10 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // send back to toop-connector at /from-dp
     // The URL must be configured in toop-interface.properties file
-    ToopInterfaceClient.sendResponseToToopConnector (aResponse);
+    try {
+      ToopInterfaceClient.sendResponseToToopConnector (aResponse);
+    } catch (final ToopErrorException ex) {
+      throw new RuntimeException (ex);
+    }
   }
 }

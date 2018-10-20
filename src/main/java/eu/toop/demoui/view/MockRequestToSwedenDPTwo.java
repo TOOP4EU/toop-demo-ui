@@ -16,7 +16,6 @@
 package eu.toop.demoui.view;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +34,7 @@ import eu.toop.commons.dataexchange.TDEAddressType;
 import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.TDELegalEntityType;
 import eu.toop.commons.dataexchange.TDENaturalPersonType;
+import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
@@ -45,7 +45,7 @@ public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
   }
 
   @Override
-  public void enter(ViewChangeListener.ViewChangeEvent event) {
+  public void enter(final ViewChangeListener.ViewChangeEvent event) {
     final String dataSubjectTypeCode = "12345";
     final String naturalPersonIdentifier = "SE/GF/199105109999";
     final String naturalPersonFirstName = "Olof";
@@ -115,9 +115,9 @@ public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
           "SE",
           EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
           EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
-    } catch (final IOException ex) {
+    } catch (final IOException | ToopErrorException ex) {
       // Convert from checked to unchecked
-      throw new UncheckedIOException (ex);
+      throw new RuntimeException (ex);
     }
   }
 }

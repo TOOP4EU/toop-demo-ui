@@ -16,7 +16,6 @@
 package eu.toop.demoui.layouts;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +34,7 @@ import eu.toop.commons.dataexchange.TDEAddressType;
 import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.TDELegalEntityType;
 import eu.toop.commons.dataexchange.TDENaturalPersonType;
+import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
@@ -127,9 +127,9 @@ public class ConfirmToopDataFetchingPage extends Window {
             destinationCountryCode,
             EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
             EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
-      } catch (final IOException ex) {
+      } catch (final IOException | ToopErrorException ex) {
         // Convert from checked to unchecked
-        throw new UncheckedIOException (ex);
+        throw new RuntimeException (ex);
       }
     });
     proceedButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
