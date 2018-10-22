@@ -2,14 +2,12 @@ package eu.toop.demoui;
 
 import com.typesafe.config.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class DCUIConfig {
 
+  private static ResourceBundle rb = ResourceBundle.getBundle("dcui");
   private final List<Dataset> datasets = new ArrayList<> ();
 
   public DCUIConfig() {
@@ -26,6 +24,16 @@ public class DCUIConfig {
     }
   }
 
+  public static String getEidModuleURL () {
+
+    return rb.getString("toop.eidmodule.url");
+  }
+
+  public static String getDestinationCountryCode () {
+
+    return rb.getString ("destination.country.code");
+  }
+
   public List<Dataset> getDatasets () {
 
     return datasets;
@@ -34,10 +42,27 @@ public class DCUIConfig {
   public List<Dataset> getDatasetsByIdentifier(String naturalPersonIdentifier, String legalPersonIdentifier) {
 
     List<Dataset> _datasets = new ArrayList<> ();
+
+    if (naturalPersonIdentifier == null && legalPersonIdentifier == null) {
+      return _datasets;
+    }
+
     for (Dataset dataset : datasets) {
 
-      if (dataset.getNaturalPersonIdentifier ().equals (stripCodesFromIdentifier(naturalPersonIdentifier)) ||
-          dataset.getLegalPersonIdentifier ().equals (stripCodesFromIdentifier(legalPersonIdentifier))) {
+      boolean npMatch = true;
+      boolean leMatch = true;
+
+      if (naturalPersonIdentifier != null &&
+          !dataset.getNaturalPersonIdentifier ().equals (stripCodesFromIdentifier(naturalPersonIdentifier))) {
+        npMatch = false;
+      }
+
+      if (legalPersonIdentifier != null &&
+          !dataset.getLegalPersonIdentifier ().equals (stripCodesFromIdentifier(legalPersonIdentifier))) {
+        leMatch = false;
+      }
+
+      if (npMatch && leMatch) {
         _datasets.add (dataset);
       }
     }

@@ -38,6 +38,8 @@ import eu.toop.demoui.view.RequestToSwedenTwo;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
+import java.util.ResourceBundle;
+
 /**
  * This UI is the application entry point. A UI may either represent a browser
  * window (or tab) or some part of an HTML page where a Vaadin application is
@@ -58,8 +60,7 @@ public class DCUI extends UI {
 
       if ("/redirectToEidModule".equals (request.getPathInfo ())) {
         response.setStatus (HttpServletResponse.SC_TEMPORARY_REDIRECT);
-        // TODO this should be put in a config file
-        response.setHeader (CHttpHeader.LOCATION, "http://193.10.8.213:9086/login"); // Redirect to eID Module
+        response.setHeader (CHttpHeader.LOCATION, DCUIConfig.getEidModuleURL ()); // Redirect to eID Module
 
         return true;
       }

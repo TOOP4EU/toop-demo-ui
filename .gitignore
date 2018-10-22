@@ -30,3 +30,4 @@ target/
 /.classpath
 
 src/main/resources/dataset.conf
+logs/

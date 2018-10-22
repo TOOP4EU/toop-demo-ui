@@ -21,6 +21,7 @@ import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.TDELegalEntityType;
 import eu.toop.commons.dataexchange.TDENaturalPersonType;
 import eu.toop.commons.jaxb.ToopXSDHelper;
+import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
@@ -52,7 +53,7 @@ public class ConfirmToopDataFetchingPage extends Window {
 
         String destinationCountryCode = view.getIdentity ().getNationality ();
         if (destinationCountryCode == null) {
-          destinationCountryCode = "SV";
+          destinationCountryCode = DCUIConfig.getDestinationCountryCode ();
         }
 
         final String conceptNamespace = "http://example.register.fre/freedonia-business-register";
