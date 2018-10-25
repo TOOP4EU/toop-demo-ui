@@ -26,7 +26,6 @@ import com.vaadin.ui.UI;
 import eu.toop.commons.dataexchange.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
-import eu.toop.commons.dataexchange.TDETOOPErrorMessageType;
 import eu.toop.commons.dataexchange.TDETOOPResponseType;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
@@ -166,15 +165,5 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     } catch (final Exception e) {
       ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Failed to push new bean data to the Demo UI", e);
     }
-  }
-
-  public void onToopErrorMessage (final TDETOOPErrorMessageType aErrorMessage) throws IOException {
-    final String sRequestID = aErrorMessage.getDataRequestIdentifier ().getValue ();
-    final String sLogPrefix = "[" + sRequestID + "] [DC] ";
-
-    ToopKafkaClient.send (EErrorLevel.INFO,
-                          () -> sLogPrefix + "Received error message");
-
-    // TODO handle error more intelligent
   }
 }
