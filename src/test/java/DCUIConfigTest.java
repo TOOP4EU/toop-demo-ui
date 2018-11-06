@@ -1,27 +1,42 @@
-import eu.toop.demoui.DCUIConfig;
-import org.junit.jupiter.api.Test;
+/**
+ * Copyright (C) 2018 toop.eu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.Test;
+
+import eu.toop.demoui.DCUIConfig;
 
 public class DCUIConfigTest {
 
   @Test
   public void testBasic() {
 
-    DCUIConfig dcuiConfig = new DCUIConfig ();
+    final DCUIConfig dcuiConfig = new DCUIConfig ();
 
     assertEquals (dcuiConfig.getDatasets ().size (), 1);
 
-    for (DCUIConfig.Dataset dataset : dcuiConfig.getDatasets ()) {
+    for (final DCUIConfig.Dataset dataset : dcuiConfig.getDatasets ()) {
       assertEquals (dataset.getNaturalPersonIdentifier (), "12345");
       assertEquals (dataset.getLegalPersonIdentifier (), "");
       assertEquals (dataset.getConcepts ().size(), 13);
 
-      for (Map.Entry<String, String> concept : dataset.getConcepts ().entrySet()) {
+      for (final Map.Entry<String, String> concept : dataset.getConcepts ().entrySet()) {
 
         assertNotNull (concept.getKey ());
         assertNotNull (concept.getValue ());

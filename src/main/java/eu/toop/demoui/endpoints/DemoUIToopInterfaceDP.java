@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2018 toop.eu
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,9 +16,7 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -26,14 +24,21 @@ import com.helger.commons.error.level.EErrorLevel;
 
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.ReverseDocumentTypeMapping;
-import eu.toop.commons.dataexchange.*;
+import eu.toop.commons.dataexchange.TDEAddressType;
+import eu.toop.commons.dataexchange.TDEConceptRequestType;
+import eu.toop.commons.dataexchange.TDEDataElementRequestType;
+import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
+import eu.toop.commons.dataexchange.TDEDataProviderType;
+import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.TDETOOPRequestType;
+import eu.toop.commons.dataexchange.TDETOOPResponseType;
+import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
-import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
@@ -60,7 +65,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     aValue.setErrorIndicator (ToopXSDHelper.createIndicator (false));
 
     // Get datasets from config
-    DCUIConfig dcuiConfig = new DCUIConfig ();
+    final DCUIConfig dcuiConfig = new DCUIConfig ();
 
     // Try to find dataset for natural person
     String naturalPersonIdentifier = null;
@@ -89,9 +94,9 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       return;
     }
 
-    DCUIConfig.Dataset dataset = datasets.get (0); // First dataset by default, ignore the rest
+    final DCUIConfig.Dataset dataset = datasets.get (0); // First dataset by default, ignore the rest
 
-    String conceptValue = dataset.getConceptValue (conceptName.getValue ());
+    final String conceptValue = dataset.getConceptValue (conceptName.getValue ());
 
     if (conceptValue == null) {
       aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
@@ -114,11 +119,11 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     {
       // Required for response
       final TDEDataProviderType p = new TDEDataProviderType ();
-      p.setDPIdentifier (ToopXSDHelper.createIdentifier ("iso6523-actorid-upis", "9999:elonia"));
+      p.setDPIdentifier (ToopXSDHelper.createIdentifier (DCUIConfig.getResponderIdentifierScheme (), DCUIConfig.getResponderIdentifierValue ()));
       p.setDPName (ToopXSDHelper.createText ("EloniaDP"));
       p.setDPElectronicAddressIdentifier (ToopXSDHelper.createIdentifier ("elonia@register.example.org"));
       final TDEAddressType pa = new TDEAddressType ();
-      pa.setCountryCode (ToopXSDHelper.createCode ("SV"));
+      pa.setCountryCode (ToopXSDHelper.createCode (DCUIConfig.getProviderCountryCode ()));
       p.setDPLegalAddress (pa);
       aResponse.setDataProvider (p);
     }
@@ -184,6 +189,10 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // send back to toop-connector at /from-dp
     // The URL must be configured in toop-interface.properties file
-    ToopInterfaceClient.sendResponseToToopConnector (aResponse);
+    try {
+      ToopInterfaceClient.sendResponseToToopConnector (aResponse);
+    } catch (final ToopErrorException ex) {
+      throw new RuntimeException (ex);
+    }
   }
 }

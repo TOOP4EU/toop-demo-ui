@@ -1,7 +1,21 @@
+/**
+ * Copyright (C) 2018 toop.eu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.toop.demoui.layouts;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +34,7 @@ import eu.toop.commons.dataexchange.TDEAddressType;
 import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.TDELegalEntityType;
 import eu.toop.commons.dataexchange.TDENaturalPersonType;
+import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.view.BaseView;
@@ -108,14 +123,14 @@ public class ConfirmToopDataFetchingPage extends Window {
         }
 
         ToopInterfaceClient.createRequestAndSendToToopConnector (aDS,
-            ToopXSDHelper.createIdentifier ("iso6523-actorid-upis",
-            "9999:freedonia"),
+            ToopXSDHelper.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
+            DCUIConfig.getSenderIdentifierValue ()),
             destinationCountryCode,
             EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
             EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
-      } catch (final IOException ex) {
+      } catch (final IOException | ToopErrorException ex) {
         // Convert from checked to unchecked
-        throw new UncheckedIOException (ex);
+        throw new RuntimeException (ex);
       }
     });
     proceedButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);

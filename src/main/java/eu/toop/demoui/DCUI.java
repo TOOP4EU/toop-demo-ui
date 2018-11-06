@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2018 toop.eu
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,6 +37,7 @@ import eu.toop.demoui.view.RequestToSwedenOne;
 import eu.toop.demoui.view.RequestToSwedenTwo;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
+import eu.toop.kafkaclient.ToopKafkaSettings;
 
 import java.util.ResourceBundle;
 
@@ -72,24 +73,25 @@ public class DCUI extends UI {
 
     ToopInterfaceManager.setInterfaceDC (new DemoUIToopInterfaceDC (this));
     ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP ());
-    ToopKafkaClient.setKafkaEnabled (true);
-    ToopKafkaClient.defaultProperties ().put ("bootstrap.servers", "193.10.8.211:7073");
+    ToopKafkaSettings.setKafkaEnabled (true);
+    ToopKafkaSettings.defaultProperties ().put ("bootstrap.servers", DCUIConfig.getTrackerURL ());
+    ToopKafkaSettings.setKafkaTopic (DCUIConfig.getTrackerTopic ());
 
     final Navigator navigator = new Navigator (this, this);
     navigator.addView ("", new PhaseOne ());
     navigator.addView ("PhaseOne", new PhaseOne ());
     final PhaseTwo phaseTwo = new PhaseTwo ();
     navigator.addView ("loginSuccess", phaseTwo);
-    RequestToSwedenOne requestToSwedenOne = new RequestToSwedenOne ();
+    final RequestToSwedenOne requestToSwedenOne = new RequestToSwedenOne ();
     navigator.addView ("requestToSwedenOne", requestToSwedenOne);
 
-    RequestToSwedenTwo requestToSwedenTwo = new RequestToSwedenTwo ();
+    final RequestToSwedenTwo requestToSwedenTwo = new RequestToSwedenTwo ();
     navigator.addView ("requestToSwedenTwo", requestToSwedenTwo);
 
     // Temporary mock endpoints for ToopRequests to the Swedish pilot
-    MockRequestToSwedenDPOne mockRequestToSwedenDPOne = new MockRequestToSwedenDPOne ();
+    final MockRequestToSwedenDPOne mockRequestToSwedenDPOne = new MockRequestToSwedenDPOne ();
     navigator.addView ("mockRequestToSwedenDPOne", mockRequestToSwedenDPOne);
-    MockRequestToSwedenDPTwo mockRequestToSwedenDPTwo = new MockRequestToSwedenDPTwo ();
+    final MockRequestToSwedenDPTwo mockRequestToSwedenDPTwo = new MockRequestToSwedenDPTwo ();
     navigator.addView ("mockRequestToSwedenDPTwo", mockRequestToSwedenDPTwo);
 
     final String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");

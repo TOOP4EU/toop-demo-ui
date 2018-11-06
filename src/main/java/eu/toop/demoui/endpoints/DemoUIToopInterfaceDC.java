@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2018 toop.eu
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,6 +26,7 @@ import com.vaadin.ui.UI;
 import eu.toop.commons.dataexchange.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
+import eu.toop.commons.dataexchange.TDETOOPErrorMessageType;
 import eu.toop.commons.dataexchange.TDETOOPResponseType;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
@@ -167,5 +168,15 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     } catch (final Exception e) {
       ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Failed to push new bean data to the Demo UI", e);
     }
+  }
+
+  public void onToopErrorMessage (final TDETOOPErrorMessageType aErrorMessage) throws IOException {
+    final String sRequestID = aErrorMessage.getDataRequestIdentifier ().getValue ();
+    final String sLogPrefix = "[" + sRequestID + "] [DC] ";
+
+    ToopKafkaClient.send (EErrorLevel.INFO,
+                          () -> sLogPrefix + "Received error message");
+
+    // TODO handle error more intelligent
   }
 }
