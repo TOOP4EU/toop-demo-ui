@@ -125,7 +125,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       final TDEAddressType pa = new TDEAddressType ();
       pa.setCountryCode (ToopXSDHelper.createCode ("SV"));
       p.setDPLegalAddress (pa);
-      aResponse.setDataProvider (p);
+      aResponse.addDataProvider (p);
     }
 
     // Document type must be switch from request to response
