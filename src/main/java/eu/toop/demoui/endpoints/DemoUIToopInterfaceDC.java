@@ -26,6 +26,7 @@ import com.vaadin.ui.UI;
 import eu.toop.commons.dataexchange.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
+import eu.toop.commons.dataexchange.TDEDataProviderType;
 import eu.toop.commons.dataexchange.TDETOOPResponseType;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
@@ -48,12 +49,14 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     final String sRequestID = aResponse.getDataRequestIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] [DC] ";
 
+    final TDEDataProviderType aDP = aResponse.getDataProviderCount () == 0 ? null : aResponse.getDataProviderAtIndex (0);
+
     ToopKafkaClient.send (EErrorLevel.INFO,
-                          () -> sLogPrefix + "Received data from Data Provider: " + " DPIdentifier: "
-                                + aResponse.getDataProvider ().getDPIdentifier ().getValue () + ", " + " DPName: "
-                                + aResponse.getDataProvider ().getDPName ().getValue () + ", "
+                          () -> sLogPrefix + "Received data from Data Provider: " + (aDP == null ? "null" : " DPIdentifier: "
+                                + aDP.getDPIdentifier ().getValue () + ", " + " DPName: "
+                                + aDP.getDPName ().getValue () + ", "
                                 + " DPElectronicAddressIdentifier: "
-                                + aResponse.getDataProvider ().getDPElectronicAddressIdentifier ().getValue ());
+                                + aDP.getDPElectronicAddressIdentifier ().getValue ()));
 
     // Push a new organization bean to the UI
     try {
