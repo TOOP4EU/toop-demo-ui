@@ -71,15 +71,22 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     String naturalPersonIdentifier = null;
     String legalEntityIdentifier = null;
 
+
     if (ds.getNaturalPerson () != null) {
       if (ds.getNaturalPerson ().getPersonIdentifier () != null) {
-        naturalPersonIdentifier = ds.getNaturalPerson ().getPersonIdentifier ().getValue ();
+        if (!ds.getNaturalPerson ().getPersonIdentifier ().getValue ().isEmpty ()) {
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching natural person: " + ds.getNaturalPerson ().getPersonIdentifier ().getValue ());
+          naturalPersonIdentifier = ds.getNaturalPerson ().getPersonIdentifier ().getValue ();
+        }
       }
     }
 
     if (ds.getLegalEntity () != null) {
       if (ds.getLegalEntity ().getLegalPersonUniqueIdentifier () != null) {
-        legalEntityIdentifier = ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ();
+        if (!ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ().isEmpty ()) {
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching legal person: " + ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ());
+          legalEntityIdentifier = ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ();
+        }
       }
     }
 

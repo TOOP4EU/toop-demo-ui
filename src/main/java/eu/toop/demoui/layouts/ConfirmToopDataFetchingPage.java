@@ -30,15 +30,15 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.TDEAddressType;
-import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
-import eu.toop.commons.dataexchange.TDELegalEntityType;
-import eu.toop.commons.dataexchange.TDENaturalPersonType;
+import eu.toop.commons.dataexchange.*;
 import eu.toop.commons.error.ToopErrorException;
+import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopXSDHelper;
+import eu.toop.demoui.DCUI;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
+import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class ConfirmToopDataFetchingPage extends Window {
@@ -122,12 +122,18 @@ public class ConfirmToopDataFetchingPage extends Window {
           aDS.setLegalEntity (aLE);
         }
 
-        ToopInterfaceClient.createRequestAndSendToToopConnector (aDS,
+        ToopKafkaClient.send (EErrorLevel.INFO,
+            () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
+
+        final TDETOOPRequestType aRequest = ToopMessageBuilder.createMockRequest (aDS,
             ToopXSDHelper.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
-            DCUIConfig.getSenderIdentifierValue ()),
+                DCUIConfig.getSenderIdentifierValue ()),
             destinationCountryCode,
             EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
-            EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
+            EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
+            conceptList);
+
+        ToopInterfaceClient.sendRequestToToopConnector (aRequest);
       } catch (final IOException | ToopErrorException ex) {
         // Convert from checked to unchecked
         throw new RuntimeException (ex);
