@@ -15,7 +15,12 @@
  */
 package eu.toop.demoui.endpoints;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.annotation.Nonnull;
 
@@ -28,9 +33,12 @@ import eu.toop.commons.dataexchange.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.TDEDataProviderType;
 import eu.toop.commons.dataexchange.TDETOOPResponseType;
+import eu.toop.commons.jaxb.ToopWriter;
+import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
 import eu.toop.demoui.view.PhaseTwo;
+import eu.toop.demoui.view.RequestToSloveniaOne;
 import eu.toop.demoui.view.RequestToSwedenOne;
 import eu.toop.demoui.view.RequestToSwedenTwo;
 import eu.toop.iface.IToopInterfaceDC;
@@ -45,6 +53,8 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   }
 
   public void onToopResponse (@Nonnull final TDETOOPResponseType aResponse) throws IOException {
+
+    dumpResponse(aResponse);
 
     final String sRequestID = aResponse.getDataRequestIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] [DC] ";
@@ -163,12 +173,47 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
             final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
             page.addMainCompanyForm ();
           }
+        } else if (threadUINavigator.getCurrentView () instanceof RequestToSloveniaOne) {
+          final RequestToSloveniaOne homeView = (RequestToSloveniaOne) threadUINavigator.getCurrentView ();
+          if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
+            homeView.setMainCompany (bean);
+            final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
+            page.addMainCompanyForm ();
+          }
         }
 
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Pushed new bean data to the Demo UI: " + bean);
       });
     } catch (final Exception e) {
       ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Failed to push new bean data to the Demo UI", e);
+    }
+  }
+
+  private void dumpResponse(@Nonnull final TDETOOPResponseType aResponse) {
+
+    FileWriter fw = null;
+    try {
+
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+      String filePath = String.format("%s/response-dump-%s.log",
+              DCUIConfig.getDumpResponseDirectory(),
+              dateFormat.format(new Date()));
+
+      String responseXml = ToopWriter.response().getAsString(aResponse);
+      fw = new FileWriter(filePath);
+      if (responseXml != null) {
+        fw.write(responseXml);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (fw != null) {
+        try {
+          fw.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 }

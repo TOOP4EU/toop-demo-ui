@@ -15,8 +15,12 @@
  */
 package eu.toop.demoui.layouts;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.helger.commons.error.level.EErrorLevel;
@@ -33,6 +37,7 @@ import eu.toop.commons.concept.ConceptValue;
 import eu.toop.commons.dataexchange.*;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder;
+import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.demoui.DCUI;
 import eu.toop.demoui.DCUIConfig;
@@ -40,6 +45,8 @@ import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
+
+import javax.annotation.Nonnull;
 
 public class ConfirmToopDataFetchingPage extends Window {
   public ConfirmToopDataFetchingPage (final BaseView view) {
@@ -133,6 +140,8 @@ public class ConfirmToopDataFetchingPage extends Window {
             EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
             conceptList);
 
+        dumpRequest(aRequest);
+
         ToopInterfaceClient.sendRequestToToopConnector (aRequest);
       } catch (final IOException | ToopErrorException ex) {
         // Convert from checked to unchecked
@@ -165,5 +174,33 @@ public class ConfirmToopDataFetchingPage extends Window {
 
   protected void onSelfProvide () {
     // The user may override this method to execute their own code when the user click on the 'self-provide'-button.
+  }
+
+  private void dumpRequest(@Nonnull final TDETOOPRequestType aRequest) {
+
+    FileWriter fw = null;
+    try {
+
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+      String filePath = String.format("%s/request-dump-%s.log",
+              DCUIConfig.getDumpResponseDirectory(),
+              dateFormat.format(new Date()));
+
+      String requestXml = ToopWriter.request().getAsString(aRequest);
+      fw = new FileWriter(filePath);
+      if (requestXml != null) {
+        fw.write(requestXml);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (fw != null) {
+        try {
+          fw.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 }

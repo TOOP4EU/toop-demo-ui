@@ -15,7 +15,11 @@
  */
 package eu.toop.demoui.endpoints;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -34,6 +38,7 @@ import eu.toop.commons.dataexchange.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.TDETOOPResponseType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder;
+import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.iface.IToopInterfaceDP;
@@ -48,7 +53,10 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     return aConcept.hasNoConceptRequestEntries () && "DP".equals (aConcept.getConceptTypeCode ().getValue ());
   }
 
-  private static void _applyStaticDataset (final TDEDataRequestSubjectType ds, @Nonnull final TDEConceptRequestType aConcept, @Nonnull final String sLogPrefix) {
+  private static void _applyStaticDataset (final TDEDataRequestSubjectType ds,
+                                           @Nonnull final TDEConceptRequestType aConcept,
+                                           @Nonnull final String sLogPrefix,
+                                           final DCUIConfig.Dataset dataset) {
 
     final TextType conceptName = aConcept.getConceptName ();
     final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
@@ -64,58 +72,25 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     aValue.setAlternativeResponseIndicator (ToopXSDHelper.createIndicator (false));
     aValue.setErrorIndicator (ToopXSDHelper.createIndicator (false));
 
-    // Get datasets from config
-    final DCUIConfig dcuiConfig = new DCUIConfig ();
+    if (dataset != null) {
+      final String conceptValue = dataset.getConceptValue(conceptName.getValue());
 
-    // Try to find dataset for natural person
-    String naturalPersonIdentifier = null;
-    String legalEntityIdentifier = null;
-
-
-    if (ds.getNaturalPerson () != null) {
-      if (ds.getNaturalPerson ().getPersonIdentifier () != null) {
-        if (!ds.getNaturalPerson ().getPersonIdentifier ().getValue ().isEmpty ()) {
-          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching natural person: " + ds.getNaturalPerson ().getPersonIdentifier ().getValue ());
-          naturalPersonIdentifier = ds.getNaturalPerson ().getPersonIdentifier ().getValue ();
-        }
+      if (conceptValue == null) {
+        aValue.setErrorIndicator(ToopXSDHelper.createIndicator(true));
+        aValue.setErrorCode(ToopXSDHelper.createCode("MockError from DemoDP: Concept [" + conceptName.getValue() + "] is missing in dataset"));
+        ToopKafkaClient.send(EErrorLevel.ERROR, () -> sLogPrefix + "Failed to populate concept: Concept [" + conceptName.getValue() + "] is missing in dataset");
+        return;
       }
-    }
 
-    if (ds.getLegalEntity () != null) {
-      if (ds.getLegalEntity ().getLegalPersonUniqueIdentifier () != null) {
-        if (!ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ().isEmpty ()) {
-          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching legal person: " + ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ());
-          legalEntityIdentifier = ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ();
-        }
-      }
-    }
+      aValue.setResponseDescription(ToopXSDHelper.createText(conceptValue));
 
-    final List<DCUIConfig.Dataset> datasets = dcuiConfig.getDatasetsByIdentifier (naturalPersonIdentifier, legalEntityIdentifier);
-
-    if (datasets.size () == 0) {
+      ToopKafkaClient.send(EErrorLevel.INFO,
+              () -> sLogPrefix + "Populated concept [" + conceptName.getValue() + "]: [" + conceptValue + "]");
+    } else {
 
       aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
       aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP: No dataset found"));
-
-      ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "No dataset found");
-      return;
     }
-
-    final DCUIConfig.Dataset dataset = datasets.get (0); // First dataset by default, ignore the rest
-
-    final String conceptValue = dataset.getConceptValue (conceptName.getValue ());
-
-    if (conceptValue == null) {
-      aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
-      aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP: Concept [" + conceptName.getValue () + "] is missing in dataset"));
-      ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Failed to populate concept: Concept [" + conceptName.getValue () + "] is missing in dataset");
-      return;
-    }
-
-    aValue.setResponseDescription (ToopXSDHelper.createText (conceptValue));
-
-    ToopKafkaClient.send (EErrorLevel.INFO,
-        () -> sLogPrefix + "Populated concept [" + conceptName.getValue () + "]: [" + conceptValue + "]");
   }
 
   @Nonnull
@@ -161,14 +136,17 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     return aResponse;
   }
 
-  private static void applyConceptValues (final TDEDataRequestSubjectType ds, final TDEDataElementRequestType aDER, final String sLogPrefix) {
+  private static void applyConceptValues (final TDEDataRequestSubjectType ds,
+                                          final TDEDataElementRequestType aDER,
+                                          final String sLogPrefix,
+                                          final DCUIConfig.Dataset dataset) {
 
     final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
     if (aFirstLevelConcept != null) {
       for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
         for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
           if (_canUseConcept (aThirdLevelConcept)) {
-            _applyStaticDataset (ds, aThirdLevelConcept, sLogPrefix);
+            _applyStaticDataset (ds, aThirdLevelConcept, sLogPrefix, dataset);
           } else {
             // 3 level nesting is maximum
             ToopKafkaClient.send (EErrorLevel.ERROR,
@@ -186,20 +164,117 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     final String sLogPrefix = "[" + sRequestID + "] ";
     ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received DP Backend Request");
 
+    dumpRequest(aRequest);
+
+    // Record matching to dataset
+
+    // Try to find dataset for natural person
+    final TDEDataRequestSubjectType ds = aRequest.getDataRequestSubject();
+    String naturalPersonIdentifier = null;
+    String legalEntityIdentifier = null;
+
+
+    if (ds.getNaturalPerson () != null) {
+      if (ds.getNaturalPerson ().getPersonIdentifier () != null) {
+        if (!ds.getNaturalPerson ().getPersonIdentifier ().getValue ().isEmpty ()) {
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching natural person: " + ds.getNaturalPerson ().getPersonIdentifier ().getValue ());
+          naturalPersonIdentifier = ds.getNaturalPerson ().getPersonIdentifier ().getValue ();
+        }
+      }
+    }
+
+    if (ds.getLegalEntity () != null) {
+      if (ds.getLegalEntity ().getLegalPersonUniqueIdentifier () != null) {
+        if (!ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ().isEmpty ()) {
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching legal person: " + ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ());
+          legalEntityIdentifier = ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ();
+        }
+      }
+    }
+
+    // Get datasets from config
+    final DCUIConfig dcuiConfig = new DCUIConfig ();
+
+    final List<DCUIConfig.Dataset> datasets = dcuiConfig.getDatasetsByIdentifier (naturalPersonIdentifier, legalEntityIdentifier);
+
+    DCUIConfig.Dataset dataset = null;
+    if (datasets.size () > 0) {
+      dataset = datasets.get (0);
+    } else {
+      ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "No dataset found");
+    }
+
     // build response
     final TDETOOPResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
 
     // add all the mapped values in the response
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
-      applyConceptValues (aRequest.getDataRequestSubject (), aDER, sLogPrefix);
+      applyConceptValues (aRequest.getDataRequestSubject (), aDER, sLogPrefix, dataset);
     }
 
     // send back to toop-connector at /from-dp
     // The URL must be configured in toop-interface.properties file
     try {
+      dumpResponse(aResponse);
       ToopInterfaceClient.sendResponseToToopConnector (aResponse);
     } catch (final ToopErrorException ex) {
       throw new RuntimeException (ex);
+    }
+  }
+
+  private void dumpRequest(@Nonnull final TDETOOPRequestType aRequest) {
+
+    FileWriter fw = null;
+    try {
+
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+      String filePath = String.format("%s/request-dump-%s.log",
+              DCUIConfig.getDumpResponseDirectory(),
+              dateFormat.format(new Date()));
+
+      String requestXml = ToopWriter.request().getAsString(aRequest);
+      fw = new FileWriter(filePath);
+      if (requestXml != null) {
+        fw.write(requestXml);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (fw != null) {
+        try {
+          fw.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+
+  private void dumpResponse(@Nonnull final TDETOOPResponseType aResponse) {
+
+    FileWriter fw = null;
+    try {
+
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+      String filePath = String.format("%s/response-dump-%s.log",
+              DCUIConfig.getDumpResponseDirectory(),
+              dateFormat.format(new Date()));
+
+      String responseXml = ToopWriter.response().getAsString(aResponse);
+      fw = new FileWriter(filePath);
+      if (responseXml != null) {
+        fw.write(responseXml);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (fw != null) {
+        try {
+          fw.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 }

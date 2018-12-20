@@ -29,12 +29,7 @@ import com.vaadin.ui.UI;
 
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
-import eu.toop.demoui.view.MockRequestToSwedenDPOne;
-import eu.toop.demoui.view.MockRequestToSwedenDPTwo;
-import eu.toop.demoui.view.PhaseOne;
-import eu.toop.demoui.view.PhaseTwo;
-import eu.toop.demoui.view.RequestToSwedenOne;
-import eu.toop.demoui.view.RequestToSwedenTwo;
+import eu.toop.demoui.view.*;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import eu.toop.kafkaclient.ToopKafkaSettings;
@@ -87,6 +82,9 @@ public class DCUI extends UI {
 
     final RequestToSwedenTwo requestToSwedenTwo = new RequestToSwedenTwo ();
     navigator.addView ("requestToSwedenTwo", requestToSwedenTwo);
+
+    final RequestToSloveniaOne requestToSloveniaOne = new RequestToSloveniaOne ();
+    navigator.addView ("requestToSloveniaOne", requestToSloveniaOne);
 
     // Temporary mock endpoints for ToopRequests to the Swedish pilot
     final MockRequestToSwedenDPOne mockRequestToSwedenDPOne = new MockRequestToSwedenDPOne ();

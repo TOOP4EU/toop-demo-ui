@@ -82,6 +82,16 @@ public class DCUIConfig {
     return rb.getString ("provider.country.code");
   }
 
+  public static String getDumpRequestDirectory() {
+
+    return rb.getString ("dump.request.directory");
+  }
+
+  public static String getDumpResponseDirectory() {
+
+    return rb.getString ("dump.response.directory");
+  }
+
   public static String getTrackerURL () {
     return rb.getString ("toop.tracker.url");
   }
