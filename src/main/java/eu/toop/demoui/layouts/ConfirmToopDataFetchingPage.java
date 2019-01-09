@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
 import com.helger.datetime.util.PDTXMLConverter;
@@ -34,19 +36,20 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.*;
+import eu.toop.commons.dataexchange.v120.TDEAddressType;
+import eu.toop.commons.dataexchange.v120.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.v120.TDELegalEntityType;
+import eu.toop.commons.dataexchange.v120.TDENaturalPersonType;
+import eu.toop.commons.dataexchange.v120.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper;
-import eu.toop.demoui.DCUI;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
-
-import javax.annotation.Nonnull;
 
 public class ConfirmToopDataFetchingPage extends Window {
   public ConfirmToopDataFetchingPage (final BaseView view) {
@@ -97,10 +100,8 @@ public class ConfirmToopDataFetchingPage extends Window {
         conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaLegalStatusEffectiveDate"));
 
         // Notify the logger and Package-Tracker that we are sending a TOOP Message!
-        ToopKafkaClient.send (EErrorLevel.INFO,
-            () -> "[DC] Requesting concepts: "
-                + StringHelper.getImplodedMapped (", ", conceptList,
-                x -> x.getNamespace () + "#" + x.getValue ()));
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting concepts: "
+            + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
         aDS.setDataRequestSubjectTypeCode (ToopXSDHelper.createCode ("12345"));
@@ -117,10 +118,13 @@ public class ConfirmToopDataFetchingPage extends Window {
           aDS.setNaturalPerson (aNP);
         }
 
-        if (view.getIdentity ().getLegalPersonIdentifier () != null && !view.getIdentity ().getLegalPersonIdentifier ().isEmpty ()) {
+        if (view.getIdentity ().getLegalPersonIdentifier () != null
+            && !view.getIdentity ().getLegalPersonIdentifier ().isEmpty ()) {
           final TDELegalEntityType aLE = new TDELegalEntityType ();
-          aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper.createIdentifier (view.getIdentity ().getLegalPersonIdentifier ()));
-          aLE.setLegalEntityIdentifier (ToopXSDHelper.createIdentifier (view.getIdentity ().getLegalPersonIdentifier ()));
+          aLE.setLegalPersonUniqueIdentifier (
+              ToopXSDHelper.createIdentifier (view.getIdentity ().getLegalPersonIdentifier ()));
+          aLE.setLegalEntityIdentifier (
+              ToopXSDHelper.createIdentifier (view.getIdentity ().getLegalPersonIdentifier ()));
           aLE.setLegalName (ToopXSDHelper.createText (view.getIdentity ().getLegalPersonName ()));
           final TDEAddressType aAddress = new TDEAddressType ();
           // Destination country to use
@@ -135,12 +139,10 @@ public class ConfirmToopDataFetchingPage extends Window {
         final TDETOOPRequestType aRequest = ToopMessageBuilder.createMockRequest (aDS,
             ToopXSDHelper.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                 DCUIConfig.getSenderIdentifierValue ()),
-            destinationCountryCode,
-            EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
-            EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
-            conceptList);
+            destinationCountryCode, EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
+            EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
 
-        dumpRequest(aRequest);
+        dumpRequest (aRequest);
 
         ToopInterfaceClient.sendRequestToToopConnector (aRequest);
       } catch (final IOException | ToopErrorException ex) {
@@ -169,36 +171,37 @@ public class ConfirmToopDataFetchingPage extends Window {
   }
 
   protected void onConsent () {
-    // The user may override this method to execute their own code when the user click on the 'consent'-button.
+    // The user may override this method to execute their own code when the user
+    // click on the 'consent'-button.
   }
 
   protected void onSelfProvide () {
-    // The user may override this method to execute their own code when the user click on the 'self-provide'-button.
+    // The user may override this method to execute their own code when the user
+    // click on the 'self-provide'-button.
   }
 
-  private void dumpRequest(@Nonnull final TDETOOPRequestType aRequest) {
+  private void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
 
     FileWriter fw = null;
     try {
 
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-      String filePath = String.format("%s/request-dump-%s.log",
-              DCUIConfig.getDumpResponseDirectory(),
-              dateFormat.format(new Date()));
+      final DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss.SSS");
+      final String filePath = String.format ("%s/request-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
+          dateFormat.format (new Date ()));
 
-      String requestXml = ToopWriter.request().getAsString(aRequest);
-      fw = new FileWriter(filePath);
+      final String requestXml = ToopWriter.request ().getAsString (aRequest);
+      fw = new FileWriter (filePath);
       if (requestXml != null) {
-        fw.write(requestXml);
+        fw.write (requestXml);
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (final IOException e) {
+      e.printStackTrace ();
     } finally {
       if (fw != null) {
         try {
-          fw.close();
-        } catch (IOException e) {
-          e.printStackTrace();
+          fw.close ();
+        } catch (final IOException e) {
+          e.printStackTrace ();
         }
       }
     }

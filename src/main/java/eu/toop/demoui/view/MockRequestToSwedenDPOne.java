@@ -30,10 +30,10 @@ import com.vaadin.ui.VerticalLayout;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.TDEAddressType;
-import eu.toop.commons.dataexchange.TDEDataRequestSubjectType;
-import eu.toop.commons.dataexchange.TDELegalEntityType;
-import eu.toop.commons.dataexchange.TDENaturalPersonType;
+import eu.toop.commons.dataexchange.v120.TDEAddressType;
+import eu.toop.commons.dataexchange.v120.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.v120.TDELegalEntityType;
+import eu.toop.commons.dataexchange.v120.TDENaturalPersonType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.jaxb.ToopXSDHelper;
 import eu.toop.iface.ToopInterfaceClient;
@@ -45,7 +45,7 @@ public class MockRequestToSwedenDPOne extends VerticalLayout implements View {
   }
 
   @Override
-  public void enter(final ViewChangeListener.ViewChangeEvent event) {
+  public void enter (final ViewChangeListener.ViewChangeEvent event) {
     final String dataSubjectTypeCode = "12345";
     final String naturalPersonIdentifier = "SE/GF/199005109999";
     final String naturalPersonFirstName = "Sven";
@@ -78,10 +78,8 @@ public class MockRequestToSwedenDPOne extends VerticalLayout implements View {
       conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaLegalStatus"));
 
       // Notify the logger and Package-Tracker that we are sending a TOOP Message!
-      ToopKafkaClient.send (EErrorLevel.INFO,
-          () -> "[DC] Requesting concepts: "
-              + StringHelper.getImplodedMapped (", ", conceptList,
-              x -> x.getNamespace () + "#" + x.getValue ()));
+      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting concepts: "
+          + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
 
       final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
       aDS.setDataRequestSubjectTypeCode (ToopXSDHelper.createCode (dataSubjectTypeCode));
@@ -110,9 +108,7 @@ public class MockRequestToSwedenDPOne extends VerticalLayout implements View {
       }
 
       ToopInterfaceClient.createRequestAndSendToToopConnector (aDS,
-          ToopXSDHelper.createIdentifier ("iso6523-actorid-upis",
-              "9999:freedonia"),
-          "SE",
+          ToopXSDHelper.createIdentifier ("iso6523-actorid-upis", "9999:freedonia"), "SE",
           EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
           EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
     } catch (final IOException | ToopErrorException ex) {
