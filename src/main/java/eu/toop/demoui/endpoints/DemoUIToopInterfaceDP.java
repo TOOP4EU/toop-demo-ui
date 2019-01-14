@@ -28,14 +28,14 @@ import com.helger.commons.error.level.EErrorLevel;
 
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.ReverseDocumentTypeMapping;
-import eu.toop.commons.dataexchange.v120.TDEAddressType;
-import eu.toop.commons.dataexchange.v120.TDEConceptRequestType;
-import eu.toop.commons.dataexchange.v120.TDEDataElementRequestType;
-import eu.toop.commons.dataexchange.v120.TDEDataElementResponseValueType;
-import eu.toop.commons.dataexchange.v120.TDEDataProviderType;
-import eu.toop.commons.dataexchange.v120.TDEDataRequestSubjectType;
-import eu.toop.commons.dataexchange.v120.TDETOOPRequestType;
-import eu.toop.commons.dataexchange.v120.TDETOOPResponseType;
+import eu.toop.commons.dataexchange.v140.TDEAddressType;
+import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
+import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
+import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
+import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
+import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
+import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopWriter;
@@ -107,15 +107,15 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       p.setDPName (ToopXSDHelper.createText ("EloniaDP"));
       p.setDPElectronicAddressIdentifier (ToopXSDHelper.createIdentifier ("elonia@register.example.org"));
       final TDEAddressType pa = new TDEAddressType ();
-      pa.setCountryCode (ToopXSDHelper.createCode (DCUIConfig.getProviderCountryCode ()));
+      pa.setCountryCode (ToopXSDHelper.createCodeWithLOA (DCUIConfig.getProviderCountryCode ()));
       p.setDPLegalAddress (pa);
       aResponse.addDataProvider (p);
     }
 
     // Document type must be switch from request to response
     final EPredefinedDocumentTypeIdentifier eRequestDocType = EPredefinedDocumentTypeIdentifier
-        .getFromDocumentTypeIdentifierOrNull (aRequest.getDocumentTypeIdentifier ().getSchemeID (),
-            aRequest.getDocumentTypeIdentifier ().getValue ());
+        .getFromDocumentTypeIdentifierOrNull (aRequest.getRoutingInformation ().getDocumentTypeIdentifier ().getSchemeID (),
+            aRequest.getRoutingInformation ().getDocumentTypeIdentifier ().getValue ());
     if (eRequestDocType != null) {
       try {
         final EPredefinedDocumentTypeIdentifier eResponseDocType = ReverseDocumentTypeMapping
@@ -124,14 +124,14 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         // Set new doc type in response
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Switching document type '"
             + eRequestDocType.getURIEncoded () + "' to '" + eResponseDocType.getURIEncoded () + "'");
-        aResponse.setDocumentTypeIdentifier (
+        aResponse.getRoutingInformation ().setDocumentTypeIdentifier (
             ToopXSDHelper.createIdentifier (eResponseDocType.getScheme (), eResponseDocType.getID ()));
       } catch (final IllegalArgumentException ex) {
         // Found no reverse document type
         ToopKafkaClient.send (EErrorLevel.INFO,
             () -> sLogPrefix + "Found no response document type for '"
-                + aRequest.getDocumentTypeIdentifier ().getSchemeID () + "::"
-                + aRequest.getDocumentTypeIdentifier ().getValue () + "'");
+                + aRequest.getRoutingInformation ().getDocumentTypeIdentifier ().getSchemeID () + "::"
+                + aRequest.getRoutingInformation ().getDocumentTypeIdentifier ().getValue () + "'");
       }
     }
     return aResponse;
@@ -181,12 +181,12 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       }
     }
 
-    if (ds.getLegalEntity () != null) {
-      if (ds.getLegalEntity ().getLegalPersonUniqueIdentifier () != null) {
-        if (!ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ().isEmpty ()) {
+    if (ds.getLegalPerson () != null) {
+      if (ds.getLegalPerson ().getLegalPersonUniqueIdentifier () != null) {
+        if (!ds.getLegalPerson ().getLegalPersonUniqueIdentifier ().getValue ().isEmpty ()) {
           ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching legal person: "
-              + ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ());
-          legalEntityIdentifier = ds.getLegalEntity ().getLegalPersonUniqueIdentifier ().getValue ();
+              + ds.getLegalPerson ().getLegalPersonUniqueIdentifier ().getValue ());
+          legalEntityIdentifier = ds.getLegalPerson ().getLegalPersonUniqueIdentifier ().getValue ();
         }
       }
     }

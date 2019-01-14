@@ -27,7 +27,6 @@ import javax.annotation.Nonnull;
 
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
-import com.helger.datetime.util.PDTXMLConverter;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -36,11 +35,11 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.v120.TDEAddressType;
-import eu.toop.commons.dataexchange.v120.TDEDataRequestSubjectType;
-import eu.toop.commons.dataexchange.v120.TDELegalEntityType;
-import eu.toop.commons.dataexchange.v120.TDENaturalPersonType;
-import eu.toop.commons.dataexchange.v120.TDETOOPRequestType;
+import eu.toop.commons.dataexchange.v140.TDEAddressType;
+import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
+import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
+import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopWriter;
@@ -107,30 +106,30 @@ public class ConfirmToopDataFetchingPage extends Window {
         aDS.setDataRequestSubjectTypeCode (ToopXSDHelper.createCode ("12345"));
         {
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
-          aNP.setPersonIdentifier (ToopXSDHelper.createIdentifier (view.getIdentity ().getIdentifier ()));
-          aNP.setFamilyName (ToopXSDHelper.createText (view.getIdentity ().getFamilyName ()));
-          aNP.setFirstName (ToopXSDHelper.createText (view.getIdentity ().getFirstName ()));
-          aNP.setBirthDate (PDTXMLConverter.getXMLCalendarDateNow ());
+          aNP.setPersonIdentifier (ToopXSDHelper.createIdentifierWithLOA (view.getIdentity ().getIdentifier ()));
+          aNP.setFamilyName (ToopXSDHelper.createTextWithLOA (view.getIdentity ().getFamilyName ()));
+          aNP.setFirstName (ToopXSDHelper.createTextWithLOA (view.getIdentity ().getFirstName ()));
+          aNP.setBirthDate (ToopXSDHelper.createDateWithLOANow ());
           final TDEAddressType aAddress = new TDEAddressType ();
           // Destination country to use
-          aAddress.setCountryCode (ToopXSDHelper.createCode (destinationCountryCode));
+          aAddress.setCountryCode (ToopXSDHelper.createCodeWithLOA (destinationCountryCode));
           aNP.setNaturalPersonLegalAddress (aAddress);
           aDS.setNaturalPerson (aNP);
         }
 
         if (view.getIdentity ().getLegalPersonIdentifier () != null
             && !view.getIdentity ().getLegalPersonIdentifier ().isEmpty ()) {
-          final TDELegalEntityType aLE = new TDELegalEntityType ();
+          final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (
-              ToopXSDHelper.createIdentifier (view.getIdentity ().getLegalPersonIdentifier ()));
+              ToopXSDHelper.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
           aLE.setLegalEntityIdentifier (
-              ToopXSDHelper.createIdentifier (view.getIdentity ().getLegalPersonIdentifier ()));
-          aLE.setLegalName (ToopXSDHelper.createText (view.getIdentity ().getLegalPersonName ()));
+              ToopXSDHelper.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
+          aLE.setLegalName (ToopXSDHelper.createTextWithLOA (view.getIdentity ().getLegalPersonName ()));
           final TDEAddressType aAddress = new TDEAddressType ();
           // Destination country to use
-          aAddress.setCountryCode (ToopXSDHelper.createCode (view.getIdentity ().getLegalPersonNationality ()));
-          aLE.setLegalEntityLegalAddress (aAddress);
-          aDS.setLegalEntity (aLE);
+          aAddress.setCountryCode (ToopXSDHelper.createCodeWithLOA (view.getIdentity ().getLegalPersonNationality ()));
+          aLE.setLegalPersonLegalAddress (aAddress);
+          aDS.setLegalPerson (aLE);
         }
 
         ToopKafkaClient.send (EErrorLevel.INFO,
