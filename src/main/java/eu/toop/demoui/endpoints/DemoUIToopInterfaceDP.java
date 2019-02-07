@@ -27,7 +27,6 @@ import javax.annotation.Nonnull;
 import com.helger.commons.error.level.EErrorLevel;
 
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
-import eu.toop.commons.codelist.ReverseDocumentTypeMapping;
 import eu.toop.commons.dataexchange.v140.TDEAddressType;
 import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
@@ -40,6 +39,7 @@ import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper;
+import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
@@ -114,7 +114,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // Document type must be switch from request to response
     final EPredefinedDocumentTypeIdentifier eRequestDocType = EPredefinedDocumentTypeIdentifier
-        .getFromDocumentTypeIdentifierOrNull (aRequest.getRoutingInformation ().getDocumentTypeIdentifier ().getSchemeID (),
+        .getFromDocumentTypeIdentifierOrNull (
+            aRequest.getRoutingInformation ().getDocumentTypeIdentifier ().getSchemeID (),
             aRequest.getRoutingInformation ().getDocumentTypeIdentifier ().getValue ());
     if (eRequestDocType != null) {
       try {
