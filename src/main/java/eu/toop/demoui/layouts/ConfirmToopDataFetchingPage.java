@@ -138,7 +138,7 @@ public class ConfirmToopDataFetchingPage extends Window {
         final TDETOOPRequestType aRequest = ToopMessageBuilder.createMockRequest (aDS,
             ToopXSDHelper.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                 DCUIConfig.getSenderIdentifierValue ()),
-            destinationCountryCode, EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
+            EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
             EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
 
         dumpRequest (aRequest);

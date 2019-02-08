@@ -107,7 +107,7 @@ public class MockRequestToSwedenDPOne extends VerticalLayout implements View {
       }
 
       ToopInterfaceClient.createRequestAndSendToToopConnector (aDS,
-          ToopXSDHelper.createIdentifier ("iso6523-actorid-upis", "9999:freedonia"), "SE",
+          ToopXSDHelper.createIdentifier ("iso6523-actorid-upis", "9999:freedonia"),
           EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
           EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
     } catch (final IOException | ToopErrorException ex) {
