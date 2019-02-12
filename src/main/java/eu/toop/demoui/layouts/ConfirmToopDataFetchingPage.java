@@ -70,7 +70,7 @@ public class ConfirmToopDataFetchingPage extends Window {
       onConsent ();
       subWindow.close ();
 
-      // Send the request to the Message-Processor
+      // SendRequest the request to the Message-Processor
       try {
 
         String destinationCountryCode = view.getIdentity ().getNationality ();
@@ -78,23 +78,21 @@ public class ConfirmToopDataFetchingPage extends Window {
           destinationCountryCode = DCUIConfig.getDestinationCountryCode ();
         }
 
-        final String conceptNamespace = "http://example.register.fre/freedonia-business-register";
-
         final List<ConceptValue> conceptList = new ArrayList<> ();
 
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaAddress"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaSSNumber"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaBusinessCode"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaVATNumber"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaCompanyType"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaRegistrationDate"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaRegistrationNumber"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaCompanyName"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaCompanyNaceCode"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaActivityDeclaration"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaRegistrationAuthority"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaLegalStatus"));
-        conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaLegalStatusEffectiveDate"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaAddress"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaSSNumber"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaBusinessCode"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaVATNumber"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaCompanyType"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaRegistrationDate"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaRegistrationNumber"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaCompanyName"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaCompanyNaceCode"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaActivityDeclaration"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaRegistrationAuthority"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaLegalStatus"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaLegalStatusEffectiveDate"));
 
         // Notify the logger and Package-Tracker that we are sending a TOOP Message!
         ToopKafkaClient.send (EErrorLevel.INFO,

@@ -34,8 +34,6 @@ import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import eu.toop.kafkaclient.ToopKafkaSettings;
 
-import java.util.ResourceBundle;
-
 /**
  * This UI is the application entry point. A UI may either represent a browser
  * window (or tab) or some part of an HTML page where a Vaadin application is
@@ -86,11 +84,22 @@ public class DCUI extends UI {
     final RequestToSloveniaOne requestToSloveniaOne = new RequestToSloveniaOne ();
     navigator.addView ("requestToSloveniaOne", requestToSloveniaOne);
 
+    final RequestToSlovakiaOne requestToSlovakiaOne = new RequestToSlovakiaOne ();
+    navigator.addView ("requestToSlovakiaOne", requestToSlovakiaOne);
+    final RequestToSlovakiaTwo requestToSlovakiaTwo = new RequestToSlovakiaTwo ();
+    navigator.addView ("requestToSlovakiaTwo", requestToSlovakiaTwo);
+
+    final RequestToItalyOne requestToItalyOne = new RequestToItalyOne ();
+    navigator.addView ("requestToItalyOne", requestToItalyOne);
+
     // Temporary mock endpoints for ToopRequests to the Swedish pilot
     final MockRequestToSwedenDPOne mockRequestToSwedenDPOne = new MockRequestToSwedenDPOne ();
     navigator.addView ("mockRequestToSwedenDPOne", mockRequestToSwedenDPOne);
     final MockRequestToSwedenDPTwo mockRequestToSwedenDPTwo = new MockRequestToSwedenDPTwo ();
     navigator.addView ("mockRequestToSwedenDPTwo", mockRequestToSwedenDPTwo);
+
+    final DynamicRequest dynamicRequest = new DynamicRequest();
+    navigator.addView("dynamicRequest", dynamicRequest);
 
     final String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
     if (eidasAttributes != null) {

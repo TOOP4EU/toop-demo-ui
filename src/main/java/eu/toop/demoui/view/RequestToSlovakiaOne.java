@@ -15,20 +15,19 @@
  */
 package eu.toop.demoui.view;
 
-import java.time.LocalDate;
-
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.ViewChangeListener;
-
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
-public class RequestToSwedenTwo extends BaseView {
+import java.time.LocalDate;
+
+public class RequestToSlovakiaOne extends BaseView {
 
     private String eidasAttributes = "";
 
-    public RequestToSwedenTwo () {
+    public RequestToSlovakiaOne() {
 
       setCurrentPage (new RegisterWithWEEEMainPage (this));
     }
@@ -37,16 +36,15 @@ public class RequestToSwedenTwo extends BaseView {
     public void enter (ViewChangeListener.ViewChangeEvent event) {
 
       Identity newIdentity = new Identity ();
-      newIdentity.setIdentifier ("SE/GF/199105109999");
-      newIdentity.setFirstName ("Olof");
-      newIdentity.setFamilyName ("Olofsson");
-      newIdentity.setBirthPlace ("Stockholm");
-      newIdentity.setBirthDate (LocalDate.of (1991, 05, 10));
-      newIdentity.setNationality ("SE");
+      newIdentity.setIdentifier ("SK/GF/32866917");
+      newIdentity.setFirstName ("Anton");
+      newIdentity.setFamilyName ("Remen");
+      newIdentity.setBirthPlace ("Letanovce");
+      newIdentity.setBirthDate (LocalDate.of (1956, 10, 15));
+      newIdentity.setNationality ("SK");
 
-      newIdentity.setLegalPersonIdentifier ("SE/GF/7164099017");
-      newIdentity.setLegalPersonName ("Testbolag 2 AB");
-      newIdentity.setLegalPersonNationality ("SE");
+      newIdentity.setLegalPersonIdentifier ("SK/GF/32866917");
+      newIdentity.setLegalPersonNationality ("SK");
 
       ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Identifier: " + newIdentity.getIdentifier ());
       ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID First name: " + newIdentity.getFirstName ());

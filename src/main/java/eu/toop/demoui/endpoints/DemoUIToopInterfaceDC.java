@@ -20,11 +20,14 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import com.helger.commons.error.level.EErrorLevel;
+import com.helger.xsds.ccts.cct.schemamodule.CodeType;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.ui.UI;
 
@@ -34,13 +37,12 @@ import eu.toop.commons.dataexchange.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.TDEDataProviderType;
 import eu.toop.commons.dataexchange.TDETOOPResponseType;
 import eu.toop.commons.jaxb.ToopWriter;
+import eu.toop.demoui.DCUI;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.bean.MainCompany;
+import eu.toop.demoui.layouts.DynamicRequestPage;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
-import eu.toop.demoui.view.PhaseTwo;
-import eu.toop.demoui.view.RequestToSloveniaOne;
-import eu.toop.demoui.view.RequestToSwedenOne;
-import eu.toop.demoui.view.RequestToSwedenTwo;
+import eu.toop.demoui.view.*;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
@@ -180,6 +182,50 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
             final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
             page.addMainCompanyForm ();
           }
+        } else if (threadUINavigator.getCurrentView () instanceof RequestToSlovakiaOne) {
+          final RequestToSlovakiaOne homeView = (RequestToSlovakiaOne) threadUINavigator.getCurrentView ();
+          if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
+            homeView.setMainCompany (bean);
+            final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
+            page.addMainCompanyForm ();
+          }
+        } else if (threadUINavigator.getCurrentView () instanceof RequestToSlovakiaTwo) {
+          final RequestToSlovakiaTwo homeView = (RequestToSlovakiaTwo) threadUINavigator.getCurrentView ();
+          if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
+            homeView.setMainCompany (bean);
+            final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
+            page.addMainCompanyForm ();
+          }
+        } else if (threadUINavigator.getCurrentView () instanceof RequestToItalyOne) {
+          final RequestToItalyOne homeView = (RequestToItalyOne) threadUINavigator.getCurrentView ();
+          if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
+            homeView.setMainCompany (bean);
+            final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
+            page.addMainCompanyForm ();
+          }
+        } else if (threadUINavigator.getCurrentView () instanceof DynamicRequest) {
+
+          final DynamicRequest homeView = (DynamicRequest) threadUINavigator.getCurrentView ();
+          if (homeView.getCurrentPage () instanceof DynamicRequestPage) {
+            homeView.setMainCompany (bean);
+            final DynamicRequestPage page = (DynamicRequestPage) homeView.getCurrentPage ();
+
+            String expectedUuid = page.getRequestId();
+
+            if (aResponse.getDocumentUniversalUniqueIdentifier() != null && expectedUuid != null &&
+                    expectedUuid.equals(aResponse.getDocumentUniversalUniqueIdentifier().getValue())) {
+              if (!aResponse.hasErrorEntries()) {
+                page.addMainCompanyForm();
+              } else {
+                page.setError(aResponse.getError());
+              }
+
+              String conceptErrors = getConceptErrors(aResponse);
+              if (!conceptErrors.isEmpty()) {
+                page.setConceptErrors(conceptErrors);
+              }
+            }
+          }
         }
 
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Pushed new bean data to the Demo UI: " + bean);
@@ -215,5 +261,43 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
         }
       }
     }
+  }
+
+  private String getConceptErrors(@Nonnull final TDETOOPResponseType aResponse) {
+
+    StringBuilder sb = new StringBuilder();
+
+    // Inspect all mapped values
+    for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
+
+      final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
+
+      final String sourceConceptName = aFirstLevelConcept.getConceptName ().getValue ();
+
+      for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ()) {
+
+        final String toopConceptName = aSecondLevelConcept.getConceptName ().getValue ();
+
+        for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ()) {
+
+          final String destinationConceptName = aThirdLevelConcept.getConceptName ().getValue ();
+
+          final String mappedConcept = sourceConceptName + " - " + toopConceptName + " - "
+                  + destinationConceptName;
+
+          for (final TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
+
+            if (aThirdLevelConceptDERValue.getErrorIndicator() != null &&
+                    aThirdLevelConceptDERValue.getErrorIndicator().isValue()) {
+              sb.append(" - Concept Error (").append(mappedConcept).append("):\n");
+              if (aThirdLevelConceptDERValue.getErrorCode() != null) {
+                sb.append("     ").append(aThirdLevelConceptDERValue.getErrorCode().getValue()).append("\n");
+              }
+            }
+          }
+        }
+      }
+    }
+    return sb.toString();
   }
 }

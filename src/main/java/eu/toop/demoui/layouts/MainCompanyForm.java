@@ -15,6 +15,7 @@
  */
 package eu.toop.demoui.layouts;
 
+import com.vaadin.ui.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -48,8 +48,11 @@ public class DCUIConfig {
   }
 
   public static String getEidModuleURL () {
-
     return rb.getString("toop.eidmodule.url");
+  }
+
+  public static String getConceptNamespace() {
+    return rb.getString("toop.concept.namespace");
   }
 
   public static String getDestinationCountryCode () {

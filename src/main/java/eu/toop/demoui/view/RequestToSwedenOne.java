@@ -44,7 +44,7 @@ public class RequestToSwedenOne extends BaseView {
       newIdentity.setBirthDate (LocalDate.of (1990, 05, 10));
       newIdentity.setNationality ("SE");
 
-      newIdentity.setLegalPersonIdentifier ("SE/GF/5591051858");
+      newIdentity.setLegalPersonIdentifier ("SE/GF/5560085119");
       newIdentity.setLegalPersonName ("Testbolag 1 AB");
       newIdentity.setLegalPersonNationality ("SE");
 
