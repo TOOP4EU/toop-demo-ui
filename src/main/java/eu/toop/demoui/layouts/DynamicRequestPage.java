@@ -17,42 +17,29 @@ package eu.toop.demoui.layouts;
 
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
-import com.helger.datetime.util.PDTXMLConverter;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
-import eu.toop.commons.codelist.ReverseDocumentTypeMapping;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.*;
+import eu.toop.commons.dataexchange.v140.*;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder;
-import eu.toop.commons.jaxb.ToopReader;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper;
-import eu.toop.demoui.DCUI;
 import eu.toop.demoui.DCUIConfig;
-import eu.toop.demoui.bean.Identity;
-import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
 import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
-import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 import javax.annotation.Nonnull;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 
 public class DynamicRequestPage extends CustomLayout {
@@ -142,42 +129,42 @@ public class DynamicRequestPage extends CustomLayout {
                     if (!naturalPersonIdentifierField.isEmpty()) {
                         naturalPersonIdentifier = identifierPrefix + naturalPersonIdentifierField.getValue();
                     }
-                    aNP.setPersonIdentifier(ToopXSDHelper.createIdentifier(naturalPersonIdentifier));
+                    aNP.setPersonIdentifier(ToopXSDHelper.createIdentifierWithLOA(naturalPersonIdentifier));
 
                     String naturalPersonFirstName = "";
                     if (!naturalPersonFirstNameField.isEmpty()) {
                         naturalPersonFirstName = naturalPersonFirstNameField.getValue();
                     }
-                    aNP.setFirstName(ToopXSDHelper.createText(naturalPersonFirstName));
+                    aNP.setFirstName(ToopXSDHelper.createTextWithLOA(naturalPersonFirstName));
 
                     String naturalPersonFamilyName = "";
                     if (!naturalPersonFamilyNameField.isEmpty()) {
                         naturalPersonFamilyName = naturalPersonFamilyNameField.getValue();
                     }
-                    aNP.setFamilyName(ToopXSDHelper.createText(naturalPersonFamilyName));
+                    aNP.setFamilyName(ToopXSDHelper.createTextWithLOA(naturalPersonFamilyName));
 
-                    aNP.setBirthDate(PDTXMLConverter.getXMLCalendarDateNow());
+                    aNP.setBirthDate(ToopXSDHelper.createDateWithLOANow ());
 
                     final TDEAddressType aAddress = new TDEAddressType();
-                    aAddress.setCountryCode(ToopXSDHelper.createCode(countryCodeField.getValue()));
+                    aAddress.setCountryCode(ToopXSDHelper.createCodeWithLOA(countryCodeField.getValue()));
                     aNP.setNaturalPersonLegalAddress(aAddress);
                 }
 
                 if (!legalPersonUniqueIdentifierField.isEmpty()) {
-                    final TDELegalEntityType aLE = new TDELegalEntityType();
-                    aLE.setLegalPersonUniqueIdentifier(ToopXSDHelper.createIdentifier(identifierPrefix + legalPersonUniqueIdentifierField.getValue()));
-                    aLE.setLegalEntityIdentifier(ToopXSDHelper.createIdentifier(identifierPrefix + legalPersonUniqueIdentifierField.getValue()));
+                    final TDELegalPersonType aLE = new TDELegalPersonType();
+                    aLE.setLegalPersonUniqueIdentifier(ToopXSDHelper.createIdentifierWithLOA(identifierPrefix + legalPersonUniqueIdentifierField.getValue()));
+                    aLE.setLegalEntityIdentifier(ToopXSDHelper.createIdentifierWithLOA(identifierPrefix + legalPersonUniqueIdentifierField.getValue()));
 
                     String legalName = "";
                     if (!legalPersonCompanyNameField.isEmpty()) {
                         legalName = legalPersonCompanyNameField.getValue();
                     }
-                    aLE.setLegalName(ToopXSDHelper.createText(legalName));
+                    aLE.setLegalName(ToopXSDHelper.createTextWithLOA(legalName));
 
                     final TDEAddressType aAddress = new TDEAddressType();
-                    aAddress.setCountryCode(ToopXSDHelper.createCode(countryCodeField.getValue()));
-                    aLE.setLegalEntityLegalAddress(aAddress);
-                    aDS.setLegalEntity(aLE);
+                    aAddress.setCountryCode(ToopXSDHelper.createCodeWithLOA(countryCodeField.getValue()));
+                    aLE.setLegalPersonLegalAddress(aAddress);
+                    aDS.setLegalPerson(aLE);
                 }
 
                 ToopKafkaClient.send(EErrorLevel.INFO,
@@ -186,7 +173,6 @@ public class DynamicRequestPage extends CustomLayout {
                 final TDETOOPRequestType aRequest = ToopMessageBuilder.createMockRequest(aDS,
                         ToopXSDHelper.createIdentifier(DCUIConfig.getSenderIdentifierScheme(),
                                 DCUIConfig.getSenderIdentifierValue()),
-                        countryCodeField.getValue(),
                         EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
                         EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
                         conceptList);
