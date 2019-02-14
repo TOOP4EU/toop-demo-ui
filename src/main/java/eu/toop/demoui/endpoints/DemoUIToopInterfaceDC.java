@@ -19,14 +19,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import com.helger.commons.error.level.EErrorLevel;
-import com.helger.xsds.ccts.cct.schemamodule.CodeType;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.ui.UI;
 
@@ -36,12 +33,18 @@ import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.jaxb.ToopWriter;
-import eu.toop.demoui.DCUI;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.layouts.DynamicRequestPage;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
-import eu.toop.demoui.view.*;
+import eu.toop.demoui.view.DynamicRequest;
+import eu.toop.demoui.view.PhaseTwo;
+import eu.toop.demoui.view.RequestToItalyOne;
+import eu.toop.demoui.view.RequestToSlovakiaOne;
+import eu.toop.demoui.view.RequestToSlovakiaTwo;
+import eu.toop.demoui.view.RequestToSloveniaOne;
+import eu.toop.demoui.view.RequestToSwedenOne;
+import eu.toop.demoui.view.RequestToSwedenTwo;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
@@ -100,8 +103,8 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
               for (final TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept
                   .getDataElementResponseValue ()) {
-                ToopKafkaClient.send (EErrorLevel.INFO, sLogPrefix + "Received a mapped concept ( " + mappedConcept
-                    + " ), response: " + aThirdLevelConceptDERValue);
+                ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received a mapped concept ( "
+                    + mappedConcept + " ), response: " + aThirdLevelConceptDERValue);
 
                 String aValue = "";
                 if (aThirdLevelConceptDERValue.getResponseCode () != null) {
@@ -210,19 +213,19 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
             homeView.setMainCompany (bean);
             final DynamicRequestPage page = (DynamicRequestPage) homeView.getCurrentPage ();
 
-            String expectedUuid = page.getRequestId();
+            final String expectedUuid = page.getRequestId ();
 
-            if (aResponse.getDocumentUniversalUniqueIdentifier() != null && expectedUuid != null &&
-                    expectedUuid.equals(aResponse.getDocumentUniversalUniqueIdentifier().getValue())) {
-              if (!aResponse.hasErrorEntries()) {
-                page.addMainCompanyForm();
+            if (aResponse.getDocumentUniversalUniqueIdentifier () != null && expectedUuid != null
+                && expectedUuid.equals (aResponse.getDocumentUniversalUniqueIdentifier ().getValue ())) {
+              if (!aResponse.hasErrorEntries ()) {
+                page.addMainCompanyForm ();
               } else {
-                page.setError(aResponse.getError());
+                page.setError (aResponse.getError ());
               }
 
-              String conceptErrors = getConceptErrors(aResponse);
-              if (!conceptErrors.isEmpty()) {
-                page.setConceptErrors(conceptErrors);
+              final String conceptErrors = getConceptErrors (aResponse);
+              if (!conceptErrors.isEmpty ()) {
+                page.setConceptErrors (conceptErrors);
               }
             }
           }
@@ -262,9 +265,9 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     }
   }
 
-  private String getConceptErrors(@Nonnull final TDETOOPResponseType aResponse) {
+  private String getConceptErrors (@Nonnull final TDETOOPResponseType aResponse) {
 
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder ();
 
     // Inspect all mapped values
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
@@ -281,22 +284,22 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
           final String destinationConceptName = aThirdLevelConcept.getConceptName ().getValue ();
 
-          final String mappedConcept = sourceConceptName + " - " + toopConceptName + " - "
-                  + destinationConceptName;
+          final String mappedConcept = sourceConceptName + " - " + toopConceptName + " - " + destinationConceptName;
 
-          for (final TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
+          for (final TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept
+              .getDataElementResponseValue ()) {
 
-            if (aThirdLevelConceptDERValue.getErrorIndicator() != null &&
-                    aThirdLevelConceptDERValue.getErrorIndicator().isValue()) {
-              sb.append(" - Concept Error (").append(mappedConcept).append("):\n");
-              if (aThirdLevelConceptDERValue.getErrorCode() != null) {
-                sb.append("     ").append(aThirdLevelConceptDERValue.getErrorCode().getValue()).append("\n");
+            if (aThirdLevelConceptDERValue.getErrorIndicator () != null
+                && aThirdLevelConceptDERValue.getErrorIndicator ().isValue ()) {
+              sb.append (" - Concept Error (").append (mappedConcept).append ("):\n");
+              if (aThirdLevelConceptDERValue.getErrorCode () != null) {
+                sb.append ("     ").append (aThirdLevelConceptDERValue.getErrorCode ().getValue ()).append ("\n");
               }
             }
           }
         }
       }
     }
-    return sb.toString();
+    return sb.toString ();
   }
 }
