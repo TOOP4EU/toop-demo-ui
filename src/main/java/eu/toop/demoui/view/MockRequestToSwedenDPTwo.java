@@ -45,6 +45,7 @@ public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
 
   @Override
   public void enter (final ViewChangeListener.ViewChangeEvent event) {
+    final String srcCountryCode = "SE";
     final String dataSubjectTypeCode = "12345";
     final String naturalPersonIdentifier = "SE/GF/199105109999";
     final String naturalPersonFirstName = "Olof";
@@ -106,7 +107,7 @@ public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
         aDS.setLegalPerson (aLE);
       }
 
-      ToopInterfaceClient.createRequestAndSendToToopConnector (aDS,
+      ToopInterfaceClient.createRequestAndSendToToopConnector (aDS, srcCountryCode, naturalPersonNationality,
           ToopXSDHelper.createIdentifier ("iso6523-actorid-upis", "9999:freedonia"),
           EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
           EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
