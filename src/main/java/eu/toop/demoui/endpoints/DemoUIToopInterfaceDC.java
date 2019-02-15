@@ -239,29 +239,19 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   }
 
   private void dumpResponse (@Nonnull final TDETOOPResponseType aResponse) {
-
-    FileWriter fw = null;
     try {
-
       final DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss.SSS");
       final String filePath = String.format ("%s/response-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
           dateFormat.format (new Date ()));
 
       final String responseXml = ToopWriter.response ().getAsString (aResponse);
-      fw = new FileWriter (filePath);
-      if (responseXml != null) {
-        fw.write (responseXml);
+      try (final FileWriter fw = new FileWriter (filePath)) {
+        if (responseXml != null) {
+          fw.write (responseXml);
+        }
       }
     } catch (final IOException e) {
       e.printStackTrace ();
-    } finally {
-      if (fw != null) {
-        try {
-          fw.close ();
-        } catch (final IOException e) {
-          e.printStackTrace ();
-        }
-      }
     }
   }
 

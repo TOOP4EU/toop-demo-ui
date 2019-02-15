@@ -181,7 +181,6 @@ public class ConfirmToopDataFetchingPage extends Window {
 
   private void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
 
-    FileWriter fw = null;
     try {
 
       final DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss.SSS");
@@ -189,20 +188,13 @@ public class ConfirmToopDataFetchingPage extends Window {
           dateFormat.format (new Date ()));
 
       final String requestXml = ToopWriter.request ().getAsString (aRequest);
-      fw = new FileWriter (filePath);
       if (requestXml != null) {
-        fw.write (requestXml);
+        try (final FileWriter fw = new FileWriter (filePath)) {
+          fw.write (requestXml);
+        }
       }
     } catch (final IOException e) {
       e.printStackTrace ();
-    } finally {
-      if (fw != null) {
-        try {
-          fw.close ();
-        } catch (final IOException e) {
-          e.printStackTrace ();
-        }
-      }
     }
   }
 }

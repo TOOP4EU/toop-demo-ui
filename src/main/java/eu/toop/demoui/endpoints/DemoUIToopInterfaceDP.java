@@ -224,8 +224,6 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
   }
 
   private void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
-
-    FileWriter fw = null;
     try {
 
       final DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss.SSS");
@@ -233,26 +231,18 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
           dateFormat.format (new Date ()));
 
       final String requestXml = ToopWriter.request ().getAsString (aRequest);
-      fw = new FileWriter (filePath);
       if (requestXml != null) {
-        fw.write (requestXml);
+        try (final FileWriter fw = new FileWriter (filePath)) {
+          fw.write (requestXml);
+        }
       }
     } catch (final IOException e) {
       e.printStackTrace ();
-    } finally {
-      if (fw != null) {
-        try {
-          fw.close ();
-        } catch (final IOException e) {
-          e.printStackTrace ();
-        }
-      }
     }
   }
 
   private void dumpResponse (@Nonnull final TDETOOPResponseType aResponse) {
 
-    FileWriter fw = null;
     try {
 
       final DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss.SSS");
@@ -260,20 +250,13 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
           dateFormat.format (new Date ()));
 
       final String responseXml = ToopWriter.response ().getAsString (aResponse);
-      fw = new FileWriter (filePath);
       if (responseXml != null) {
-        fw.write (responseXml);
+        try (final FileWriter fw = new FileWriter (filePath)) {
+          fw.write (responseXml);
+        }
       }
     } catch (final IOException e) {
       e.printStackTrace ();
-    } finally {
-      if (fw != null) {
-        try {
-          fw.close ();
-        } catch (final IOException e) {
-          e.printStackTrace ();
-        }
-      }
     }
   }
 }
