@@ -244,7 +244,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
       final String filePath = String.format ("%s/response-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
           dateFormat.format (new Date ()));
 
-      final String responseXml = ToopWriter.response ().getAsString (aResponse);
+      final String responseXml = ToopWriter.response140 ().getAsString (aResponse);
       try (final FileWriter fw = new FileWriter (filePath)) {
         if (responseXml != null) {
           fw.write (responseXml);

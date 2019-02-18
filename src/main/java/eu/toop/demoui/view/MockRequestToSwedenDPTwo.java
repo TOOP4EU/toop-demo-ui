@@ -34,7 +34,7 @@ import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
 import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
 import eu.toop.commons.error.ToopErrorException;
-import eu.toop.commons.jaxb.ToopXSDHelper;
+import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
@@ -82,33 +82,33 @@ public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
           + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
 
       final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
-      aDS.setDataRequestSubjectTypeCode (ToopXSDHelper.createCode (dataSubjectTypeCode));
+      aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (dataSubjectTypeCode));
       {
         final TDENaturalPersonType aNP = new TDENaturalPersonType ();
-        aNP.setPersonIdentifier (ToopXSDHelper.createIdentifierWithLOA (naturalPersonIdentifier));
-        aNP.setFamilyName (ToopXSDHelper.createTextWithLOA (naturalPersonFamilyName));
-        aNP.setFirstName (ToopXSDHelper.createTextWithLOA (naturalPersonFirstName));
-        aNP.setBirthDate (ToopXSDHelper.createDateWithLOANow ());
+        aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (naturalPersonIdentifier));
+        aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (naturalPersonFamilyName));
+        aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (naturalPersonFirstName));
+        aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
         final TDEAddressType aAddress = new TDEAddressType ();
         // Destination country to use
-        aAddress.setCountryCode (ToopXSDHelper.createCodeWithLOA (naturalPersonNationality));
+        aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (naturalPersonNationality));
         aNP.setNaturalPersonLegalAddress (aAddress);
         aDS.setNaturalPerson (aNP);
       }
       {
         final TDELegalPersonType aLE = new TDELegalPersonType ();
-        aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper.createIdentifierWithLOA (legalPersonIdentifier));
-        aLE.setLegalEntityIdentifier (ToopXSDHelper.createIdentifierWithLOA (legalPersonIdentifier));
-        aLE.setLegalName (ToopXSDHelper.createTextWithLOA (legalPersonName));
+        aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140.createIdentifierWithLOA (legalPersonIdentifier));
+        aLE.setLegalEntityIdentifier (ToopXSDHelper140.createIdentifierWithLOA (legalPersonIdentifier));
+        aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (legalPersonName));
         final TDEAddressType aAddress = new TDEAddressType ();
         // Destination country to use
-        aAddress.setCountryCode (ToopXSDHelper.createCodeWithLOA (legalPersonNationality));
+        aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (legalPersonNationality));
         aLE.setLegalPersonLegalAddress (aAddress);
         aDS.setLegalPerson (aLE);
       }
 
       ToopInterfaceClient.createRequestAndSendToToopConnector (aDS, srcCountryCode, naturalPersonNationality,
-          ToopXSDHelper.createIdentifier ("iso6523-actorid-upis", "9999:freedonia"),
+          ToopXSDHelper140.createIdentifier ("iso6523-actorid-upis", "9999:freedonia"),
           EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
           EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
     } catch (final IOException | ToopErrorException ex) {

@@ -36,9 +36,9 @@ import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.error.ToopErrorException;
-import eu.toop.commons.exchange.ToopMessageBuilder;
+import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
-import eu.toop.commons.jaxb.ToopXSDHelper;
+import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.iface.IToopInterfaceDP;
@@ -62,35 +62,35 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     aConcept.getDataElementResponseValue ().add (aValue);
 
     if (conceptName == null) {
-      aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
-      aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP: Concept name missing"));
+      aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (true));
+      aValue.setErrorCode (ToopXSDHelper140.createCode ("MockError from DemoDP: Concept name missing"));
       ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Concept name missing: " + aConcept);
       return;
     }
 
-    aValue.setAlternativeResponseIndicator (ToopXSDHelper.createIndicator (false));
-    aValue.setErrorIndicator (ToopXSDHelper.createIndicator (false));
+    aValue.setAlternativeResponseIndicator (ToopXSDHelper140.createIndicator (false));
+    aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (false));
 
     if (dataset != null) {
       final String conceptValue = dataset.getConceptValue (conceptName.getValue ());
 
       if (conceptValue == null) {
-        aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
-        aValue.setErrorCode (ToopXSDHelper
+        aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (true));
+        aValue.setErrorCode (ToopXSDHelper140
             .createCode ("MockError from DemoDP: Concept [" + conceptName.getValue () + "] is missing in dataset"));
         ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Failed to populate concept: Concept ["
             + conceptName.getValue () + "] is missing in dataset");
         return;
       }
 
-      aValue.setResponseDescription (ToopXSDHelper.createText (conceptValue));
+      aValue.setResponseDescription (ToopXSDHelper140.createText (conceptValue));
 
       ToopKafkaClient.send (EErrorLevel.INFO,
           () -> sLogPrefix + "Populated concept [" + conceptName.getValue () + "]: [" + conceptValue + "]");
     } else {
 
-      aValue.setErrorIndicator (ToopXSDHelper.createIndicator (true));
-      aValue.setErrorCode (ToopXSDHelper.createCode ("MockError from DemoDP: No dataset found"));
+      aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (true));
+      aValue.setErrorCode (ToopXSDHelper140.createCode ("MockError from DemoDP: No dataset found"));
     }
   }
 
@@ -98,16 +98,16 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
   private static TDETOOPResponseType _createResponseFromRequest (@Nonnull final TDETOOPRequestType aRequest,
       @Nonnull final String sLogPrefix) {
     // build response
-    final TDETOOPResponseType aResponse = ToopMessageBuilder.createResponse (aRequest);
+    final TDETOOPResponseType aResponse = ToopMessageBuilder140.createResponse (aRequest);
     {
       // Required for response
       final TDEDataProviderType p = new TDEDataProviderType ();
-      p.setDPIdentifier (ToopXSDHelper.createIdentifier (DCUIConfig.getResponderIdentifierScheme (),
+      p.setDPIdentifier (ToopXSDHelper140.createIdentifier (DCUIConfig.getResponderIdentifierScheme (),
           DCUIConfig.getResponderIdentifierValue ()));
-      p.setDPName (ToopXSDHelper.createText ("EloniaDP"));
-      p.setDPElectronicAddressIdentifier (ToopXSDHelper.createIdentifier ("elonia@register.example.org"));
+      p.setDPName (ToopXSDHelper140.createText ("EloniaDP"));
+      p.setDPElectronicAddressIdentifier (ToopXSDHelper140.createIdentifier ("elonia@register.example.org"));
       final TDEAddressType pa = new TDEAddressType ();
-      pa.setCountryCode (ToopXSDHelper.createCodeWithLOA (DCUIConfig.getProviderCountryCode ()));
+      pa.setCountryCode (ToopXSDHelper140.createCodeWithLOA (DCUIConfig.getProviderCountryCode ()));
       p.setDPLegalAddress (pa);
       aResponse.addDataProvider (p);
     }
@@ -126,7 +126,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Switching document type '"
             + eRequestDocType.getURIEncoded () + "' to '" + eResponseDocType.getURIEncoded () + "'");
         aResponse.getRoutingInformation ().setDocumentTypeIdentifier (
-            ToopXSDHelper.createIdentifier (eResponseDocType.getScheme (), eResponseDocType.getID ()));
+            ToopXSDHelper140.createIdentifier (eResponseDocType.getScheme (), eResponseDocType.getID ()));
       } catch (final IllegalArgumentException ex) {
         // Found no reverse document type
         ToopKafkaClient.send (EErrorLevel.INFO,
@@ -230,7 +230,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       final String filePath = String.format ("%s/request-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
           dateFormat.format (new Date ()));
 
-      final String requestXml = ToopWriter.request ().getAsString (aRequest);
+      final String requestXml = ToopWriter.request140 ().getAsString (aRequest);
       if (requestXml != null) {
         try (final FileWriter fw = new FileWriter (filePath)) {
           fw.write (requestXml);
@@ -249,7 +249,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       final String filePath = String.format ("%s/response-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
           dateFormat.format (new Date ()));
 
-      final String responseXml = ToopWriter.response ().getAsString (aResponse);
+      final String responseXml = ToopWriter.response140 ().getAsString (aResponse);
       if (responseXml != null) {
         try (final FileWriter fw = new FileWriter (filePath)) {
           fw.write (responseXml);

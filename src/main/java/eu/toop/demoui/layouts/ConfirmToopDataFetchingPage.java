@@ -41,9 +41,9 @@ import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
 import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
-import eu.toop.commons.exchange.ToopMessageBuilder;
+import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
-import eu.toop.commons.jaxb.ToopXSDHelper;
+import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
@@ -101,16 +101,16 @@ public class ConfirmToopDataFetchingPage extends Window {
             + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
-        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper.createCode ("12345"));
+        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("12345"));
         {
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
-          aNP.setPersonIdentifier (ToopXSDHelper.createIdentifierWithLOA (view.getIdentity ().getIdentifier ()));
-          aNP.setFamilyName (ToopXSDHelper.createTextWithLOA (view.getIdentity ().getFamilyName ()));
-          aNP.setFirstName (ToopXSDHelper.createTextWithLOA (view.getIdentity ().getFirstName ()));
-          aNP.setBirthDate (ToopXSDHelper.createDateWithLOANow ());
+          aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getIdentifier ()));
+          aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFamilyName ()));
+          aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFirstName ()));
+          aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
           final TDEAddressType aAddress = new TDEAddressType ();
           // Destination country to use
-          aAddress.setCountryCode (ToopXSDHelper.createCodeWithLOA (destinationCountryCode));
+          aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (destinationCountryCode));
           aNP.setNaturalPersonLegalAddress (aAddress);
           aDS.setNaturalPerson (aNP);
         }
@@ -119,13 +119,13 @@ public class ConfirmToopDataFetchingPage extends Window {
             && !view.getIdentity ().getLegalPersonIdentifier ().isEmpty ()) {
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (
-              ToopXSDHelper.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
+              ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
           aLE.setLegalEntityIdentifier (
-              ToopXSDHelper.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
-          aLE.setLegalName (ToopXSDHelper.createTextWithLOA (view.getIdentity ().getLegalPersonName ()));
+              ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
+          aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getLegalPersonName ()));
           final TDEAddressType aAddress = new TDEAddressType ();
           // Destination country to use
-          aAddress.setCountryCode (ToopXSDHelper.createCodeWithLOA (view.getIdentity ().getLegalPersonNationality ()));
+          aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (view.getIdentity ().getLegalPersonNationality ()));
           aLE.setLegalPersonLegalAddress (aAddress);
           aDS.setLegalPerson (aLE);
         }
@@ -134,9 +134,9 @@ public class ConfirmToopDataFetchingPage extends Window {
             () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
 
         final String srcCountryCode = "SE";
-        final TDETOOPRequestType aRequest = ToopMessageBuilder.createMockRequest (aDS, srcCountryCode,
+        final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
             destinationCountryCode,
-            ToopXSDHelper.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
+            ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                 DCUIConfig.getSenderIdentifierValue ()),
             EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
             EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
@@ -187,7 +187,7 @@ public class ConfirmToopDataFetchingPage extends Window {
       final String filePath = String.format ("%s/request-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
           dateFormat.format (new Date ()));
 
-      final String requestXml = ToopWriter.request ().getAsString (aRequest);
+      final String requestXml = ToopWriter.request140 ().getAsString (aRequest);
       if (requestXml != null) {
         try (final FileWriter fw = new FileWriter (filePath)) {
           fw.write (requestXml);

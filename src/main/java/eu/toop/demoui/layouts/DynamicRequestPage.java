@@ -48,9 +48,9 @@ import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
 import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
-import eu.toop.commons.exchange.ToopMessageBuilder;
+import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
-import eu.toop.commons.jaxb.ToopXSDHelper;
+import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
@@ -134,7 +134,7 @@ public class DynamicRequestPage extends CustomLayout {
             + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
-        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper.createCode ("12345"));
+        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("12345"));
         {
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
           aDS.setNaturalPerson (aNP);
@@ -143,42 +143,42 @@ public class DynamicRequestPage extends CustomLayout {
           if (!naturalPersonIdentifierField.isEmpty ()) {
             naturalPersonIdentifier = identifierPrefix + naturalPersonIdentifierField.getValue ();
           }
-          aNP.setPersonIdentifier (ToopXSDHelper.createIdentifierWithLOA (naturalPersonIdentifier));
+          aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (naturalPersonIdentifier));
 
           String naturalPersonFirstName = "";
           if (!naturalPersonFirstNameField.isEmpty ()) {
             naturalPersonFirstName = naturalPersonFirstNameField.getValue ();
           }
-          aNP.setFirstName (ToopXSDHelper.createTextWithLOA (naturalPersonFirstName));
+          aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (naturalPersonFirstName));
 
           String naturalPersonFamilyName = "";
           if (!naturalPersonFamilyNameField.isEmpty ()) {
             naturalPersonFamilyName = naturalPersonFamilyNameField.getValue ();
           }
-          aNP.setFamilyName (ToopXSDHelper.createTextWithLOA (naturalPersonFamilyName));
+          aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (naturalPersonFamilyName));
 
-          aNP.setBirthDate (ToopXSDHelper.createDateWithLOANow ());
+          aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
 
           final TDEAddressType aAddress = new TDEAddressType ();
-          aAddress.setCountryCode (ToopXSDHelper.createCodeWithLOA (countryCodeField.getValue ()));
+          aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
           aNP.setNaturalPersonLegalAddress (aAddress);
         }
 
         if (!legalPersonUniqueIdentifierField.isEmpty ()) {
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (
-              ToopXSDHelper.createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
+              ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
           aLE.setLegalEntityIdentifier (
-              ToopXSDHelper.createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
+              ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
 
           String legalName = "";
           if (!legalPersonCompanyNameField.isEmpty ()) {
             legalName = legalPersonCompanyNameField.getValue ();
           }
-          aLE.setLegalName (ToopXSDHelper.createTextWithLOA (legalName));
+          aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (legalName));
 
           final TDEAddressType aAddress = new TDEAddressType ();
-          aAddress.setCountryCode (ToopXSDHelper.createCodeWithLOA (countryCodeField.getValue ()));
+          aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
           aLE.setLegalPersonLegalAddress (aAddress);
           aDS.setLegalPerson (aLE);
         }
@@ -187,9 +187,9 @@ public class DynamicRequestPage extends CustomLayout {
             () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
 
         final String srcCountryCode = "SE";
-        final TDETOOPRequestType aRequest = ToopMessageBuilder.createMockRequest (aDS, srcCountryCode,
+        final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
             countryCodeField.getValue (),
-            ToopXSDHelper.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
+            ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                 DCUIConfig.getSenderIdentifierValue ()),
             EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
             EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
@@ -197,7 +197,7 @@ public class DynamicRequestPage extends CustomLayout {
         final UUID uuid = UUID.randomUUID ();
         requestIdLabel = new Label (uuid.toString ());
         addComponent (requestIdLabel, "requestId");
-        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper.createIdentifier (uuid.toString ()));
+        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier (uuid.toString ()));
 
         try {
           dumpRequest (aRequest);
@@ -317,7 +317,7 @@ public class DynamicRequestPage extends CustomLayout {
       final String filePath = String.format ("%s/request-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
           dateFormat.format (new Date ()));
 
-      final String requestXml = ToopWriter.request ().getAsString (aRequest);
+      final String requestXml = ToopWriter.request140 ().getAsString (aRequest);
       if (requestXml != null) {
         try (final FileWriter fw = new FileWriter (filePath)) {
           fw.write (requestXml);
