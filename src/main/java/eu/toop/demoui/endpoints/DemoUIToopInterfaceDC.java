@@ -66,12 +66,12 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     final TDEDataProviderType aDP = aResponse.getDataProviderCount () == 0 ? null
         : aResponse.getDataProviderAtIndex (0);
 
-    ToopKafkaClient.send (EErrorLevel.INFO,
-        () -> sLogPrefix + "Received data from Data Provider: "
-            + (aDP == null ? "null"
+    ToopKafkaClient
+        .send (EErrorLevel.INFO,
+            () -> sLogPrefix + "Received data from Data Provider: " + (aDP == null ? "null"
                 : " DPIdentifier: " + aDP.getDPIdentifier ().getValue () + ", " + " DPName: "
                     + aDP.getDPName ().getValue () + ", " + " DPElectronicAddressIdentifier: "
-                    + aDP.getDPElectronicAddressIdentifier ().getValue ()));
+                    + aResponse.getRoutingInformation ().getDataProviderElectronicAddressIdentifier ().getValue ()));
 
     // Push a new organization bean to the UI
     try {

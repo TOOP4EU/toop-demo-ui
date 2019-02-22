@@ -41,7 +41,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.v140.TDEAddressType;
+import eu.toop.commons.dataexchange.v140.TDEAddressWithLOAType;
 import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.v140.TDEErrorType;
 import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
@@ -159,17 +159,17 @@ public class DynamicRequestPage extends CustomLayout {
 
           aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
 
-          final TDEAddressType aAddress = new TDEAddressType ();
+          final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
           aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
           aNP.setNaturalPersonLegalAddress (aAddress);
         }
 
         if (!legalPersonUniqueIdentifierField.isEmpty ()) {
           final TDELegalPersonType aLE = new TDELegalPersonType ();
-          aLE.setLegalPersonUniqueIdentifier (
-              ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
-          aLE.setLegalEntityIdentifier (
-              ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
+          aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140
+              .createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
+          aLE.setLegalEntityIdentifier (ToopXSDHelper140
+              .createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
 
           String legalName = "";
           if (!legalPersonCompanyNameField.isEmpty ()) {
@@ -177,7 +177,7 @@ public class DynamicRequestPage extends CustomLayout {
           }
           aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (legalName));
 
-          final TDEAddressType aAddress = new TDEAddressType ();
+          final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
           aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
           aLE.setLegalPersonLegalAddress (aAddress);
           aDS.setLegalPerson (aLE);

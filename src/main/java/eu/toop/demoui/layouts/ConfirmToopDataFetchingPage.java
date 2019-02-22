@@ -35,7 +35,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.v140.TDEAddressType;
+import eu.toop.commons.dataexchange.v140.TDEAddressWithLOAType;
 import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
 import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
@@ -108,7 +108,7 @@ public class ConfirmToopDataFetchingPage extends Window {
           aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFamilyName ()));
           aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFirstName ()));
           aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
-          final TDEAddressType aAddress = new TDEAddressType ();
+          final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
           // Destination country to use
           aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (destinationCountryCode));
           aNP.setNaturalPersonLegalAddress (aAddress);
@@ -123,9 +123,10 @@ public class ConfirmToopDataFetchingPage extends Window {
           aLE.setLegalEntityIdentifier (
               ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
           aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getLegalPersonName ()));
-          final TDEAddressType aAddress = new TDEAddressType ();
+          final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
           // Destination country to use
-          aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (view.getIdentity ().getLegalPersonNationality ()));
+          aAddress
+              .setCountryCode (ToopXSDHelper140.createCodeWithLOA (view.getIdentity ().getLegalPersonNationality ()));
           aLE.setLegalPersonLegalAddress (aAddress);
           aDS.setLegalPerson (aLE);
         }

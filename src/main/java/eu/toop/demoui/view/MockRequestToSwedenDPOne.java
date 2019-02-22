@@ -29,7 +29,7 @@ import com.vaadin.ui.VerticalLayout;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.v140.TDEAddressType;
+import eu.toop.commons.dataexchange.v140.TDEAddressWithLOAType;
 import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
 import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
@@ -89,7 +89,7 @@ public class MockRequestToSwedenDPOne extends VerticalLayout implements View {
         aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (naturalPersonFamilyName));
         aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (naturalPersonFirstName));
         aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
-        final TDEAddressType aAddress = new TDEAddressType ();
+        final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
         // Destination country to use
         aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (naturalPersonNationality));
         aNP.setNaturalPersonLegalAddress (aAddress);
@@ -100,7 +100,7 @@ public class MockRequestToSwedenDPOne extends VerticalLayout implements View {
         aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140.createIdentifierWithLOA (legalPersonIdentifier));
         aLE.setLegalEntityIdentifier (ToopXSDHelper140.createIdentifierWithLOA (legalPersonIdentifier));
         aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (legalPersonName));
-        final TDEAddressType aAddress = new TDEAddressType ();
+        final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
         // Destination country to use
         aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (legalPersonNationality));
         aLE.setLegalPersonLegalAddress (aAddress);

@@ -101,11 +101,13 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     final TDETOOPResponseType aResponse = ToopMessageBuilder140.createResponse (aRequest);
     {
       // Required for response
+      aResponse.getRoutingInformation ().setDataProviderElectronicAddressIdentifier (
+          ToopXSDHelper140.createIdentifier ("elonia@register.example.org"));
+
       final TDEDataProviderType p = new TDEDataProviderType ();
       p.setDPIdentifier (ToopXSDHelper140.createIdentifier (DCUIConfig.getResponderIdentifierScheme (),
           DCUIConfig.getResponderIdentifierValue ()));
       p.setDPName (ToopXSDHelper140.createText ("EloniaDP"));
-      p.setDPElectronicAddressIdentifier (ToopXSDHelper140.createIdentifier ("elonia@register.example.org"));
       final TDEAddressType pa = new TDEAddressType ();
       pa.setCountryCode (ToopXSDHelper140.createCodeWithLOA (DCUIConfig.getProviderCountryCode ()));
       p.setDPLegalAddress (pa);
