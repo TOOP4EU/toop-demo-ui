@@ -227,6 +227,12 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     }
   }
 
+
+  public void onToopErrorResponse (@Nonnull final TDETOOPResponseType aResponse) throws IOException {
+    // TODO @Anton
+    // Avoid cycles
+  }
+
   private void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
     try {
 
