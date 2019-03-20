@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
@@ -35,11 +36,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.v140.TDEAddressWithLOAType;
-import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
-import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
-import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
-import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
+import eu.toop.commons.dataexchange.v140.*;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
@@ -82,7 +79,7 @@ public class ConfirmToopDataFetchingPage extends Window {
 
         final List<ConceptValue> conceptList = new ArrayList<> ();
 
-        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaAddress"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaStreetAddress"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaSSNumber"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaBusinessCode"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaVATNumber"));
@@ -101,8 +98,8 @@ public class ConfirmToopDataFetchingPage extends Window {
             + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
-        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("12345"));
         {
+          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("NP"));
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
           aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getIdentifier ()));
           aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFamilyName ()));
@@ -117,6 +114,7 @@ public class ConfirmToopDataFetchingPage extends Window {
 
         if (view.getIdentity ().getLegalPersonIdentifier () != null
             && !view.getIdentity ().getLegalPersonIdentifier ().isEmpty ()) {
+          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("LE"));
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (
               ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
@@ -134,13 +132,17 @@ public class ConfirmToopDataFetchingPage extends Window {
         ToopKafkaClient.send (EErrorLevel.INFO,
             () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
 
-        final String srcCountryCode = "SE";
+        final String srcCountryCode = "PF";
         final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
             destinationCountryCode,
             ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                 DCUIConfig.getSenderIdentifierValue ()),
-            EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
-            EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
+                EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_REGISTEREDORGANIZATION_1_40,
+                EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
+                conceptList);
+
+        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency", "toop-doctypeid-qns", UUID.randomUUID ().toString()));
+        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier("toop-doctypeid-qns", "urn:eu:toop:ns:dataexchange-1p40::Request"));
 
         dumpRequest (aRequest);
 

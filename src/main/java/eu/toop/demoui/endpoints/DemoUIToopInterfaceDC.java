@@ -122,7 +122,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                       + aThirdLevelConceptDERValue.toString ());
                 }
 
-                if (sourceConceptName.equals ("FreedoniaAddress")) {
+                if (sourceConceptName.equals ("FreedoniaStreetAddress")) {
                   bean.setAddress (aValue);
                 } else if (sourceConceptName.equals ("FreedoniaSSNumber")) {
                   bean.setSSNumber (aValue);
@@ -207,7 +207,6 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
             page.addMainCompanyForm ();
           }
         } else if (threadUINavigator.getCurrentView () instanceof DynamicRequest) {
-
           final DynamicRequest homeView = (DynamicRequest) threadUINavigator.getCurrentView ();
           if (homeView.getCurrentPage () instanceof DynamicRequestPage) {
             homeView.setMainCompany (bean);
@@ -215,8 +214,8 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
             final String expectedUuid = page.getRequestId ();
 
-            if (aResponse.getDocumentUniversalUniqueIdentifier () != null && expectedUuid != null
-                && expectedUuid.equals (aResponse.getDocumentUniversalUniqueIdentifier ().getValue ())) {
+            if (aResponse.getDataRequestIdentifier () != null && expectedUuid != null
+                && expectedUuid.equals (aResponse.getDataRequestIdentifier ().getValue ())) {
               if (!aResponse.hasErrorEntries ()) {
                 page.addMainCompanyForm ();
               } else {

@@ -64,7 +64,7 @@ public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
 
       final List<ConceptValue> conceptList = new ArrayList<> ();
 
-      conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaAddress"));
+      conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaStreetAddress"));
       conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaSSNumber"));
       conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaBusinessCode"));
       conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaVATNumber"));

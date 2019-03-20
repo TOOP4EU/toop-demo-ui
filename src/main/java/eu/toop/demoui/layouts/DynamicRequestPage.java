@@ -72,7 +72,7 @@ public class DynamicRequestPage extends CustomLayout {
   private final TextField legalPersonCompanyNameField = new TextField ();
   private Label errorLabel = null;
   private Label conceptErrorsLabel = null;
-  private final List<String> countryCodes = new ArrayList<> (Arrays.asList ("AT", "GR", "IT", "SE", "SI", "SK", "SV"));
+  private final List<String> countryCodes = new ArrayList<> (Arrays.asList ("AT", "GR", "IT", "SE", "SI", "SK", "SV", "GQ"));
 
   private Label requestIdLabel = null;
   private boolean responseReceived = false;
@@ -80,7 +80,7 @@ public class DynamicRequestPage extends CustomLayout {
   private final static List<ConceptValue> conceptList = new ArrayList<> ();
 
   static {
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaAddress"));
+    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaStreetAddress"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaSSNumber"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaBusinessCode"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaVATNumber"));
@@ -134,13 +134,13 @@ public class DynamicRequestPage extends CustomLayout {
             + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
-        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("12345"));
         {
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
           aDS.setNaturalPerson (aNP);
 
           String naturalPersonIdentifier = "";
           if (!naturalPersonIdentifierField.isEmpty ()) {
+            aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("NP"));
             naturalPersonIdentifier = identifierPrefix + naturalPersonIdentifierField.getValue ();
           }
           aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (naturalPersonIdentifier));
@@ -165,6 +165,7 @@ public class DynamicRequestPage extends CustomLayout {
         }
 
         if (!legalPersonUniqueIdentifierField.isEmpty ()) {
+          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("LE"));
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140
               .createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
@@ -191,13 +192,15 @@ public class DynamicRequestPage extends CustomLayout {
             countryCodeField.getValue (),
             ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                 DCUIConfig.getSenderIdentifierValue ()),
-            EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
-            EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
+                EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_REGISTEREDORGANIZATION_1_40,
+                EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
+                conceptList);
 
         final UUID uuid = UUID.randomUUID ();
         requestIdLabel = new Label (uuid.toString ());
         addComponent (requestIdLabel, "requestId");
-        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier (uuid.toString ()));
+        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency", "toop-doctypeid-qns", uuid.toString ()));
+        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier("toop-doctypeid-qns", "urn:eu:toop:ns:dataexchange-1p40::Request"));
 
         try {
           dumpRequest (aRequest);

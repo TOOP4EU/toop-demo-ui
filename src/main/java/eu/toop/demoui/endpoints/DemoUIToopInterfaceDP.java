@@ -105,8 +105,9 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
           ToopXSDHelper140.createIdentifier ("elonia@register.example.org"));
 
       final TDEDataProviderType p = new TDEDataProviderType ();
-      p.setDPIdentifier (ToopXSDHelper140.createIdentifier (DCUIConfig.getResponderIdentifierScheme (),
-          DCUIConfig.getResponderIdentifierValue ()));
+      p.setDPIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency",
+              DCUIConfig.getResponderIdentifierScheme (),
+              DCUIConfig.getResponderIdentifierValue ()));
       p.setDPName (ToopXSDHelper140.createText ("EloniaDP"));
       final TDEAddressType pa = new TDEAddressType ();
       pa.setCountryCode (ToopXSDHelper140.createCodeWithLOA (DCUIConfig.getProviderCountryCode ()));
@@ -161,7 +162,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
   public void onToopRequest (@Nonnull final TDETOOPRequestType aRequest) throws IOException {
 
-    final String sRequestID = aRequest.getDataRequestIdentifier ().getValue ();
+    final String sRequestID = aRequest.getDocumentUniversalUniqueIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] ";
     ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received DP Backend Request");
 
@@ -209,6 +210,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // build response
     final TDETOOPResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
+    aResponse.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier("toop-doctypeid-qns", "urn:eu:toop:ns:dataexchange-1p40::Response"));
 
     // add all the mapped values in the response
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
