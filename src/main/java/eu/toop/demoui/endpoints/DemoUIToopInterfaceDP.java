@@ -27,14 +27,7 @@ import javax.annotation.Nonnull;
 import com.helger.commons.error.level.EErrorLevel;
 
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
-import eu.toop.commons.dataexchange.v140.TDEAddressType;
-import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
-import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
-import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
-import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
-import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
-import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
-import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
+import eu.toop.commons.dataexchange.v140.*;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
@@ -44,6 +37,7 @@ import eu.toop.demoui.DCUIConfig;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
+import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
@@ -178,7 +172,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     if (ds.getNaturalPerson () != null) {
       if (ds.getNaturalPerson ().getPersonIdentifier () != null) {
         if (!ds.getNaturalPerson ().getPersonIdentifier ().getValue ().isEmpty ()) {
-          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching natural person: "
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching NaturalPerson: "
               + ds.getNaturalPerson ().getPersonIdentifier ().getValue ());
           naturalPersonIdentifier = ds.getNaturalPerson ().getPersonIdentifier ().getValue ();
         }
@@ -188,7 +182,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     if (ds.getLegalPerson () != null) {
       if (ds.getLegalPerson ().getLegalPersonUniqueIdentifier () != null) {
         if (!ds.getLegalPerson ().getLegalPersonUniqueIdentifier ().getValue ().isEmpty ()) {
-          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching legal person: "
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Record matching LegalPerson: "
               + ds.getLegalPerson ().getLegalPersonUniqueIdentifier ().getValue ());
           legalEntityIdentifier = ds.getLegalPerson ().getLegalPersonUniqueIdentifier ().getValue ();
         }
@@ -204,6 +198,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     DCUIConfig.Dataset dataset = null;
     if (datasets.size () > 0) {
       dataset = datasets.get (0);
+      ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Dataset found");
     } else {
       ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "No dataset found");
     }
@@ -229,8 +224,24 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
 
   public void onToopErrorResponse (@Nonnull final TDETOOPResponseType aResponse) throws IOException {
-    // TODO @Anton
-    // Avoid cycles
+    final IdentifierType docUuid = aResponse.getDocumentUniversalUniqueIdentifier();
+    final String sRequestID = (docUuid != null ? docUuid.getValue() : "");
+    final String sLogPrefix = "[" + sRequestID + "] ";
+
+    final StringBuilder sb = new StringBuilder();
+    sb.append(sLogPrefix);
+    sb.append("Received TOOP Response from TC.");
+
+    if (aResponse.hasErrorEntries()) {
+      sb.append(String.format(" Contains %d error(s)\n", aResponse.getErrorCount()));
+
+      for (TDEErrorType error : aResponse.getError()) {
+        sb.append(error).append("\n");
+      }
+      ToopKafkaClient.send (EErrorLevel.ERROR, sb::toString);
+    } else {
+      ToopKafkaClient.send (EErrorLevel.WARN, sb::toString);
+    }
   }
 
   private void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {

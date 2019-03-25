@@ -41,12 +41,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.v140.TDEAddressWithLOAType;
-import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
-import eu.toop.commons.dataexchange.v140.TDEErrorType;
-import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
-import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
-import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
+import eu.toop.commons.dataexchange.v140.*;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
@@ -70,6 +65,8 @@ public class DynamicRequestPage extends CustomLayout {
   private final TextField naturalPersonFamilyNameField = new TextField ();
   private final TextField legalPersonUniqueIdentifierField = new TextField ();
   private final TextField legalPersonCompanyNameField = new TextField ();
+  private final TextField dataProviderScheme = new TextField ();
+  private final TextField dataProviderName = new TextField ();
   private Label errorLabel = null;
   private Label conceptErrorsLabel = null;
   private final List<String> countryCodes = new ArrayList<> (Arrays.asList ("AT", "GR", "IT", "SE", "SI", "SK", "SV", "GQ"));
@@ -82,14 +79,14 @@ public class DynamicRequestPage extends CustomLayout {
   static {
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaStreetAddress"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaSSNumber"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaBusinessCode"));
+    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaCompanyCode"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaVATNumber"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaCompanyType"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaRegistrationDate"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaRegistrationNumber"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaCompanyName"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaCompanyNaceCode"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaActivityDeclaration"));
+    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaNaceCode"));
+    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaActivityDescription"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaRegistrationAuthority"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaLegalStatus"));
     conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaLegalStatusEffectiveDate"));
@@ -109,13 +106,15 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (spinner, "spinner");
 
     countryCodeField.setItems (countryCodes);
-    addComponent (countryCodeField, "countryCodeField");
 
+    addComponent (countryCodeField, "countryCodeField");
     addComponent (naturalPersonIdentifierField, "naturalPersonIdentifierField");
     addComponent (naturalPersonFirstNameField, "naturalPersonFirstNameField");
     addComponent (naturalPersonFamilyNameField, "naturalPersonFamilyNameField");
     addComponent (legalPersonUniqueIdentifierField, "legalPersonUniqueIdentifierField");
     addComponent (legalPersonCompanyNameField, "legalPersonCompanyNameField");
+    addComponent (dataProviderScheme, "dataProviderScheme");
+    addComponent (dataProviderName, "dataProviderName");
 
     final Button sendButton = new Button ("SendRequest", new SendRequest ());
     sendButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
@@ -128,7 +127,7 @@ public class DynamicRequestPage extends CustomLayout {
     @Override
     public void buttonClick (final Button.ClickEvent clickEvent) {
       try {
-        final String identifierPrefix = countryCodeField.getValue () + "/GF/";
+        final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode() + "/";
 
         ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting concepts: "
             + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
@@ -184,10 +183,7 @@ public class DynamicRequestPage extends CustomLayout {
           aDS.setLegalPerson (aLE);
         }
 
-        ToopKafkaClient.send (EErrorLevel.INFO,
-            () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
-
-        final String srcCountryCode = "SE";
+        final String srcCountryCode = DCUIConfig.getSenderCountryCode();
         final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
             countryCodeField.getValue (),
             ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
@@ -202,11 +198,26 @@ public class DynamicRequestPage extends CustomLayout {
         aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency", "toop-doctypeid-qns", uuid.toString ()));
         aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier("toop-doctypeid-qns", "urn:eu:toop:ns:dataexchange-1p40::Request"));
 
+        if (!dataProviderScheme.isEmpty() && !dataProviderName.isEmpty()) {
+          final TDERoutingInformationType routingInformation = aRequest.getRoutingInformation();
+          routingInformation.setDataProviderElectronicAddressIdentifier(
+                  ToopXSDHelper140.createIdentifier(dataProviderScheme.getValue(), dataProviderName.getValue()));
+          aRequest.setRoutingInformation(routingInformation);
+
+          ToopKafkaClient.send (EErrorLevel.INFO,
+                  () -> String.format("[DC] Set routing information to specific data provider: [%s, %s]",
+                          dataProviderScheme.getValue(),
+                          dataProviderName.getValue()));
+        }
+
         try {
           dumpRequest (aRequest);
         } catch (final Exception e) {
           System.out.println ("Failed to dump request xml");
         }
+
+        ToopKafkaClient.send (EErrorLevel.INFO,
+                () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
 
         ToopInterfaceClient.sendRequestToToopConnector (aRequest);
 

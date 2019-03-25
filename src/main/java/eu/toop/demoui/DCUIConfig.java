@@ -70,6 +70,11 @@ public class DCUIConfig {
     return rb.getString ("sender.identifier.value");
   }
 
+  public static String getSenderCountryCode () {
+
+    return rb.getString ("sender.country.code");
+  }
+
   public static String getResponderIdentifierScheme () {
 
     return rb.getString ("responder.identifier.scheme");
