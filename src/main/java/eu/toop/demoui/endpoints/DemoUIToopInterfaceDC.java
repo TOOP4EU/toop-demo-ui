@@ -119,11 +119,11 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                                                                 + aThirdLevelConceptDERValue.toString ());
                 }
 
-                if (sourceConceptName.equals ("FreedoniaAddress")) {
+                if (sourceConceptName.equals ("FreedoniaStreetAddress")) {
                   bean.setAddress (aValue);
                 } else if (sourceConceptName.equals ("FreedoniaSSNumber")) {
                   bean.setSSNumber (aValue);
-                } else if (sourceConceptName.equals ("FreedoniaBusinessCode")) {
+                } else if (sourceConceptName.equals ("FreedoniaCompanyCode")) {
                   bean.setBusinessCode (aValue);
                 } else if (sourceConceptName.equals ("FreedoniaVATNumber")) {
                   bean.setVATNumber (aValue);
@@ -135,9 +135,9 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                   bean.setRegistrationNumber (aValue);
                 } else if (sourceConceptName.equals ("FreedoniaCompanyName")) {
                   bean.setCompanyName (aValue);
-                } else if (sourceConceptName.equals ("FreedoniaCompanyNaceCode")) {
+                } else if (sourceConceptName.equals ("FreedoniaNaceCode")) {
                   bean.setCompanyNaceCode (aValue);
-                } else if (sourceConceptName.equals ("FreedoniaActivityDeclaration")) {
+                } else if (sourceConceptName.equals ("FreedoniaActivityDescription")) {
                   bean.setActivityDeclaration (aValue);
                 } else if (sourceConceptName.equals ("FreedoniaRegistrationAuthority")) {
                   bean.setRegistrationAuthority (aValue);

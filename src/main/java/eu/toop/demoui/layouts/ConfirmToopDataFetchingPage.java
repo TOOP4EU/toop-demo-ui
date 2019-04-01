@@ -80,16 +80,16 @@ public class ConfirmToopDataFetchingPage extends Window {
 
         final List<ConceptValue> conceptList = new ArrayList<> ();
 
-        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaAddress"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaStreetAddress"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaSSNumber"));
-        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaBusinessCode"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaCompanyCode"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaVATNumber"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaCompanyType"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaRegistrationDate"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaRegistrationNumber"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaCompanyName"));
-        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaCompanyNaceCode"));
-        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaActivityDeclaration"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaNaceCode"));
+        conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaActivityDescription"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaRegistrationAuthority"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaLegalStatus"));
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace(), "FreedoniaLegalStatusEffectiveDate"));
