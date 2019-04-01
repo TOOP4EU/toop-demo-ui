@@ -126,10 +126,21 @@ public class DynamicRequestPage extends CustomLayout {
     dataProvidersFindButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     dataProvidersFindButton.addClickListener((evt) -> {
       ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Finding data providers...");
-      dataProvidersFindButton.setVisible(false);
-      dataProvidersManualButton.setVisible(false);
-      dataProviderScheme.setVisible(true);
-      dataProviderName.setVisible(true);
+
+      new DataProviderSelectionWindow (view) {
+        @Override
+        public void onProceed () {
+          dataProvidersFindButton.setVisible(false);
+          dataProvidersManualButton.setVisible(false);
+          dataProviderScheme.setVisible(true);
+          dataProviderName.setVisible(true);
+        }
+
+        @Override
+        public void onCancel () {
+
+        }
+      };
     });
 
     dataProvidersManualButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
