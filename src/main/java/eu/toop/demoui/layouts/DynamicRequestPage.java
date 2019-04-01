@@ -69,7 +69,6 @@ public class DynamicRequestPage extends CustomLayout {
   private final TextField dataProviderName = new TextField ();
   private Label errorLabel = null;
   private Label conceptErrorsLabel = null;
-  private final List<String> countryCodes = new ArrayList<> (Arrays.asList ("AT", "GR", "IT", "SE", "SI", "SK", "SV", "GQ"));
 
   private Label requestIdLabel = null;
   private boolean responseReceived = false;
@@ -105,7 +104,7 @@ public class DynamicRequestPage extends CustomLayout {
     spinner.setVisible (false);
     addComponent (spinner, "spinner");
 
-    countryCodeField.setItems (countryCodes);
+    countryCodeField.setItems (DCUIConfig.getCountryCodes());
 
     addComponent (countryCodeField, "countryCodeField");
     addComponent (naturalPersonIdentifierField, "naturalPersonIdentifierField");

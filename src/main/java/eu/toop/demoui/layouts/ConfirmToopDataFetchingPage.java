@@ -132,8 +132,7 @@ public class ConfirmToopDataFetchingPage extends Window {
         ToopKafkaClient.send (EErrorLevel.INFO,
             () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
 
-        final String srcCountryCode = "PF";
-        final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
+        final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, DCUIConfig.getSenderCountryCode(),
             destinationCountryCode,
             ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                 DCUIConfig.getSenderIdentifierValue ()),

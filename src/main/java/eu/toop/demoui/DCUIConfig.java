@@ -15,11 +15,7 @@
  */
 package eu.toop.demoui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import com.typesafe.config.Config;
@@ -32,6 +28,7 @@ public class DCUIConfig {
 
   private static ResourceBundle rb = ResourceBundle.getBundle("dcui");
   private final List<Dataset> datasets = new ArrayList<> ();
+  private final List<String> countryCodes = new ArrayList<>();
 
   public DCUIConfig() {
 
@@ -168,6 +165,10 @@ public class DCUIConfig {
     }
 
     return _datasets;
+  }
+
+  public static List<String> getCountryCodes () {
+    return Arrays.asList (rb.getStringArray ("country.codes"));
   }
 
   private boolean isValidIdentifier(String identifier) {
