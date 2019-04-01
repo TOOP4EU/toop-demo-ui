@@ -168,7 +168,8 @@ public class DCUIConfig {
   }
 
   public static List<String> getCountryCodes () {
-    return Arrays.asList (rb.getStringArray ("country.codes"));
+    final String[] array = rb.getString("country.codes").split(",");
+    return Arrays.asList (array);
   }
 
   private boolean isValidIdentifier(String identifier) {

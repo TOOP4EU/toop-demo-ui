@@ -269,6 +269,23 @@
     text-align: center;
   }
 
+  .section {
+    background-color: #f3f7fb;
+    padding: 12px;
+    margin: 12px;
+  }
+
+  .AgreeButton {
+    background-color: #003f85;
+    color: white;
+    border-radius: 0;
+  }
+
+  .DisagreeButton {
+    background-color: #8a8a8a;
+    color: white;
+    border-radius: 0;
+  }
 }
 
 

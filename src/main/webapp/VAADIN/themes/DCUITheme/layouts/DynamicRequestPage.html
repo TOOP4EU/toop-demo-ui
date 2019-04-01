@@ -40,8 +40,7 @@
         <div class="breadcrumbs">Dynamic Request</div>
 
         <div class="freedonia-main">
-          <div>Dynamic Request page</div>
-          <div>
+          <div class="section">
             <div>Country Code</div>
             <div data-location="countryCodeField"></div>
 
@@ -62,32 +61,42 @@
               <div>Legal Person Company Name</div>
               <div data-location="legalPersonCompanyNameField"></div>
             </div>
+          </div>
+
+          <div class="section">
+            <div>Query specific data provider (optional)</div>
+              <div data-location="dataProvidersManualButton" class="DisagreeButton" style="width:50%; float:right;"></div>
+              <div data-location="dataProvidersFindButton" class="AgreeButton" style="width:50%"></div>
+              <div style="clear: both;"></div>
+            <div data-location="dataProvidersSelectList"></div>
 
             <div>
-              <div>Query specific data provider</div>
+              <!--<div>Data provider name</div>-->
+              <div data-location="dataProviderName" style="width:50%; float:right;"></div>
+              <!--<div>Data provider schema</div>-->
+              <div data-location="dataProviderScheme" style="width:50%"></div>
+              <div style="clear: both;"></div>
+            </div>
+          </div>
+
+
+          <div class="section">
+            <div data-location="sendButton"></div>
+
+            <div class="centerContent">
+              <div data-location="spinner"></div>
               <div>
-                <div>Data provider schema</div>
-                <div data-location="dataProviderScheme"></div>
-                <div>Data provider name</div>
-                <div data-location="dataProviderName"></div>
+                Document Universal Unique Identifier: <div data-location="requestId"></div>
               </div>
             </div>
-
-          </div>
-          <div data-location="sendButton"></div>
-          <div class="centerContent">
-            <div data-location="spinner"></div>
-            <div>
-              Document Universal Unique Identifier: <div data-location="requestId"></div>
-            </div>
-          </div>
             <div style="background-color: #ffc4ab;">
-                <div data-location="errorLabel"></div>
+              <div data-location="errorLabel"></div>
             </div>
             <div style="background-color: #ffc4ab;">
-                <div data-location="conceptErrorsLabel"></div>
+              <div data-location="conceptErrorsLabel"></div>
             </div>
-          <div data-location="mainCompanyForm" style="background-color: white;"></div>
+            <div data-location="mainCompanyForm" style="background-color: white;"></div>
+          </div>
         </div>
 
       </div>

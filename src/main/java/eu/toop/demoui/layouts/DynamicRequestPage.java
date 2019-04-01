@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -69,6 +68,9 @@ public class DynamicRequestPage extends CustomLayout {
   private final TextField dataProviderName = new TextField ();
   private Label errorLabel = null;
   private Label conceptErrorsLabel = null;
+  private final Button dataProvidersFindButton = new Button ("Find Data Providers");;
+  private final Button dataProvidersManualButton = new Button ("Manually enter Data Provider");
+  private final Button sendButton = new Button ("SendRequest");
 
   private Label requestIdLabel = null;
   private boolean responseReceived = false;
@@ -104,6 +106,12 @@ public class DynamicRequestPage extends CustomLayout {
     spinner.setVisible (false);
     addComponent (spinner, "spinner");
 
+    dataProviderScheme.setVisible(false);
+    dataProviderName.setVisible(false);
+
+    dataProviderScheme.setPlaceholder("Data Provider Scheme");
+    dataProviderName.setPlaceholder("Data Provider Name");
+
     countryCodeField.setItems (DCUIConfig.getCountryCodes());
 
     addComponent (countryCodeField, "countryCodeField");
@@ -115,11 +123,33 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (dataProviderScheme, "dataProviderScheme");
     addComponent (dataProviderName, "dataProviderName");
 
-    final Button sendButton = new Button ("SendRequest", new SendRequest ());
+    dataProvidersFindButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    dataProvidersFindButton.addClickListener((evt) -> {
+      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Finding data providers...");
+      dataProvidersFindButton.setVisible(false);
+      dataProvidersManualButton.setVisible(false);
+      dataProviderScheme.setVisible(true);
+      dataProviderName.setVisible(true);
+    });
+
+    dataProvidersManualButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    dataProvidersManualButton.addClickListener((evt) -> {
+      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Manual entry of data provider...");
+      dataProvidersFindButton.setVisible(false);
+      dataProvidersManualButton.setVisible(false);
+      dataProviderScheme.setVisible(true);
+      dataProviderName.setVisible(true);
+    });
+
     sendButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     sendButton.addStyleName ("ConsentAgreeButton");
+    sendButton.addClickListener(new SendRequest());
+
+    addComponent (dataProvidersFindButton, "dataProvidersFindButton");
+    addComponent (dataProvidersManualButton, "dataProvidersManualButton");
     addComponent (sendButton, "sendButton");
   }
+
 
   class SendRequest implements Button.ClickListener {
 
