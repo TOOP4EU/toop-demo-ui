@@ -13,13 +13,12 @@ public class DataProviderSelectionWindow extends Window {
         final VerticalLayout subContent = new VerticalLayout ();
         subWindow.setContent (subContent);
 
-        subWindow.setWidth ("800px");
+        subWindow.setWidth ("1100px");
 
         subWindow.setModal (true);
         subWindow.setCaption (null);
         subWindow.setResizable (false);
         subWindow.setClosable (false);
-
 
         // Put some components in it
         final DataProviderSelectionPage dataProviderSelectionPage = new DataProviderSelectionPage (countryCode) {
