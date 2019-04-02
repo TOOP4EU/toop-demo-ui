@@ -8,7 +8,7 @@ import eu.toop.demoui.view.BaseView;
 
 public class DataProviderSelectionWindow extends Window {
 
-    public DataProviderSelectionWindow (final BaseView view) {
+    public DataProviderSelectionWindow (final BaseView view, final String countryCode) {
         final Window subWindow = new Window ("Sub-window");
         final VerticalLayout subContent = new VerticalLayout ();
         subWindow.setContent (subContent);
@@ -22,24 +22,21 @@ public class DataProviderSelectionWindow extends Window {
 
 
         // Put some components in it
-        final DataProviderSelectionPage dataProviderSelectionPage = new DataProviderSelectionPage ();
+        final DataProviderSelectionPage dataProviderSelectionPage = new DataProviderSelectionPage (countryCode) {
+            @Override
+            protected void onProceed(String dpScheme, String dpValue) {
+                onSave (dpScheme, dpValue);
+                subWindow.close ();
+            }
+        };
         subContent.addComponent (dataProviderSelectionPage);
 
-        final Button proceedButton = new Button ("Proceed", event -> {
-            onProceed ();
-            subWindow.close ();
-        });
-        proceedButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
-        proceedButton.addStyleName ("ConsentAgreeButton");
-
         final Button cancelButton = new Button ("Cancel", event -> {
-            onCancel ();
             subWindow.close ();
         });
         cancelButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
         cancelButton.addStyleName ("ConsentCancelButton");
 
-        subContent.addComponent (proceedButton);
         subContent.addComponent (cancelButton);
 
         // Center it in the browser window
@@ -49,13 +46,11 @@ public class DataProviderSelectionWindow extends Window {
         view.getUI ().addWindow (subWindow);
     }
 
-    protected void onProceed () {
-        // The user may override this method to execute their own code when the user
-        // click on the 'consent'-button.
+    protected void onSave (String participantScheme, String participantValue) {
+        //
     }
 
     protected void onCancel () {
-        // The user may override this method to execute their own code when the user
-        // click on the 'self-provide'-button.
+        //
     }
 }

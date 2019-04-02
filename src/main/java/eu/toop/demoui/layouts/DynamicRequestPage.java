@@ -110,7 +110,9 @@ public class DynamicRequestPage extends CustomLayout {
     dataProviderName.setVisible(false);
 
     dataProviderScheme.setPlaceholder("Data Provider Scheme");
+    dataProviderScheme.setReadOnly(true);
     dataProviderName.setPlaceholder("Data Provider Name");
+    dataProviderName.setReadOnly(true);
 
     countryCodeField.setItems (DCUIConfig.getCountryCodes());
 
@@ -125,11 +127,13 @@ public class DynamicRequestPage extends CustomLayout {
 
     dataProvidersFindButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     dataProvidersFindButton.addClickListener((evt) -> {
-      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Finding data providers...");
 
-      new DataProviderSelectionWindow (view) {
+      new DataProviderSelectionWindow (view, countryCodeField.getValue()) {
         @Override
-        public void onProceed () {
+        public void onSave (String participantScheme, String participantValue) {
+          dataProviderScheme.setValue(participantScheme);
+          dataProviderName.setValue(participantValue);
+
           dataProvidersFindButton.setVisible(false);
           dataProvidersManualButton.setVisible(false);
           dataProviderScheme.setVisible(true);
@@ -138,7 +142,10 @@ public class DynamicRequestPage extends CustomLayout {
 
         @Override
         public void onCancel () {
-
+          dataProvidersFindButton.setVisible(true);
+          dataProvidersManualButton.setVisible(true);
+          dataProviderScheme.setVisible(false);
+          dataProviderName.setVisible(false);
         }
       };
     });
@@ -150,6 +157,8 @@ public class DynamicRequestPage extends CustomLayout {
       dataProvidersManualButton.setVisible(false);
       dataProviderScheme.setVisible(true);
       dataProviderName.setVisible(true);
+      dataProviderScheme.setReadOnly(false);
+      dataProviderName.setReadOnly(false);
     });
 
     sendButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
