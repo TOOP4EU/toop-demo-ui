@@ -84,6 +84,11 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
         final MainCompany bean = new MainCompany ();
 
+        // Get requested documents
+        if (aResponse.getDocumentRequestCount() > 0) {
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Contains requested documents");
+        }
+
         // Inspect all mapped values
         for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
 

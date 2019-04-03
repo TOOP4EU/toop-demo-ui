@@ -15,19 +15,31 @@
  */
 package eu.toop.demoui.endpoints;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
+import com.helger.asic.AsicWriterFactory;
+import com.helger.asic.IAsicWriter;
+import com.helger.asic.SignatureHelper;
+import com.helger.commons.ValueEnforcer;
 import com.helger.commons.error.level.EErrorLevel;
 
+import com.helger.commons.io.stream.NonBlockingByteArrayInputStream;
+import com.helger.commons.io.stream.NonBlockingByteArrayOutputStream;
+import com.helger.commons.mime.CMimeType;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.dataexchange.v140.*;
+import eu.toop.commons.error.EToopErrorCode;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
@@ -36,6 +48,8 @@ import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
+import eu.toop.iface.ToopInterfaceConfig;
+import eu.toop.iface.util.HttpClientInvoker;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
@@ -207,6 +221,42 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     final TDETOOPResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
     aResponse.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier("toop-doctypeid-qns", "urn:eu:toop:ns:dataexchange-1p40::Response"));
 
+
+    // handle document request
+    if (aResponse.getDocumentRequest().size() > 0) {
+      TDEDocumentRequestType documentRequestType = aResponse.getDocumentRequestAtIndex(0);
+
+      if (documentRequestType != null) {
+
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Handling a document request");
+        TDEDocumentType tdeDocument = new TDEDocumentType();
+        tdeDocument.setDocumentURI(ToopXSDHelper140.createIdentifier("file:/attachments/SeaWindDOC.pdf"));
+        tdeDocument.setDocumentMimeTypeCode(ToopXSDHelper140.createCode("application/pdf"));
+        tdeDocument.setDocumentTypeCode(documentRequestType.getDocumentRequestTypeCode());
+
+        TDEIssuerType issuerType = new TDEIssuerType();
+        issuerType.setDocumentIssuerIdentifier(ToopXSDHelper140.createIdentifier("elonia", "toop-doctypeid-qns", "EE12345678"));
+        issuerType.setDocumentIssuerName(ToopXSDHelper140.createText("EE-EMA"));
+
+        TDEDocumentResponseType documentResponseType = new TDEDocumentResponseType();
+        documentResponseType.addDocument(tdeDocument);
+        documentResponseType.setDocumentName(ToopXSDHelper140.createText("ISMCompliance"));
+        documentResponseType.setDocumentDescription(ToopXSDHelper140.createText("Document of Compliance (DOC)"));
+        documentResponseType.setDocumentIdentifier(ToopXSDHelper140.createIdentifier("077SM/16"));
+        documentResponseType.setDocumentIssueDate(ToopXSDHelper140.createDateWithLOANow());
+        documentResponseType.setDocumentIssuePlace(ToopXSDHelper140.createText("Pallen, Elonia"));
+        documentResponseType.setDocumentIssuer(issuerType);
+        documentResponseType.setLegalReference(ToopXSDHelper140.createText("SOLAS 1974"));
+        documentResponseType.setDocumentRemarks(new ArrayList<>());
+        documentResponseType.setErrorIndicator(ToopXSDHelper140.createIndicator(false));
+
+        List<TDEDocumentResponseType> documentResponses = new ArrayList<>();
+        documentResponses.add(documentResponseType);
+
+        documentRequestType.setDocumentResponse(documentResponses);
+      }
+    }
+
     // add all the mapped values in the response
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ()) {
       applyConceptValues (aRequest.getDataRequestSubject (), aDER, sLogPrefix, dataset);
@@ -216,9 +266,68 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     // The URL must be configured in toop-interface.properties file
     try {
       dumpResponse (aResponse);
-      ToopInterfaceClient.sendResponseToToopConnector (aResponse);
+      sendResponseToToopConnector (aResponse, ToopInterfaceConfig.getToopConnectorDPUrl ());
     } catch (final ToopErrorException ex) {
       throw new RuntimeException (ex);
+    }
+  }
+
+  public void sendResponseToToopConnector (@Nonnull final TDETOOPResponseType aResponse,
+                                                  @Nonnull final String sTargetURL) throws IOException,
+          ToopErrorException
+  {
+    ValueEnforcer.notNull (aResponse, "Response");
+    ValueEnforcer.notNull (sTargetURL, "TargetURL");
+
+    final SignatureHelper aSH = new SignatureHelper (ToopInterfaceConfig.getKeystoreType (),
+            ToopInterfaceConfig.getKeystorePath (),
+            ToopInterfaceConfig.getKeystorePassword (),
+            ToopInterfaceConfig.getKeystoreKeyAlias (),
+            ToopInterfaceConfig.getKeystoreKeyPassword ());
+
+    try (final NonBlockingByteArrayOutputStream aBAOS = new NonBlockingByteArrayOutputStream ())
+    {
+      createResponseMessageAsic (aResponse, aBAOS, aSH);
+
+      // Send to DP (see FromDPServlet in toop-connector-webapp)
+      HttpClientInvoker.httpClientCallNoResponse (sTargetURL, aBAOS.toByteArray ());
+    }
+  }
+
+  private static final String ENTRY_NAME_TOOP_DATA_RESPONSE = "TOOPResponse";
+
+  public void createResponseMessageAsic (@Nonnull final TDETOOPResponseType aResponse,
+                                                @Nonnull final OutputStream aOS,
+                                                @Nonnull final SignatureHelper aSigHelper) throws ToopErrorException
+  {
+    ValueEnforcer.notNull (aResponse, "Response");
+    ValueEnforcer.notNull (aOS, "ArchiveOutput");
+    ValueEnforcer.notNull (aSigHelper, "SignatureHelper");
+
+
+    final AsicWriterFactory aAsicWriterFactory = AsicWriterFactory.newFactory ();
+    try
+    {
+      final IAsicWriter aAsicWriter = aAsicWriterFactory.newContainer (aOS);
+      final byte [] aXML = ToopWriter.response140 ().getAsBytes (aResponse);
+      if (aXML == null)
+        throw new ToopErrorException ("Error marshalling the TOOP Response", EToopErrorCode.TC_001);
+      aAsicWriter.add (new NonBlockingByteArrayInputStream(aXML),
+              ENTRY_NAME_TOOP_DATA_RESPONSE,
+              CMimeType.APPLICATION_XML);
+
+      final byte[] fakeDocument = "A document file...".getBytes();
+
+      aAsicWriter.add (new NonBlockingByteArrayInputStream(fakeDocument),
+              "attachments/document-response.txt",
+              CMimeType.TEXT_PLAIN);
+
+      aAsicWriter.sign (aSigHelper);
+      ToopKafkaClient.send (EErrorLevel.INFO, () -> "Successfully created response ASiC");
+    }
+    catch (final IOException ex)
+    {
+      throw new ToopErrorException ("Error creating signed ASIC container", ex, EToopErrorCode.TC_001);
     }
   }
 

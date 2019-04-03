@@ -19,10 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 
@@ -59,6 +56,7 @@ public class DynamicRequestPage extends CustomLayout {
   private static final String TOOP_BUTTON_STYLE = ValoTheme.BUTTON_BORDERLESS + " freedonia";
 
   private final ComboBox<String> countryCodeField = new ComboBox<> ();
+  private final ComboBox<EPredefinedDocumentTypeIdentifier> documentTypeField = new ComboBox<> ();
   private final TextField naturalPersonIdentifierField = new TextField ();
   private final TextField naturalPersonFirstNameField = new TextField ();
   private final TextField naturalPersonFamilyNameField = new TextField ();
@@ -70,7 +68,8 @@ public class DynamicRequestPage extends CustomLayout {
   private Label conceptErrorsLabel = null;
   private final Button dataProvidersFindButton = new Button ("Find Data Providers");;
   private final Button dataProvidersManualButton = new Button ("Manually enter Data Provider");
-  private final Button sendButton = new Button ("SendRequest");
+  private final Button sendButton = new Button ("Send Data Element Request");
+  private final Button sendDocumentRequestButton = new Button ("Send Document Request");
 
   private Label requestIdLabel = null;
   private boolean responseReceived = false;
@@ -114,9 +113,20 @@ public class DynamicRequestPage extends CustomLayout {
     dataProviderName.setPlaceholder("Data Provider Name");
     dataProviderName.setReadOnly(true);
 
+    countryCodeField.setStyleName("countryCodeDropdown");
     countryCodeField.setItems (DCUIConfig.getCountryCodes());
+    documentTypeField.setStyleName("documentTypeDropdown");
+    documentTypeField.setItems (Arrays.asList(
+            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_REGISTEREDORGANIZATION_1_40,
+            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_SHIPCERTIFICATE_LIST_1_40,
+            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_SHIPCERTIFICATE_1_40,
+            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_CREWCERTIFICATE_LIST_1_40,
+            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_CREWCERTIFICATE_1_40,
+            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_EVIDENCE_LIST_1_40,
+            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_EVIDENCE_1_40));
 
     addComponent (countryCodeField, "countryCodeField");
+    addComponent (documentTypeField, "documentTypeField");
     addComponent (naturalPersonIdentifierField, "naturalPersonIdentifierField");
     addComponent (naturalPersonFirstNameField, "naturalPersonFirstNameField");
     addComponent (naturalPersonFamilyNameField, "naturalPersonFamilyNameField");
@@ -163,23 +173,38 @@ public class DynamicRequestPage extends CustomLayout {
 
     sendButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     sendButton.addStyleName ("ConsentAgreeButton");
-    sendButton.addClickListener(new SendRequest());
+    sendButton.addClickListener (new SendRequest(0));
+
+    sendDocumentRequestButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    sendDocumentRequestButton.addStyleName ("ConsentAgreeButton");
+    sendDocumentRequestButton.addClickListener (new SendRequest(1));
 
     addComponent (dataProvidersFindButton, "dataProvidersFindButton");
     addComponent (dataProvidersManualButton, "dataProvidersManualButton");
     addComponent (sendButton, "sendButton");
+    addComponent (sendDocumentRequestButton, "sendDocumentRequestButton");
   }
 
 
   class SendRequest implements Button.ClickListener {
+
+    private final int type;
+
+    public SendRequest(int type) {
+      this.type = type;
+    }
 
     @Override
     public void buttonClick (final Button.ClickEvent clickEvent) {
       try {
         final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode() + "/";
 
-        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting concepts: "
-            + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
+        if (type==0) {
+          ToopKafkaClient.send(EErrorLevel.INFO, () -> "[DC] Requesting concepts: "
+                  + StringHelper.getImplodedMapped(", ", conceptList, x -> x.getNamespace() + "#" + x.getValue()));
+        } else {
+          ToopKafkaClient.send(EErrorLevel.INFO, () -> "[DC] Requesting document.");
+        }
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
         {
@@ -237,15 +262,23 @@ public class DynamicRequestPage extends CustomLayout {
             countryCodeField.getValue (),
             ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                 DCUIConfig.getSenderIdentifierValue ()),
-                EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_REGISTEREDORGANIZATION_1_40,
+                documentTypeField.getValue(),
                 EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
-                conceptList);
+                (type == 0 ? conceptList : null));
 
         final UUID uuid = UUID.randomUUID ();
         requestIdLabel = new Label (uuid.toString ());
         addComponent (requestIdLabel, "requestId");
         aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency", "toop-doctypeid-qns", uuid.toString ()));
         aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier("toop-doctypeid-qns", "urn:eu:toop:ns:dataexchange-1p40::Request"));
+
+        if (type == 1) {
+          final TDEDocumentRequestType documentRequestType = new TDEDocumentRequestType();
+          documentRequestType.setDocumentURI(ToopXSDHelper140.createIdentifier("https://koolitus.emde.ee/cc/b0/67/123456"));
+          documentRequestType.setDocumentRequestIdentifier(ToopXSDHelper140.createIdentifier("demo-agency", "toop-doctypeid-qns", "600db318-02c2-4c43-b272-f9268615c076"));
+          documentRequestType.setDocumentRequestTypeCode(ToopXSDHelper140.createCode("ETR"));
+          aRequest.addDocumentRequest(documentRequestType);
+        }
 
         if (!dataProviderScheme.isEmpty() && !dataProviderName.isEmpty()) {
           final TDERoutingInformationType routingInformation = aRequest.getRoutingInformation();
