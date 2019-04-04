@@ -1,11 +1,11 @@
 package eu.toop.demoui.layouts;
 
 import com.helger.commons.error.level.EErrorLevel;
+import com.helger.pd.searchapi.v1.MatchType;
+import com.helger.pd.searchapi.v1.ResultListType;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.iface.ToopInterfaceClient;
-import eu.toop.iface.dpsearch.MatchType;
-import eu.toop.iface.dpsearch.ResultListType;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 import java.util.ArrayList;

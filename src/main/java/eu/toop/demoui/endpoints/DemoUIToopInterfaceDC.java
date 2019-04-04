@@ -23,6 +23,7 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
+import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.ui.UI;
@@ -32,6 +33,7 @@ import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
+import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.bean.MainCompany;
@@ -56,7 +58,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     this.ui = ui;
   }
 
-  public void onToopResponse (@Nonnull final TDETOOPResponseType aResponse) throws IOException {
+  public void onToopResponse (@Nonnull final TDETOOPResponseType aResponse, ICommonsList<AsicReadEntry> attachments) throws IOException {
 
     dumpResponse (aResponse);
 
@@ -72,6 +74,13 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                 : " DPIdentifier: " + aDP.getDPIdentifier ().getValue () + ", " + " DPName: "
                     + aDP.getDPName ().getValue () + ", " + " DPElectronicAddressIdentifier: "
                     + aResponse.getRoutingInformation ().getDataProviderElectronicAddressIdentifier ().getValue ()));
+
+    ToopKafkaClient.send(EErrorLevel.INFO, () -> sLogPrefix + "Number of attachments: " + attachments.size());
+    for (final AsicReadEntry attachment : attachments) {
+      ToopKafkaClient.send(EErrorLevel.INFO,
+              () -> sLogPrefix + "Received document: " + attachment.getEntryName() + ", size: " + attachment.payload().length);
+      // attachment.payload(); <-- this is the byte[]
+    }
 
     // Push a new organization bean to the UI
     try {
