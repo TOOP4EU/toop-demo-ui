@@ -15,32 +15,34 @@
  */
 package eu.toop.demoui.endpoints;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
-import com.helger.asic.AsicWriterFactory;
-import com.helger.asic.IAsicWriter;
-import com.helger.asic.SignatureHelper;
-import com.helger.commons.ValueEnforcer;
 import com.helger.commons.error.level.EErrorLevel;
-
-import com.helger.commons.io.stream.NonBlockingByteArrayInputStream;
-import com.helger.commons.io.stream.NonBlockingByteArrayOutputStream;
-import com.helger.commons.mime.CMimeType;
 import com.helger.commons.mime.MimeTypeParser;
+
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
-import eu.toop.commons.dataexchange.v140.*;
-import eu.toop.commons.error.EToopErrorCode;
+import eu.toop.commons.dataexchange.v140.TDEAddressType;
+import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
+import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
+import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
+import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
+import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.v140.TDEDocumentRequestType;
+import eu.toop.commons.dataexchange.v140.TDEDocumentResponseType;
+import eu.toop.commons.dataexchange.v140.TDEDocumentType;
+import eu.toop.commons.dataexchange.v140.TDEErrorType;
+import eu.toop.commons.dataexchange.v140.TDEIssuerType;
+import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
+import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.AsicWriteEntry;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
@@ -51,8 +53,6 @@ import eu.toop.demoui.DCUIConfig;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
-import eu.toop.iface.ToopInterfaceManager;
-import eu.toop.iface.util.HttpClientInvoker;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
@@ -228,21 +228,21 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     // handle document request
     final List<AsicWriteEntry> documentEntries = new ArrayList<>();
     if (aResponse.getDocumentRequest().size() > 0) {
-      TDEDocumentRequestType documentRequestType = aResponse.getDocumentRequestAtIndex(0);
+      final TDEDocumentRequestType documentRequestType = aResponse.getDocumentRequestAtIndex(0);
 
       if (documentRequestType != null) {
 
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Handling a document request");
-        TDEDocumentType tdeDocument = new TDEDocumentType();
+        final TDEDocumentType tdeDocument = new TDEDocumentType();
         tdeDocument.setDocumentURI(ToopXSDHelper140.createIdentifier("file:/attachments/SeaWindDOC.pdf"));
         tdeDocument.setDocumentMimeTypeCode(ToopXSDHelper140.createCode("application/pdf"));
         tdeDocument.setDocumentTypeCode(documentRequestType.getDocumentRequestTypeCode());
 
-        TDEIssuerType issuerType = new TDEIssuerType();
+        final TDEIssuerType issuerType = new TDEIssuerType();
         issuerType.setDocumentIssuerIdentifier(ToopXSDHelper140.createIdentifier("elonia", "toop-doctypeid-qns", "EE12345678"));
         issuerType.setDocumentIssuerName(ToopXSDHelper140.createText("EE-EMA"));
 
-        TDEDocumentResponseType documentResponseType = new TDEDocumentResponseType();
+        final TDEDocumentResponseType documentResponseType = new TDEDocumentResponseType();
         documentResponseType.addDocument(tdeDocument);
         documentResponseType.setDocumentName(ToopXSDHelper140.createText("ISMCompliance"));
         documentResponseType.setDocumentDescription(ToopXSDHelper140.createText("Document of Compliance (DOC)"));
@@ -254,7 +254,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         documentResponseType.setDocumentRemarks(new ArrayList<>());
         documentResponseType.setErrorIndicator(ToopXSDHelper140.createIndicator(false));
 
-        List<TDEDocumentResponseType> documentResponses = new ArrayList<>();
+        final List<TDEDocumentResponseType> documentResponses = new ArrayList<>();
         documentResponses.add(documentResponseType);
 
         documentRequestType.setDocumentResponse(documentResponses);
@@ -294,7 +294,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     if (aResponse.hasErrorEntries()) {
       sb.append(String.format(" Contains %d error(s)\n", aResponse.getErrorCount()));
 
-      for (TDEErrorType error : aResponse.getError()) {
+      for (final TDEErrorType error : aResponse.getError()) {
         sb.append(error).append("\n");
       }
       ToopKafkaClient.send (EErrorLevel.ERROR, sb::toString);
