@@ -109,9 +109,9 @@ public class DynamicRequestPage extends CustomLayout {
     dataProviderName.setVisible(false);
 
     dataProviderScheme.setPlaceholder("Data Provider Scheme");
-    dataProviderScheme.setReadOnly(true);
+    //dataProviderScheme.setReadOnly(true);
     dataProviderName.setPlaceholder("Data Provider Name");
-    dataProviderName.setReadOnly(true);
+    //dataProviderName.setReadOnly(true);
 
     countryCodeField.setStyleName("countryCodeDropdown");
     countryCodeField.setItems (DCUIConfig.getCountryCodes());

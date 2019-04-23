@@ -37,10 +37,12 @@ import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.io.stream.NonBlockingByteArrayInputStream;
 import com.helger.commons.io.stream.NonBlockingByteArrayOutputStream;
 import com.helger.commons.mime.CMimeType;
+import com.helger.commons.mime.MimeTypeParser;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.dataexchange.v140.*;
 import eu.toop.commons.error.EToopErrorCode;
 import eu.toop.commons.error.ToopErrorException;
+import eu.toop.commons.exchange.AsicWriteEntry;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
@@ -224,6 +226,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
 
     // handle document request
+    final List<AsicWriteEntry> documentEntries = new ArrayList<>();
     if (aResponse.getDocumentRequest().size() > 0) {
       TDEDocumentRequestType documentRequestType = aResponse.getDocumentRequestAtIndex(0);
 
@@ -255,6 +258,10 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         documentResponses.add(documentResponseType);
 
         documentRequestType.setDocumentResponse(documentResponses);
+
+        final byte[] fakeDocument = "A document file...".getBytes();
+        AsicWriteEntry entry = new AsicWriteEntry("SeaWindDOC.pdf", fakeDocument, MimeTypeParser.parseMimeType("application/pdf"));
+        documentEntries.add(entry);
       }
     }
 
@@ -267,71 +274,13 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     // The URL must be configured in toop-interface.properties file
     try {
       dumpResponse (aResponse);
-      sendResponseToToopConnector (aResponse, ToopInterfaceConfig.getToopConnectorDPUrl ());
+      ToopInterfaceClient.sendResponseToToopConnector(aResponse,
+              ToopInterfaceConfig.getToopConnectorDPUrl (),
+              documentEntries);
     } catch (final ToopErrorException ex) {
       throw new RuntimeException (ex);
     }
   }
-
-  public void sendResponseToToopConnector (@Nonnull final TDETOOPResponseType aResponse,
-                                                  @Nonnull final String sTargetURL) throws IOException,
-          ToopErrorException
-  {
-    ValueEnforcer.notNull (aResponse, "Response");
-    ValueEnforcer.notNull (sTargetURL, "TargetURL");
-
-    final SignatureHelper aSH = new SignatureHelper (ToopInterfaceConfig.getKeystoreType (),
-            ToopInterfaceConfig.getKeystorePath (),
-            ToopInterfaceConfig.getKeystorePassword (),
-            ToopInterfaceConfig.getKeystoreKeyAlias (),
-            ToopInterfaceConfig.getKeystoreKeyPassword ());
-
-    try (final NonBlockingByteArrayOutputStream aBAOS = new NonBlockingByteArrayOutputStream ())
-    {
-      createResponseMessageAsic (aResponse, aBAOS, aSH);
-
-      // Send to DP (see FromDPServlet in toop-connector-webapp)
-      HttpClientInvoker.httpClientCallNoResponse (sTargetURL, aBAOS.toByteArray ());
-    }
-  }
-
-  private static final String ENTRY_NAME_TOOP_DATA_RESPONSE = "TOOPResponse";
-
-  public void createResponseMessageAsic (@Nonnull final TDETOOPResponseType aResponse,
-                                                @Nonnull final OutputStream aOS,
-                                                @Nonnull final SignatureHelper aSigHelper) throws ToopErrorException
-  {
-    ValueEnforcer.notNull (aResponse, "Response");
-    ValueEnforcer.notNull (aOS, "ArchiveOutput");
-    ValueEnforcer.notNull (aSigHelper, "SignatureHelper");
-
-
-    final AsicWriterFactory aAsicWriterFactory = AsicWriterFactory.newFactory ();
-    try
-    {
-      final IAsicWriter aAsicWriter = aAsicWriterFactory.newContainer (aOS);
-      final byte [] aXML = ToopWriter.response140 ().getAsBytes (aResponse);
-      if (aXML == null)
-        throw new ToopErrorException ("Error marshalling the TOOP Response", EToopErrorCode.TC_001);
-      aAsicWriter.add (new NonBlockingByteArrayInputStream(aXML),
-              ENTRY_NAME_TOOP_DATA_RESPONSE,
-              CMimeType.APPLICATION_XML);
-
-      final byte[] fakeDocument = "A document file...".getBytes();
-
-      aAsicWriter.add (new NonBlockingByteArrayInputStream(fakeDocument),
-              "attachments/document-response.txt",
-              CMimeType.TEXT_PLAIN);
-
-      aAsicWriter.sign (aSigHelper);
-      ToopKafkaClient.send (EErrorLevel.INFO, () -> "Successfully created response ASiC");
-    }
-    catch (final IOException ex)
-    {
-      throw new ToopErrorException ("Error creating signed ASIC container", ex, EToopErrorCode.TC_001);
-    }
-  }
-
 
   public void onToopErrorResponse (@Nonnull final TDETOOPResponseType aResponse) throws IOException {
     final IdentifierType docUuid = aResponse.getDocumentUniversalUniqueIdentifier();
