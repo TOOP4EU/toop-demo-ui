@@ -98,7 +98,6 @@ public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
       {
         final TDELegalPersonType aLE = new TDELegalPersonType ();
         aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140.createIdentifierWithLOA (legalPersonIdentifier));
-        aLE.setLegalEntityIdentifier (ToopXSDHelper140.createIdentifierWithLOA (legalPersonIdentifier));
         aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (legalPersonName));
         final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
         // Destination country to use

@@ -242,9 +242,7 @@ public class DynamicRequestPage extends CustomLayout {
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140
               .createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
-          aLE.setLegalEntityIdentifier (ToopXSDHelper140
-              .createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
-
+          
           String legalName = "";
           if (!legalPersonCompanyNameField.isEmpty ()) {
             legalName = legalPersonCompanyNameField.getValue ();

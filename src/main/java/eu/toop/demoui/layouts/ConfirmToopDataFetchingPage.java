@@ -118,8 +118,6 @@ public class ConfirmToopDataFetchingPage extends Window {
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (
               ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
-          aLE.setLegalEntityIdentifier (
-              ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
           aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getLegalPersonName ()));
           final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
           // Destination country to use
