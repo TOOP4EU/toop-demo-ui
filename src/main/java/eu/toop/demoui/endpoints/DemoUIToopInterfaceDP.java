@@ -17,7 +17,6 @@ package eu.toop.demoui.endpoints;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.mime.MimeTypeParser;
 
@@ -44,6 +44,7 @@ import eu.toop.commons.dataexchange.v140.TDEIssuerType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.error.ToopErrorException;
+import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.AsicWriteEntry;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
@@ -171,7 +172,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     }
   }
 
-  public void onToopRequest (@Nonnull final TDETOOPRequestType aRequest) throws IOException {
+  public void onToopRequest (@Nonnull final TDETOOPRequestType aRequest,
+                             @Nonnull ICommonsList<AsicReadEntry> aAttachments) throws IOException {
 
     final String sRequestID = aRequest.getDocumentUniversalUniqueIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] ";
@@ -282,7 +284,8 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     }
   }
 
-  public void onToopErrorResponse (@Nonnull final TDETOOPResponseType aResponse) throws IOException {
+  public void onToopErrorResponse (@Nonnull final TDETOOPResponseType aResponse,
+                                   @Nonnull ICommonsList <AsicReadEntry> aAttachments) throws IOException {
     final IdentifierType docUuid = aResponse.getDocumentUniversalUniqueIdentifier();
     final String sRequestID = (docUuid != null ? docUuid.getValue() : "");
     final String sLogPrefix = "[" + sRequestID + "] ";
