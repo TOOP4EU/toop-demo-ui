@@ -47,6 +47,8 @@ import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.AsicWriteEntry;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
+import eu.toop.commons.exchange.ToopRequestWithAttachments140;
+import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
@@ -172,8 +174,9 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     }
   }
 
-  public void onToopRequest (@Nonnull final TDETOOPRequestType aRequest,
-                             @Nonnull ICommonsList<AsicReadEntry> aAttachments) throws IOException {
+  public void onToopRequest (@Nonnull final ToopRequestWithAttachments140 aRequestWA) throws IOException {
+    final TDETOOPRequestType aRequest = aRequestWA.getRequest();
+    final ICommonsList<AsicReadEntry> attachments = aRequestWA.attachments ();
 
     final String sRequestID = aRequest.getDocumentUniversalUniqueIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] ";
@@ -262,7 +265,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         documentRequestType.setDocumentResponse(documentResponses);
 
         final byte[] fakeDocument = "A document file...".getBytes();
-        AsicWriteEntry entry = new AsicWriteEntry("SeaWindDOC.pdf", fakeDocument, MimeTypeParser.parseMimeType("application/pdf"));
+        final AsicWriteEntry entry = new AsicWriteEntry("SeaWindDOC.pdf", fakeDocument, MimeTypeParser.parseMimeType("application/pdf"));
         documentEntries.add(entry);
       }
     }
@@ -284,8 +287,10 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     }
   }
 
-  public void onToopErrorResponse (@Nonnull final TDETOOPResponseType aResponse,
-                                   @Nonnull ICommonsList <AsicReadEntry> aAttachments) throws IOException {
+  public void onToopErrorResponse (@Nonnull final ToopResponseWithAttachments140 aResponseWA) throws IOException {
+    final TDETOOPResponseType aResponse = aResponseWA.getResponse ();
+    final ICommonsList<AsicReadEntry> attachments = aResponseWA.attachments ();
+
     final IdentifierType docUuid = aResponse.getDocumentUniversalUniqueIdentifier();
     final String sRequestID = (docUuid != null ? docUuid.getValue() : "");
     final String sLogPrefix = "[" + sRequestID + "] ";

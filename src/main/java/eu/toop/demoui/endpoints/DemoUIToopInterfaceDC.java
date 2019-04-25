@@ -34,6 +34,7 @@ import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.exchange.AsicReadEntry;
+import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.bean.MainCompany;
@@ -58,7 +59,9 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     this.ui = ui;
   }
 
-  public void onToopResponse (@Nonnull final TDETOOPResponseType aResponse, ICommonsList<AsicReadEntry> attachments) throws IOException {
+  public void onToopResponse (@Nonnull final ToopResponseWithAttachments140 aResponseWA) throws IOException {
+    final TDETOOPResponseType aResponse = aResponseWA.getResponse ();
+    final ICommonsList<AsicReadEntry> attachments = aResponseWA.attachments ();
 
     dumpResponse (aResponse);
 
