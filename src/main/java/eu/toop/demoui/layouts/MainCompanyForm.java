@@ -15,6 +15,10 @@
  */
 package eu.toop.demoui.layouts;
 
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
+import com.vaadin.ui.Button;
+import eu.toop.commons.exchange.AsicReadEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +28,13 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
 import eu.toop.demoui.bean.MainCompany;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class MainCompanyForm extends FormLayout {
 
@@ -91,6 +102,21 @@ public class MainCompanyForm extends FormLayout {
     addComponent (registrationAuthorityField);
 
     setOrganizationBean (mainCompany);
+
+
+    if (mainCompany.getAttachments() != null && mainCompany.getAttachments().size() > 0) {
+      for (AsicReadEntry attachment : mainCompany.getAttachments()) {
+
+        Button downloadButton = new Button("Download " + attachment.getEntryName());
+
+        StreamResource myResource = new StreamResource((StreamResource.StreamSource) () ->
+                new ByteArrayInputStream(attachment.payload()), attachment.getEntryName());
+        FileDownloader fileDownloader = new FileDownloader(myResource);
+        fileDownloader.extend(downloadButton);
+
+        addComponent(downloadButton);
+      }
+    }
   }
 
   public void setOrganizationBean (final MainCompany mainCompany) {

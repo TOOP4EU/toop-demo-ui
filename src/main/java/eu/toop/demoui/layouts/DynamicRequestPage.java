@@ -23,6 +23,7 @@ import java.util.*;
 
 import javax.annotation.Nonnull;
 
+import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
 import com.vaadin.shared.ui.ContentMode;
@@ -39,6 +40,7 @@ import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
 import eu.toop.commons.dataexchange.v140.*;
 import eu.toop.commons.error.ToopErrorException;
+import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
@@ -302,7 +304,7 @@ public class DynamicRequestPage extends CustomLayout {
         ToopInterfaceClient.sendRequestToToopConnector (aRequest);
 
         spinner.setVisible (true);
-        setEnabled (false);
+        //setEnabled (false);
 
         // Fake response
         new java.util.Timer ().schedule (new java.util.TimerTask () {

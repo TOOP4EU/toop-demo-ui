@@ -297,7 +297,9 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     final StringBuilder sb = new StringBuilder();
     sb.append(sLogPrefix);
-    sb.append("Received TOOP Response from TC.");
+    sb.append("Received TOOP Error Response from TC.");
+
+    sb.append(String.format(" Contains %d documents(s)\n", attachments.size()));
 
     if (aResponse.hasErrorEntries()) {
       sb.append(String.format(" Contains %d error(s)\n", aResponse.getErrorCount()));

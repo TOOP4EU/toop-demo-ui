@@ -94,7 +94,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
         final Navigator threadUINavigator = threadUI.getNavigator ();
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Current Navigator: " + threadUINavigator);
 
-        final MainCompany bean = new MainCompany ();
+        final MainCompany bean = new MainCompany (attachments);
 
         // Get requested documents
         if (aResponse.getDocumentRequestCount() > 0) {

@@ -15,6 +15,9 @@
  */
 package eu.toop.demoui.bean;
 
+import com.helger.commons.collection.impl.ICommonsList;
+import eu.toop.commons.exchange.AsicReadEntry;
+
 import java.io.Serializable;
 
 public class MainCompany implements Serializable {
@@ -32,6 +35,15 @@ public class MainCompany implements Serializable {
   private String companyNaceCode;
   private String activityDeclaration;
   private String registrationAuthority;
+  private ICommonsList<AsicReadEntry> attachments = null;
+
+  public MainCompany() {
+
+  }
+
+  public MainCompany(final ICommonsList<AsicReadEntry> attachments) {
+    this.attachments = attachments;
+  }
 
   public String getAddress () {
 
@@ -161,5 +173,9 @@ public class MainCompany implements Serializable {
   public void setRegistrationAuthority (String registrationAuthority) {
 
     this.registrationAuthority = registrationAuthority;
+  }
+
+  public ICommonsList<AsicReadEntry> getAttachments() {
+    return attachments;
   }
 }
