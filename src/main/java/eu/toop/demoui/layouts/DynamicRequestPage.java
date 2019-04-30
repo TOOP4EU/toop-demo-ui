@@ -19,11 +19,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
-import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
 import com.vaadin.shared.ui.ContentMode;
@@ -38,9 +41,15 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.v140.*;
+import eu.toop.commons.dataexchange.v140.TDEAddressWithLOAType;
+import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.v140.TDEDocumentRequestType;
+import eu.toop.commons.dataexchange.v140.TDEErrorType;
+import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
+import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
+import eu.toop.commons.dataexchange.v140.TDERoutingInformationType;
+import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
-import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
@@ -142,7 +151,7 @@ public class DynamicRequestPage extends CustomLayout {
 
       new DataProviderSelectionWindow (view, countryCodeField.getValue()) {
         @Override
-        public void onSave (String participantScheme, String participantValue) {
+        public void onSave (final String participantScheme, final String participantValue) {
           dataProviderScheme.setValue(participantScheme);
           dataProviderName.setValue(participantValue);
 
@@ -192,7 +201,7 @@ public class DynamicRequestPage extends CustomLayout {
 
     private final int type;
 
-    public SendRequest(int type) {
+    public SendRequest(final int type) {
       this.type = type;
     }
 
@@ -244,7 +253,7 @@ public class DynamicRequestPage extends CustomLayout {
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140
               .createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
-          
+
           String legalName = "";
           if (!legalPersonCompanyNameField.isEmpty ()) {
             legalName = legalPersonCompanyNameField.getValue ();
@@ -269,8 +278,8 @@ public class DynamicRequestPage extends CustomLayout {
         final UUID uuid = UUID.randomUUID ();
         requestIdLabel = new Label (uuid.toString ());
         addComponent (requestIdLabel, "requestId");
-        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency", "toop-doctypeid-qns", uuid.toString ()));
-        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier("toop-doctypeid-qns", "urn:eu:toop:ns:dataexchange-1p40::Request"));
+        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("UUID", null, uuid.toString ()));
+        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier(EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME, "urn:eu:toop:ns:dataexchange-1p40::Request"));
 
         if (type == 1) {
           final TDEDocumentRequestType documentRequestType = new TDEDocumentRequestType();

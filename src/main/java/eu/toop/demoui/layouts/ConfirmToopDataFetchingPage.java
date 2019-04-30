@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
@@ -36,7 +35,11 @@ import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
 import eu.toop.commons.concept.ConceptValue;
-import eu.toop.commons.dataexchange.v140.*;
+import eu.toop.commons.dataexchange.v140.TDEAddressWithLOAType;
+import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
+import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
+import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopWriter;
@@ -138,8 +141,8 @@ public class ConfirmToopDataFetchingPage extends Window {
                 EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
                 conceptList);
 
-        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency", "toop-doctypeid-qns", UUID.randomUUID ().toString()));
-        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier("toop-doctypeid-qns", "urn:eu:toop:ns:dataexchange-1p40::Request"));
+        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifierUUID ());
+        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier(EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME, "urn:eu:toop:ns:dataexchange-1p40::Request"));
 
         dumpRequest (aRequest);
 

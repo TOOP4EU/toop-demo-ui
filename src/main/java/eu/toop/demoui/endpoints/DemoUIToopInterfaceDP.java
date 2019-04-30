@@ -227,7 +227,7 @@ public class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // build response
     final TDETOOPResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
-    aResponse.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier("toop-doctypeid-qns", "urn:eu:toop:ns:dataexchange-1p40::Response"));
+    aResponse.setSpecificationIdentifier (ToopXSDHelper140.createSpecificationIdentifierResponse ());
 
 
     // handle document request
