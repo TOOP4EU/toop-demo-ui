@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.helger.commons.http.CHttpHeader;
 import com.helger.commons.string.StringHelper;
 
 /**
@@ -44,7 +45,7 @@ public class RootServlet extends HttpServlet {
       resp.sendRedirect (sRedirectURL);
     } catch (final IOException e) {
       resp.setStatus (HttpServletResponse.SC_TEMPORARY_REDIRECT);
-      resp.setHeader ("Location", sRedirectURL);
+      resp.setHeader (CHttpHeader.LOCATION, sRedirectURL);
     }
   }
 }
