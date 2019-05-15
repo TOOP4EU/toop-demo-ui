@@ -29,10 +29,19 @@ import com.vaadin.ui.UI;
 
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
-import eu.toop.demoui.view.*;
+import eu.toop.demoui.view.DynamicRequest;
+import eu.toop.demoui.view.MockRequestToSwedenDPOne;
+import eu.toop.demoui.view.MockRequestToSwedenDPTwo;
+import eu.toop.demoui.view.PhaseOne;
+import eu.toop.demoui.view.PhaseTwo;
+import eu.toop.demoui.view.RequestToItalyOne;
+import eu.toop.demoui.view.RequestToSlovakiaOne;
+import eu.toop.demoui.view.RequestToSlovakiaTwo;
+import eu.toop.demoui.view.RequestToSloveniaOne;
+import eu.toop.demoui.view.RequestToSwedenOne;
+import eu.toop.demoui.view.RequestToSwedenTwo;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
-import eu.toop.kafkaclient.ToopKafkaSettings;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -53,8 +62,9 @@ public class DCUI extends UI {
     VaadinSession.getCurrent ().addRequestHandler ( (session, request, response) -> {
 
       if ("/redirectToEidModule".equals (request.getPathInfo ())) {
+        // Redirect to eID Module
         response.setStatus (HttpServletResponse.SC_TEMPORARY_REDIRECT);
-        response.setHeader (CHttpHeader.LOCATION, DCUIConfig.getEidModuleURL ()); // Redirect to eID Module
+        response.setHeader (CHttpHeader.LOCATION, DCUIConfig.getEidModuleURL ());
 
         return true;
       }
@@ -64,11 +74,9 @@ public class DCUI extends UI {
     setPollInterval (1000);
     getPage ().setTitle ("TOOP Demo User Interface");
 
+    // CCTF-163: move this somehow to DCUIInitListener
     ToopInterfaceManager.setInterfaceDC (new DemoUIToopInterfaceDC (this));
     ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP ());
-    ToopKafkaSettings.setKafkaEnabled (true);
-    ToopKafkaSettings.defaultProperties ().put ("bootstrap.servers", DCUIConfig.getTrackerURL ());
-    ToopKafkaSettings.setKafkaTopic (DCUIConfig.getTrackerTopic ());
 
     final Navigator navigator = new Navigator (this, this);
     navigator.addView ("", new PhaseOne ());
