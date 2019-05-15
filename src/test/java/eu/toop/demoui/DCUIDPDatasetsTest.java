@@ -1,3 +1,4 @@
+package eu.toop.demoui;
 /**
  * Copyright (C) 2018-2019 toop.eu
  *
@@ -20,18 +21,16 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import eu.toop.demoui.DCUIConfig;
-
-public class DCUIConfigTest {
+public class DCUIDPDatasetsTest {
 
   @Test
   public void testBasic() {
 
-    final DCUIConfig dcuiConfig = new DCUIConfig ();
+    final DCUIDPDatasets dpDS = new DCUIDPDatasets ();
 
-    assertEquals (dcuiConfig.getDatasets ().size (), 1);
+    assertEquals (dpDS.getDatasets ().size (), 1);
 
-    for (final DCUIConfig.Dataset dataset : dcuiConfig.getDatasets ()) {
+    for (final DCUIDPDatasets.Dataset dataset : dpDS.getDatasets ()) {
       assertEquals (dataset.getNaturalPersonIdentifier (), "12345");
       assertEquals (dataset.getLegalPersonIdentifier (), "");
       assertEquals (dataset.getConcepts ().size(), 13);
