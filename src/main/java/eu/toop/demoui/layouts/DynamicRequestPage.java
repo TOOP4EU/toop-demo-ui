@@ -108,6 +108,8 @@ public class DynamicRequestPage extends CustomLayout {
 
     setHeight ("100%");
 
+    resetError();
+
     spinner.setCaption ("Please wait while your request for data is processed...");
     spinner.setStyleName ("spinner");
     spinner.setIndeterminate (true);
@@ -205,6 +207,10 @@ public class DynamicRequestPage extends CustomLayout {
 
     @Override
     public void buttonClick (final Button.ClickEvent clickEvent) {
+
+      resetError();
+      removeMainCompanyForm();
+
       try {
         final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode () + "/";
 
@@ -408,6 +414,10 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (conceptErrorsLabel, "conceptErrorsLabel");
   }
 
+  public void resetError() {
+    removeComponent("errorLabel");
+  }
+
   public void addMainCompanyForm () {
 
     responseReceived = true;
@@ -418,6 +428,10 @@ public class DynamicRequestPage extends CustomLayout {
     final BaseForm baseForm = new BaseForm (mainCompanyForm, "Company details");
     addComponent (baseForm, "mainCompanyForm");
     view.setMainCompanyForm (mainCompanyForm);
+  }
+
+  public void removeMainCompanyForm() {
+    removeComponent("mainCompanyForm");
   }
 
   public String getRequestId () {
