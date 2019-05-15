@@ -15,15 +15,9 @@
  */
 package eu.toop.demoui.layouts;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
@@ -42,9 +36,9 @@ import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
-import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.demoui.DCUIConfig;
+import eu.toop.demoui.endpoints.DemoUIToopInterfaceHelper;
 import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
@@ -146,7 +140,7 @@ public class ConfirmToopDataFetchingPage extends Window {
         aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifierUUID ());
         aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier(EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME, "urn:eu:toop:ns:dataexchange-1p40::Request"));
 
-        dumpRequest (aRequest);
+        DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
         ToopInterfaceClient.sendRequestToToopConnector (aRequest);
       } catch (final IOException | ToopErrorException ex) {
@@ -182,24 +176,5 @@ public class ConfirmToopDataFetchingPage extends Window {
   protected void onSelfProvide () {
     // The user may override this method to execute their own code when the user
     // click on the 'self-provide'-button.
-  }
-
-  private void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
-
-    try {
-
-      final DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss.SSS");
-      final String filePath = String.format ("%s/request-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
-          dateFormat.format (new Date ()));
-
-      final String requestXml = ToopWriter.request140 ().getAsString (aRequest);
-      if (requestXml != null) {
-        try (final FileWriter fw = new FileWriter (filePath)) {
-          fw.write (requestXml);
-        }
-      }
-    } catch (final IOException e) {
-      e.printStackTrace ();
-    }
   }
 }

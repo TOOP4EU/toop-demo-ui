@@ -24,7 +24,7 @@ public final class DemoUIToopInterfaceHelper {
   @Nonnull
   @Nonempty
   private static String _getCurrentDateTimeForFilename () {
-    // Never use ":" in filenames
+    // Never use ":" in filenames (Windows...)
     return PDTToString.getAsString ("uuuu-MM-dd-HH-mm-ss", PDTFactory.getCurrentLocalDateTime ());
   }
 
