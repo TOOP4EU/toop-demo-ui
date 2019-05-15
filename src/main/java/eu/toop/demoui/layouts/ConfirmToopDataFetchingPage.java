@@ -100,11 +100,13 @@ public class ConfirmToopDataFetchingPage extends Window {
         ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting concepts: "
             + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
 
+        final String identifierPrefix = DCUIConfig.getSenderCountryCode() + "/" + destinationCountryCode + "/";
+
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
         {
           aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("NP"));
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
-          aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getIdentifier ()));
+          aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + view.getIdentity ().getIdentifier ()));
           aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFamilyName ()));
           aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFirstName ()));
           aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
@@ -120,7 +122,7 @@ public class ConfirmToopDataFetchingPage extends Window {
           aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("LE"));
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (
-              ToopXSDHelper140.createIdentifierWithLOA (view.getIdentity ().getLegalPersonIdentifier ()));
+              ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + view.getIdentity ().getLegalPersonIdentifier ()));
           aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getLegalPersonName ()));
           final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
           // Destination country to use
