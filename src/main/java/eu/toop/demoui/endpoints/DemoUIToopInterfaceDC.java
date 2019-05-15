@@ -15,11 +15,8 @@
  */
 package eu.toop.demoui.endpoints;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
@@ -35,8 +32,6 @@ import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.ToopResponseWithAttachments140;
-import eu.toop.commons.jaxb.ToopWriter;
-import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.layouts.DynamicRequestPage;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
@@ -52,18 +47,18 @@ import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
-  private final UI ui;
+  private final Consumer<Runnable>  uiHandler;
 
-  public DemoUIToopInterfaceDC (final UI ui) {
+  public DemoUIToopInterfaceDC (@Nonnull final Consumer<Runnable> uiHandler) {
 
-    this.ui = ui;
+    this.uiHandler = uiHandler;
   }
 
   public void onToopResponse (@Nonnull final ToopResponseWithAttachments140 aResponseWA) throws IOException {
     final TDETOOPResponseType aResponse = aResponseWA.getResponse ();
     final ICommonsList<AsicReadEntry> attachments = aResponseWA.attachments ();
 
-    dumpResponse (aResponse);
+    DemoUIToopInterfaceHelper.dumpResponse (aResponse);
 
     final String sRequestID = aResponse.getDataRequestIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] [DC] ";
@@ -87,7 +82,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
     // Push a new organization bean to the UI
     try {
-      ui.access ( () -> {
+      uiHandler.accept (() -> {
 
         final UI threadUI = UI.getCurrent ();
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Current UI: " + threadUI);
@@ -254,24 +249,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     }
   }
 
-  private void dumpResponse (@Nonnull final TDETOOPResponseType aResponse) {
-    try {
-      final DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss.SSS");
-      final String filePath = String.format ("%s/response-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
-          dateFormat.format (new Date ()));
-
-      final String responseXml = ToopWriter.response140 ().getAsString (aResponse);
-      try (final FileWriter fw = new FileWriter (filePath)) {
-        if (responseXml != null) {
-          fw.write (responseXml);
-        }
-      }
-    } catch (final IOException e) {
-      e.printStackTrace ();
-    }
-  }
-
-  private String getConceptErrors (@Nonnull final TDETOOPResponseType aResponse) {
+  private static String getConceptErrors (@Nonnull final TDETOOPResponseType aResponse) {
 
     final StringBuilder sb = new StringBuilder ();
 

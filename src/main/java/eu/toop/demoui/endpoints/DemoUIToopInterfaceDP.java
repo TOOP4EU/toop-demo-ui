@@ -15,7 +15,6 @@
  */
 package eu.toop.demoui.endpoints;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +22,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.helger.commons.annotation.Nonempty;
 import com.helger.commons.collection.impl.CommonsArrayList;
 import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.datetime.PDTFactory;
-import com.helger.commons.datetime.PDTToString;
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.io.stream.NonBlockingByteArrayOutputStream;
 import com.helger.commons.mime.CMimeType;
@@ -64,7 +59,6 @@ import eu.toop.commons.exchange.AsicWriteEntry;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.exchange.ToopRequestWithAttachments140;
 import eu.toop.commons.exchange.ToopResponseWithAttachments140;
-import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
 import eu.toop.demoui.DCUIConfig;
@@ -77,8 +71,6 @@ import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.Identifi
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
-  private static final Logger LOGGER = LoggerFactory.getLogger (DemoUIToopInterfaceDP.class);
-
   private static boolean _canUseConcept (@Nonnull final TDEConceptRequestType aConcept) {
     // This class can only deliver to "DP" concept types without child entries
     return aConcept.hasNoConceptRequestEntries () && "DP".equals (aConcept.getConceptTypeCode ().getValue ());
@@ -198,7 +190,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     final String sLogPrefix = "[" + sRequestID + "] ";
     ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received DP Backend Request");
 
-    dumpRequest (aRequest);
+    DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
     // Record matching to dataset
 
@@ -309,7 +301,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     // send back to toop-connector at /from-dp
     // The URL must be configured in toop-interface.properties file
     try {
-      dumpResponse (aResponse);
+      DemoUIToopInterfaceHelper.dumpResponse (aResponse);
       ToopInterfaceClient.sendResponseToToopConnector (aResponse, ToopInterfaceConfig.getToopConnectorDPUrl (),
                                                        documentEntries);
     } catch (final ToopErrorException ex) {
@@ -342,29 +334,5 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       // Warnings only
       ToopKafkaClient.send (EErrorLevel.WARN, sb::toString);
     }
-  }
-
-  @Nonnull
-  @Nonempty
-  private static String _getCurrentDateTimeForFilename () {
-    // Never use ":" in filenames
-    return PDTToString.getAsString ("uuuu-MM-dd-HH-mm-ss", PDTFactory.getCurrentLocalDateTime ());
-  }
-
-  private static void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
-    final String filePath = String.format ("%s/request-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
-                                           _getCurrentDateTimeForFilename ());
-
-    if (ToopWriter.request140 ().write (aRequest, new File (filePath)).isFailure ())
-      LOGGER.error ("Failed to write request to '" + filePath + "'");
-  }
-
-  private static void dumpResponse (@Nonnull final TDETOOPResponseType aResponse) {
-
-    final String filePath = String.format ("%s/response-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
-                                           _getCurrentDateTimeForFilename ());
-
-    if (ToopWriter.response140 ().write (aResponse, new File (filePath)).isFailure ())
-      LOGGER.error ("Failed to write response to '" + filePath + "'");
   }
 }

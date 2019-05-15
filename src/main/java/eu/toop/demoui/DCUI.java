@@ -27,8 +27,6 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
-import eu.toop.demoui.endpoints.DemoUIToopInterfaceDC;
-import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
 import eu.toop.demoui.view.DynamicRequest;
 import eu.toop.demoui.view.MockRequestToSwedenDPOne;
 import eu.toop.demoui.view.MockRequestToSwedenDPTwo;
@@ -40,8 +38,6 @@ import eu.toop.demoui.view.RequestToSlovakiaTwo;
 import eu.toop.demoui.view.RequestToSloveniaOne;
 import eu.toop.demoui.view.RequestToSwedenOne;
 import eu.toop.demoui.view.RequestToSwedenTwo;
-import eu.toop.iface.ToopInterfaceManager;
-import eu.toop.kafkaclient.ToopKafkaClient;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -54,9 +50,11 @@ import eu.toop.kafkaclient.ToopKafkaClient;
  */
 @Theme ("DCUITheme")
 public class DCUI extends UI {
+  static DCUI hackedThis = null;
 
   @Override
   protected void init (final VaadinRequest vaadinRequest) {
+    hackedThis = this;
 
     // Add a custom request handler
     VaadinSession.getCurrent ().addRequestHandler ( (session, request, response) -> {
@@ -73,10 +71,6 @@ public class DCUI extends UI {
 
     setPollInterval (1000);
     getPage ().setTitle ("TOOP Demo User Interface");
-
-    // CCTF-163: move this somehow to DCUIInitListener
-    ToopInterfaceManager.setInterfaceDC (new DemoUIToopInterfaceDC (this));
-    ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP ());
 
     final Navigator navigator = new Navigator (this, this);
     navigator.addView ("", new PhaseOne ());
@@ -106,8 +100,8 @@ public class DCUI extends UI {
     final MockRequestToSwedenDPTwo mockRequestToSwedenDPTwo = new MockRequestToSwedenDPTwo ();
     navigator.addView ("mockRequestToSwedenDPTwo", mockRequestToSwedenDPTwo);
 
-    final DynamicRequest dynamicRequest = new DynamicRequest();
-    navigator.addView("dynamicRequest", dynamicRequest);
+    final DynamicRequest dynamicRequest = new DynamicRequest ();
+    navigator.addView ("dynamicRequest", dynamicRequest);
 
     final String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
     if (eidasAttributes != null) {
@@ -118,11 +112,7 @@ public class DCUI extends UI {
 
   @Override
   public void close () {
-    try {
-      ToopKafkaClient.close ();
-    } finally {
-      super.close ();
-    }
+    super.close ();
   }
 
   @WebServlet (urlPatterns = { "/ui/*", "/VAADIN/*" }, asyncSupported = true)
