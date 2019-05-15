@@ -201,6 +201,8 @@ public class DynamicRequestPage extends CustomLayout {
 
     private final int type;
 
+    // data: 0
+    // document: 1
     public SendRequest(final int type) {
       this.type = type;
     }
@@ -272,7 +274,7 @@ public class DynamicRequestPage extends CustomLayout {
             ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                 DCUIConfig.getSenderIdentifierValue ()),
                 documentTypeField.getValue(),
-                EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
+                (type == 0 ? EPredefinedProcessIdentifier.DATAREQUESTRESPONSE : EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE),
                 (type == 0 ? conceptList : null));
 
         final UUID uuid = UUID.randomUUID ();
