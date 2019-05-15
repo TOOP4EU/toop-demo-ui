@@ -17,7 +17,6 @@ package eu.toop.demoui.layouts;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +27,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
@@ -55,8 +55,7 @@ import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public class DynamicRequestPage extends CustomLayout {
-  private static enum ERequestType
-  {
+  private static enum ERequestType {
     DATA,
     DOCUMENT
   }
@@ -66,7 +65,7 @@ public class DynamicRequestPage extends CustomLayout {
   private static final String TOOP_BUTTON_STYLE = ValoTheme.BUTTON_BORDERLESS + " freedonia";
 
   private final ComboBox<String> countryCodeField = new ComboBox<> ();
-  private final ComboBox<EPredefinedDocumentTypeIdentifier> documentTypeField = new ComboBox<> ();
+  private final NativeSelect<EPredefinedDocumentTypeIdentifier> documentTypeField = new NativeSelect<> ();
   private final TextField naturalPersonIdentifierField = new TextField ();
   private final TextField naturalPersonFirstNameField = new TextField ();
   private final TextField naturalPersonFamilyNameField = new TextField ();
@@ -76,7 +75,7 @@ public class DynamicRequestPage extends CustomLayout {
   private final TextField dataProviderName = new TextField ();
   private Label errorLabel = null;
   private Label conceptErrorsLabel = null;
-  private final Button dataProvidersFindButton = new Button ("Find Data Providers");;
+  private final Button dataProvidersFindButton = new Button ("Find Data Providers");
   private final Button dataProvidersManualButton = new Button ("Manually enter Data Provider");
   private final Button sendButton = new Button ("Send Data Element Request");
   private final Button sendDocumentRequestButton = new Button ("Send Document Request");
@@ -115,25 +114,23 @@ public class DynamicRequestPage extends CustomLayout {
     spinner.setVisible (false);
     addComponent (spinner, "spinner");
 
-    dataProviderScheme.setVisible(false);
-    dataProviderName.setVisible(false);
+    dataProviderScheme.setVisible (false);
+    dataProviderName.setVisible (false);
 
-    dataProviderScheme.setPlaceholder("Data Provider Scheme");
-    //dataProviderScheme.setReadOnly(true);
-    dataProviderName.setPlaceholder("Data Provider Name");
-    //dataProviderName.setReadOnly(true);
+    dataProviderScheme.setPlaceholder ("Data Provider Scheme");
+    // dataProviderScheme.setReadOnly(true);
+    dataProviderName.setPlaceholder ("Data Provider Name");
+    // dataProviderName.setReadOnly(true);
 
-    countryCodeField.setStyleName("countryCodeDropdown");
-    countryCodeField.setItems (DCUIConfig.getCountryCodes());
-    documentTypeField.setStyleName("documentTypeDropdown");
-    documentTypeField.setItems (Arrays.asList(
-            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_REGISTEREDORGANIZATION_1_40,
-            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_SHIPCERTIFICATE_LIST_1_40,
-            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_SHIPCERTIFICATE_1_40,
-            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_CREWCERTIFICATE_LIST_1_40,
-            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_CREWCERTIFICATE_1_40,
-            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_EVIDENCE_LIST_1_40,
-            EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_EVIDENCE_1_40));
+    countryCodeField.setStyleName ("countryCodeDropdown");
+    countryCodeField.setItems (DCUIConfig.getCountryCodes ());
+    documentTypeField.setStyleName ("documentTypeDropdown");
+    // add all Request document types only
+    final List<EPredefinedDocumentTypeIdentifier> aDocTypes = new ArrayList<> ();
+    for (final EPredefinedDocumentTypeIdentifier e : EPredefinedDocumentTypeIdentifier.values ())
+      if (e.getID ().contains ("::Request##"))
+        aDocTypes.add (e);
+    documentTypeField.setItems (aDocTypes);
 
     addComponent (countryCodeField, "countryCodeField");
     addComponent (documentTypeField, "documentTypeField");
@@ -146,48 +143,48 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (dataProviderName, "dataProviderName");
 
     dataProvidersFindButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
-    dataProvidersFindButton.addClickListener((evt) -> {
+    dataProvidersFindButton.addClickListener ( (evt) -> {
 
-      new DataProviderSelectionWindow (view, countryCodeField.getValue()) {
+      new DataProviderSelectionWindow (view, countryCodeField.getValue ()) {
         @Override
         public void onSave (final String participantScheme, final String participantValue) {
-          dataProviderScheme.setValue(participantScheme);
-          dataProviderName.setValue(participantValue);
+          dataProviderScheme.setValue (participantScheme);
+          dataProviderName.setValue (participantValue);
 
-          dataProvidersFindButton.setVisible(false);
-          dataProvidersManualButton.setVisible(false);
-          dataProviderScheme.setVisible(true);
-          dataProviderName.setVisible(true);
+          dataProvidersFindButton.setVisible (false);
+          dataProvidersManualButton.setVisible (false);
+          dataProviderScheme.setVisible (true);
+          dataProviderName.setVisible (true);
         }
 
         @Override
         public void onCancel () {
-          dataProvidersFindButton.setVisible(true);
-          dataProvidersManualButton.setVisible(true);
-          dataProviderScheme.setVisible(false);
-          dataProviderName.setVisible(false);
+          dataProvidersFindButton.setVisible (true);
+          dataProvidersManualButton.setVisible (true);
+          dataProviderScheme.setVisible (false);
+          dataProviderName.setVisible (false);
         }
       };
     });
 
     dataProvidersManualButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
-    dataProvidersManualButton.addClickListener((evt) -> {
+    dataProvidersManualButton.addClickListener ( (evt) -> {
       ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Manual entry of data provider...");
-      dataProvidersFindButton.setVisible(false);
-      dataProvidersManualButton.setVisible(false);
-      dataProviderScheme.setVisible(true);
-      dataProviderName.setVisible(true);
-      dataProviderScheme.setReadOnly(false);
-      dataProviderName.setReadOnly(false);
+      dataProvidersFindButton.setVisible (false);
+      dataProvidersManualButton.setVisible (false);
+      dataProviderScheme.setVisible (true);
+      dataProviderName.setVisible (true);
+      dataProviderScheme.setReadOnly (false);
+      dataProviderName.setReadOnly (false);
     });
 
     sendButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     sendButton.addStyleName ("ConsentAgreeButton");
-    sendButton.addClickListener (new SendRequest(0));
+    sendButton.addClickListener (new SendRequest (0));
 
     sendDocumentRequestButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     sendDocumentRequestButton.addStyleName ("ConsentAgreeButton");
-    sendDocumentRequestButton.addClickListener (new SendRequest(1));
+    sendDocumentRequestButton.addClickListener (new SendRequest (1));
 
     addComponent (dataProvidersFindButton, "dataProvidersFindButton");
     addComponent (dataProvidersManualButton, "dataProvidersManualButton");
@@ -195,27 +192,28 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (sendDocumentRequestButton, "sendDocumentRequestButton");
   }
 
-
   class SendRequest implements Button.ClickListener {
 
     private final int type;
 
     // data: 0
     // document: 1
-    public SendRequest(final int type) {
+    public SendRequest (final int type) {
       this.type = type;
     }
 
     @Override
     public void buttonClick (final Button.ClickEvent clickEvent) {
       try {
-        final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode() + "/";
+        final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode () + "/";
 
-        if (type==0) {
-          ToopKafkaClient.send(EErrorLevel.INFO, () -> "[DC] Requesting concepts: "
-                  + StringHelper.getImplodedMapped(", ", conceptList, x -> x.getNamespace() + "#" + x.getValue()));
+        if (type == 0) {
+          ToopKafkaClient.send (EErrorLevel.INFO,
+                                () -> "[DC] Requesting concepts: "
+                                      + StringHelper.getImplodedMapped (", ", conceptList,
+                                                                        x -> x.getNamespace () + "#" + x.getValue ()));
         } else {
-          ToopKafkaClient.send(EErrorLevel.INFO, () -> "[DC] Requesting document.");
+          ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting document.");
         }
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
@@ -252,8 +250,8 @@ public class DynamicRequestPage extends CustomLayout {
         if (!legalPersonUniqueIdentifierField.isEmpty ()) {
           aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("LE"));
           final TDELegalPersonType aLE = new TDELegalPersonType ();
-          aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140
-              .createIdentifierWithLOA (identifierPrefix + legalPersonUniqueIdentifierField.getValue ()));
+          aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix
+                                                                                        + legalPersonUniqueIdentifierField.getValue ()));
 
           String legalName = "";
           if (!legalPersonCompanyNameField.isEmpty ()) {
@@ -267,39 +265,43 @@ public class DynamicRequestPage extends CustomLayout {
           aDS.setLegalPerson (aLE);
         }
 
-        final String srcCountryCode = DCUIConfig.getSenderCountryCode();
+        final String srcCountryCode = DCUIConfig.getSenderCountryCode ();
         final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
-            countryCodeField.getValue (),
-            ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
-                DCUIConfig.getSenderIdentifierValue ()),
-                documentTypeField.getValue(),
-                (type == 0 ? EPredefinedProcessIdentifier.DATAREQUESTRESPONSE : EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE),
-                (type == 0 ? conceptList : null));
+                                                                                     countryCodeField.getValue (),
+                                                                                     ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
+                                                                                                                        DCUIConfig.getSenderIdentifierValue ()),
+                                                                                     documentTypeField.getValue (),
+                                                                                     (type == 0 ? EPredefinedProcessIdentifier.DATAREQUESTRESPONSE
+                                                                                                : EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE),
+                                                                                     (type == 0 ? conceptList : null));
 
         final UUID uuid = UUID.randomUUID ();
         requestIdLabel = new Label (uuid.toString ());
         addComponent (requestIdLabel, "requestId");
-        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("UUID", null, uuid.toString ()));
-        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier(EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME, "urn:eu:toop:ns:dataexchange-1p40::Request"));
+        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("UUID", null,
+                                                                                          uuid.toString ()));
+        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier (EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME,
+                                                                                "urn:eu:toop:ns:dataexchange-1p40::Request"));
 
         if (type == 1) {
-          final TDEDocumentRequestType documentRequestType = new TDEDocumentRequestType();
-          documentRequestType.setDocumentURI(ToopXSDHelper140.createIdentifier("https://koolitus.emde.ee/cc/b0/67/123456"));
-          documentRequestType.setDocumentRequestIdentifier(ToopXSDHelper140.createIdentifier("demo-agency", "toop-doctypeid-qns", "600db318-02c2-4c43-b272-f9268615c076"));
-          documentRequestType.setDocumentRequestTypeCode(ToopXSDHelper140.createCode("ETR"));
-          aRequest.addDocumentRequest(documentRequestType);
+          final TDEDocumentRequestType documentRequestType = new TDEDocumentRequestType ();
+          documentRequestType.setDocumentURI (ToopXSDHelper140.createIdentifier ("https://koolitus.emde.ee/cc/b0/67/123456"));
+          documentRequestType.setDocumentRequestIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency",
+                                                                                               "toop-doctypeid-qns",
+                                                                                               "600db318-02c2-4c43-b272-f9268615c076"));
+          documentRequestType.setDocumentRequestTypeCode (ToopXSDHelper140.createCode ("ETR"));
+          aRequest.addDocumentRequest (documentRequestType);
         }
 
-        if (!dataProviderScheme.isEmpty() && !dataProviderName.isEmpty()) {
-          final TDERoutingInformationType routingInformation = aRequest.getRoutingInformation();
-          routingInformation.setDataProviderElectronicAddressIdentifier(
-                  ToopXSDHelper140.createIdentifier(dataProviderScheme.getValue(), dataProviderName.getValue()));
-          aRequest.setRoutingInformation(routingInformation);
+        if (!dataProviderScheme.isEmpty () && !dataProviderName.isEmpty ()) {
+          final TDERoutingInformationType routingInformation = aRequest.getRoutingInformation ();
+          routingInformation.setDataProviderElectronicAddressIdentifier (ToopXSDHelper140.createIdentifier (dataProviderScheme.getValue (),
+                                                                                                            dataProviderName.getValue ()));
+          aRequest.setRoutingInformation (routingInformation);
 
           ToopKafkaClient.send (EErrorLevel.INFO,
-                  () -> String.format("[DC] Set routing information to specific data provider: [%s, %s]",
-                          dataProviderScheme.getValue(),
-                          dataProviderName.getValue()));
+                                () -> String.format ("[DC] Set routing information to specific data provider: [%s, %s]",
+                                                     dataProviderScheme.getValue (), dataProviderName.getValue ()));
         }
 
         try {
@@ -309,12 +311,12 @@ public class DynamicRequestPage extends CustomLayout {
         }
 
         ToopKafkaClient.send (EErrorLevel.INFO,
-                () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
+                              () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
 
         ToopInterfaceClient.sendRequestToToopConnector (aRequest);
 
         spinner.setVisible (true);
-        //setEnabled (false);
+        // setEnabled (false);
 
         // Fake response
         new java.util.Timer ().schedule (new java.util.TimerTask () {
