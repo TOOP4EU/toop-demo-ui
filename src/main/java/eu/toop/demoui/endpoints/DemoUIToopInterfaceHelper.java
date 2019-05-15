@@ -29,17 +29,16 @@ public final class DemoUIToopInterfaceHelper {
   }
 
   public static void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
-    final String filePath = String.format ("%s/request-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
-                                           _getCurrentDateTimeForFilename ());
+    final String filePath = DCUIConfig.getDumpRequestDirectory () + "/request-dump-"
+                            + _getCurrentDateTimeForFilename () + ".log";
 
     if (ToopWriter.request140 ().write (aRequest, new File (filePath)).isFailure ())
       LOGGER.error ("Failed to write request to '" + filePath + "'");
   }
 
   public static void dumpResponse (@Nonnull final TDETOOPResponseType aResponse) {
-
-    final String filePath = String.format ("%s/response-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
-                                           _getCurrentDateTimeForFilename ());
+    final String filePath = DCUIConfig.getDumpResponseDirectory () + "/response-dump-"
+                            + _getCurrentDateTimeForFilename () + ".log";
 
     if (ToopWriter.response140 ().write (aResponse, new File (filePath)).isFailure ())
       LOGGER.error ("Failed to write response to '" + filePath + "'");
