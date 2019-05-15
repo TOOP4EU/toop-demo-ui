@@ -183,7 +183,6 @@ public class DynamicRequestPage extends CustomLayout {
     sendButton.addClickListener (new SendRequest (0));
 
     sendDocumentRequestButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
-    sendDocumentRequestButton.addStyleName ("ConsentAgreeButton");
     sendDocumentRequestButton.addClickListener (new SendRequest (1));
 
     addComponent (dataProvidersFindButton, "dataProvidersFindButton");
