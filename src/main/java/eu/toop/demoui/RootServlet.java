@@ -42,8 +42,8 @@ public class RootServlet extends HttpServlet {
 
     try {
       resp.sendRedirect (sRedirectURL);
-    } catch (IOException e) {
-      resp.setStatus (307);
+    } catch (final IOException e) {
+      resp.setStatus (HttpServletResponse.SC_TEMPORARY_REDIRECT);
       resp.setHeader ("Location", sRedirectURL);
     }
   }
