@@ -27,7 +27,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
@@ -65,7 +64,7 @@ public class DynamicRequestPage extends CustomLayout {
   private static final String TOOP_BUTTON_STYLE = ValoTheme.BUTTON_BORDERLESS + " freedonia";
 
   private final ComboBox<String> countryCodeField = new ComboBox<> ();
-  private final NativeSelect<EPredefinedDocumentTypeIdentifier> documentTypeField = new NativeSelect<> ();
+  private final ComboBox<EPredefinedDocumentTypeIdentifier> documentTypeField = new ComboBox<> ();
   private final TextField naturalPersonIdentifierField = new TextField ();
   private final TextField naturalPersonFirstNameField = new TextField ();
   private final TextField naturalPersonFamilyNameField = new TextField ();
@@ -86,19 +85,20 @@ public class DynamicRequestPage extends CustomLayout {
   private final static List<ConceptValue> conceptList = new ArrayList<> ();
 
   static {
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaStreetAddress"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaSSNumber"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaCompanyCode"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaVATNumber"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaCompanyType"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaRegistrationDate"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaRegistrationNumber"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaCompanyName"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaNaceCode"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaActivityDescription"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaRegistrationAuthority"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaLegalStatus"));
-    conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaLegalStatusEffectiveDate"));
+    final String sNS = DCUIConfig.getConceptNamespace ();
+    conceptList.add (new ConceptValue (sNS, "FreedoniaStreetAddress"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaSSNumber"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaCompanyCode"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaVATNumber"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaCompanyType"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaRegistrationDate"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaRegistrationNumber"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaCompanyName"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaNaceCode"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaActivityDescription"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaRegistrationAuthority"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaLegalStatus"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaLegalStatusEffectiveDate"));
   }
 
   public DynamicRequestPage (final BaseView view) {
@@ -131,6 +131,8 @@ public class DynamicRequestPage extends CustomLayout {
       if (e.getID ().contains ("::Request##"))
         aDocTypes.add (e);
     documentTypeField.setItems (aDocTypes);
+    // Don't allow new items
+    documentTypeField.setNewItemHandler (null);
 
     addComponent (countryCodeField, "countryCodeField");
     addComponent (documentTypeField, "documentTypeField");
