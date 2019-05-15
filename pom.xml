@@ -105,6 +105,13 @@
       <artifactId>toop-interface</artifactId>
       <version>0.10.2</version>
     </dependency>
+    
+    <!-- PDF creation -->
+    <dependency>
+      <groupId>com.helger</groupId>
+      <artifactId>ph-pdf-layout4</artifactId>
+      <version>5.0.9</version>
+    </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>

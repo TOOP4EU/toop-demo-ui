@@ -22,16 +22,27 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.helger.commons.annotation.Nonempty;
+import com.helger.commons.collection.impl.CommonsArrayList;
 import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.datetime.PDTFactory;
 import com.helger.commons.datetime.PDTToString;
 import com.helger.commons.error.level.EErrorLevel;
-import com.helger.commons.mime.MimeTypeParser;
+import com.helger.commons.io.stream.NonBlockingByteArrayOutputStream;
+import com.helger.commons.mime.CMimeType;
 import com.helger.commons.string.StringHelper;
+import com.helger.pdflayout4.PDFCreationException;
+import com.helger.pdflayout4.PageLayoutPDF;
+import com.helger.pdflayout4.base.EPLPlaceholder;
+import com.helger.pdflayout4.base.PLPageSet;
+import com.helger.pdflayout4.element.text.PLText;
+import com.helger.pdflayout4.spec.EHorzAlignment;
+import com.helger.pdflayout4.spec.FontSpec;
+import com.helger.pdflayout4.spec.PreloadFont;
 
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.dataexchange.v140.TDEAddressType;
@@ -135,12 +146,9 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     }
 
     // Document type must be switch from request to response
-    final EPredefinedDocumentTypeIdentifier eRequestDocType = EPredefinedDocumentTypeIdentifier.getFromDocumentTypeIdentifierOrNull (aRequest.getRoutingInformation ()
-                                                                                                                                             .getDocumentTypeIdentifier ()
-                                                                                                                                             .getSchemeID (),
-                                                                                                                                     aRequest.getRoutingInformation ()
-                                                                                                                                             .getDocumentTypeIdentifier ()
-                                                                                                                                             .getValue ());
+    final IdentifierType aDocTypeID = aRequest.getRoutingInformation ().getDocumentTypeIdentifier ();
+    final EPredefinedDocumentTypeIdentifier eRequestDocType = EPredefinedDocumentTypeIdentifier.getFromDocumentTypeIdentifierOrNull (aDocTypeID.getSchemeID (),
+                                                                                                                                     aDocTypeID.getValue ());
     if (eRequestDocType != null) {
       try {
         final EPredefinedDocumentTypeIdentifier eResponseDocType = ReverseDocumentTypeMapping.getReverseDocumentType (eRequestDocType);
@@ -155,10 +163,8 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       } catch (final IllegalArgumentException ex) {
         // Found no reverse document type
         ToopKafkaClient.send (EErrorLevel.INFO,
-                              () -> sLogPrefix + "Found no response document type for '"
-                                    + aRequest.getRoutingInformation ().getDocumentTypeIdentifier ().getSchemeID ()
-                                    + "::" + aRequest.getRoutingInformation ().getDocumentTypeIdentifier ().getValue ()
-                                    + "'");
+                              () -> sLogPrefix + "Found no response document type for '" + aDocTypeID.getSchemeID ()
+                                    + "::" + aDocTypeID.getValue () + "'");
       }
     }
     return aResponse;
@@ -218,10 +224,10 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       legalEntityIdentifier = null;
 
     // Get datasets from config
-    final DCUIDPDatasets dcuiConfig = new DCUIDPDatasets ();
+    final DCUIDPDatasets dpDatasets = new DCUIDPDatasets ();
 
-    final List<DCUIDPDatasets.Dataset> datasets = dcuiConfig.getDatasetsByIdentifier (naturalPersonIdentifier,
-                                                                                  legalEntityIdentifier);
+    final List<DCUIDPDatasets.Dataset> datasets = dpDatasets.getDatasetsByIdentifier (naturalPersonIdentifier,
+                                                                                      legalEntityIdentifier);
 
     final DCUIDPDatasets.Dataset dataset;
     if (datasets.size () > 0) {
@@ -238,11 +244,9 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     // handle document request
     final List<AsicWriteEntry> documentEntries = new ArrayList<> ();
-    if (aResponse.getDocumentRequest ().size () > 0) {
+    if (aResponse.hasDocumentRequestEntries ()) {
       final TDEDocumentRequestType documentRequestType = aResponse.getDocumentRequestAtIndex (0);
-
       if (documentRequestType != null) {
-
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Handling a document request");
         final TDEDocumentType tdeDocument = new TDEDocumentType ();
         tdeDocument.setDocumentURI (ToopXSDHelper140.createIdentifier ("file:/attachments/SeaWindDOC.pdf"));
@@ -266,14 +270,33 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         documentResponseType.setDocumentRemarks (new ArrayList<> ());
         documentResponseType.setErrorIndicator (ToopXSDHelper140.createIndicator (false));
 
-        final List<TDEDocumentResponseType> documentResponses = new ArrayList<> ();
-        documentResponses.add (documentResponseType);
+        documentRequestType.setDocumentResponse (new CommonsArrayList<> (documentResponseType));
 
-        documentRequestType.setDocumentResponse (documentResponses);
+        final byte[] fakeDocument;
+        // Dynamically create PDF
+        try (final NonBlockingByteArrayOutputStream aBAOS = new NonBlockingByteArrayOutputStream ()) {
+          final FontSpec r10 = new FontSpec (PreloadFont.REGULAR, 10);
+          final FontSpec r10b = new FontSpec (PreloadFont.REGULAR_BOLD, 10);
+          final PLPageSet aPS1 = new PLPageSet (PDRectangle.A4).setMargin (30);
 
-        final byte[] fakeDocument = "A document file...".getBytes ();
-        final AsicWriteEntry entry = new AsicWriteEntry ("SeaWindDOC.pdf", fakeDocument,
-                                                         MimeTypeParser.parseMimeType ("application/pdf"));
+          aPS1.setPageHeader (new PLText ("Demo document created by TOOP Demo UI",
+                                          r10).setHorzAlign (EHorzAlignment.CENTER));
+          aPS1.setPageFooter (new PLText ("Page " + EPLPlaceholder.PAGESET_PAGE_INDEX.getVariable () + " of "
+                                          + EPLPlaceholder.PAGESET_PAGE_COUNT.getVariable (),
+                                          r10b).setReplacePlaceholder (true).setHorzAlign (EHorzAlignment.RIGHT));
+          aPS1.addElement (new PLText ("This is the response to the request with UUID "
+                                       + aRequest.getDocumentUniversalUniqueIdentifier ().getValue (), r10));
+          aPS1.addElement (new PLText ("This dummy document was created at "
+                                       + PDTFactory.getCurrentLocalDateTime ().toString (), r10));
+
+          final PageLayoutPDF aPageLayout = new PageLayoutPDF ();
+          aPageLayout.addPageSet (aPS1);
+          aPageLayout.renderTo (aBAOS);
+          fakeDocument = aBAOS.getBufferOrCopy ();
+        } catch (final PDFCreationException ex) {
+          throw new RuntimeException (ex);
+        }
+        final AsicWriteEntry entry = new AsicWriteEntry ("SeaWindDOC.pdf", fakeDocument, CMimeType.APPLICATION_PDF);
         documentEntries.add (entry);
       }
     }
