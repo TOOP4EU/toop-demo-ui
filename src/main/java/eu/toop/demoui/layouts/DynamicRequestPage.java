@@ -184,10 +184,10 @@ public class DynamicRequestPage extends CustomLayout {
 
     sendButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     sendButton.addStyleName ("ConsentAgreeButton");
-    sendButton.addClickListener (new SendRequest (0));
+    sendButton.addClickListener (new SendRequest (ERequestType.DATA));
 
     sendDocumentRequestButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
-    sendDocumentRequestButton.addClickListener (new SendRequest (1));
+    sendDocumentRequestButton.addClickListener (new SendRequest (ERequestType.DOCUMENT));
 
     addComponent (dataProvidersFindButton, "dataProvidersFindButton");
     addComponent (dataProvidersManualButton, "dataProvidersManualButton");
@@ -197,11 +197,9 @@ public class DynamicRequestPage extends CustomLayout {
 
   class SendRequest implements Button.ClickListener {
 
-    private final int type;
+    private final ERequestType type;
 
-    // data: 0
-    // document: 1
-    public SendRequest (final int type) {
+    public SendRequest (final ERequestType type) {
       this.type = type;
     }
 
@@ -214,7 +212,7 @@ public class DynamicRequestPage extends CustomLayout {
       try {
         final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode () + "/";
 
-        if (type == 0) {
+        if (type == ERequestType.DATA) {
           ToopKafkaClient.send (EErrorLevel.INFO,
                                 () -> "[DC] Requesting concepts: "
                                       + StringHelper.getImplodedMapped (", ", conceptList,
@@ -273,14 +271,17 @@ public class DynamicRequestPage extends CustomLayout {
         }
 
         final String srcCountryCode = DCUIConfig.getSenderCountryCode ();
+        final String dstCountryCode = countryCodeField.getValue ();
+        final EPredefinedDocumentTypeIdentifier eDocumentTypeID = documentTypeField.getValue ();
         final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
-                                                                                     countryCodeField.getValue (),
+                                                                                     dstCountryCode,
                                                                                      ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                                                                                                                         DCUIConfig.getSenderIdentifierValue ()),
-                                                                                     documentTypeField.getValue (),
-                                                                                     (type == 0 ? EPredefinedProcessIdentifier.DATAREQUESTRESPONSE
-                                                                                                : EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE),
-                                                                                     (type == 0 ? conceptList : null));
+                                                                                     eDocumentTypeID,
+                                                                                     type == ERequestType.DATA ? EPredefinedProcessIdentifier.DATAREQUESTRESPONSE
+                                                                                                               : EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE,
+                                                                                     type == ERequestType.DATA ? conceptList
+                                                                                                               : null);
 
         final UUID uuid = UUID.randomUUID ();
         requestIdLabel = new Label (uuid.toString ());
@@ -288,9 +289,12 @@ public class DynamicRequestPage extends CustomLayout {
         aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("UUID", null,
                                                                                           uuid.toString ()));
         aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier (EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME,
-                                                                                "urn:eu:toop:ns:dataexchange-1p40::Request"));
+                                                                                eDocumentTypeID.getID ()
+                                                                                               .substring (0,
+                                                                                                           eDocumentTypeID.getID ()
+                                                                                                                          .indexOf ("##"))));
 
-        if (type == 1) {
+        if (type == ERequestType.DOCUMENT) {
           final TDEDocumentRequestType documentRequestType = new TDEDocumentRequestType ();
           documentRequestType.setDocumentURI (ToopXSDHelper140.createIdentifier ("https://koolitus.emde.ee/cc/b0/67/123456"));
           documentRequestType.setDocumentRequestIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency",
@@ -311,11 +315,7 @@ public class DynamicRequestPage extends CustomLayout {
                                                      dataProviderScheme.getValue (), dataProviderName.getValue ()));
         }
 
-        try {
-          DemoUIToopInterfaceHelper.dumpRequest (aRequest);
-        } catch (final Exception e) {
-          System.out.println ("Failed to dump request xml");
-        }
+        DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
         ToopKafkaClient.send (EErrorLevel.INFO,
                               () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
