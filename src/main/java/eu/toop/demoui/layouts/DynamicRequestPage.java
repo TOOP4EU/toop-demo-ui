@@ -416,7 +416,7 @@ public class DynamicRequestPage extends CustomLayout {
     view.setMainCompanyForm (mainCompanyForm);
   }
 
-  private void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
+  private static void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
     try {
       final DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss.SSS");
       final String filePath = String.format ("%s/request-dump-%s.log", DCUIConfig.getDumpResponseDirectory (),
