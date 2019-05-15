@@ -273,7 +273,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
           aPS1.setPageHeader (new PLText ("Demo document created by TOOP Demo UI",
                                           r10).setHorzAlign (EHorzAlignment.CENTER));
-          aPS1.setPageFooter (new PLText ("Page " + EPLPlaceholder.PAGESET_PAGE_INDEX.getVariable () + " of "
+          aPS1.setPageFooter (new PLText ("Page " + EPLPlaceholder.PAGESET_PAGE_NUMBER.getVariable () + " of "
                                           + EPLPlaceholder.PAGESET_PAGE_COUNT.getVariable (),
                                           r10b).setReplacePlaceholder (true).setHorzAlign (EHorzAlignment.RIGHT));
           aPS1.addElement (new PLText ("This is the response to the request with UUID "
