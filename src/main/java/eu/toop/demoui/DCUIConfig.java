@@ -15,9 +15,18 @@
  */
 package eu.toop.demoui;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
+import com.helger.commons.annotation.ReturnsMutableObject;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigObject;
@@ -26,19 +35,18 @@ import com.typesafe.config.ConfigSyntax;
 
 public class DCUIConfig {
 
-  private static ResourceBundle rb = ResourceBundle.getBundle("dcui");
+  private static final ResourceBundle rb = ResourceBundle.getBundle("dcui");
   private final List<Dataset> datasets = new ArrayList<> ();
-  private final List<String> countryCodes = new ArrayList<>();
 
   public DCUIConfig() {
 
-    ConfigParseOptions opt = ConfigParseOptions.defaults();
+    final ConfigParseOptions opt = ConfigParseOptions.defaults();
     opt.setSyntax(ConfigSyntax.CONF);
 
-    Config conf = ConfigFactory.parseResources("dataset.conf").resolve();
+    final Config conf = ConfigFactory.parseResources("dataset.conf").resolve();
 
-    for (ConfigObject _dataset : conf.getObjectList("Datasets")) {
-      Config dataset = _dataset.toConfig();
+    for (final ConfigObject _dataset : conf.getObjectList("Datasets")) {
+      final Config dataset = _dataset.toConfig();
 
       datasets.add(new Dataset (dataset));
     }
@@ -105,20 +113,21 @@ public class DCUIConfig {
     return rb.getString ("toop.tracker.topic");
   }
 
+  @Nonnull
+  @ReturnsMutableObject
   public List<Dataset> getDatasets () {
-
     return datasets;
   }
 
-  public List<Dataset> getDatasetsByIdentifier(String naturalPersonIdentifier, String legalPersonIdentifier) {
+  public List<Dataset> getDatasetsByIdentifier(final String naturalPersonIdentifier, final String legalPersonIdentifier) {
 
-    List<Dataset> _datasets = new ArrayList<> ();
+    final List<Dataset> _datasets = new ArrayList<> ();
 
     if (naturalPersonIdentifier == null && legalPersonIdentifier == null) {
       return _datasets;
     }
 
-    for (Dataset dataset : datasets) {
+    for (final Dataset dataset : datasets) {
 
       boolean npMatch = true;
       boolean leMatch = true;
@@ -141,10 +150,10 @@ public class DCUIConfig {
     return _datasets;
   }
 
-  public List<Dataset> getDatasetsByNaturalPersonIdentifier(String naturalPersonIdentifier) {
+  public List<Dataset> getDatasetsByNaturalPersonIdentifier(final String naturalPersonIdentifier) {
 
-    List<Dataset> _datasets = new ArrayList<> ();
-    for (Dataset dataset : datasets) {
+    final List<Dataset> _datasets = new ArrayList<> ();
+    for (final Dataset dataset : datasets) {
 
       if (dataset.getNaturalPersonIdentifier ().equals (stripCodesFromIdentifier(naturalPersonIdentifier))) {
         _datasets.add (dataset);
@@ -154,10 +163,10 @@ public class DCUIConfig {
     return _datasets;
   }
 
-  public List<Dataset> getDatasetsByLegalPersonIdentifier(String legalPersonIdentifier) {
+  public List<Dataset> getDatasetsByLegalPersonIdentifier(final String legalPersonIdentifier) {
 
-    List<Dataset> _datasets = new ArrayList<> ();
-    for (Dataset dataset : datasets) {
+    final List<Dataset> _datasets = new ArrayList<> ();
+    for (final Dataset dataset : datasets) {
 
       if (dataset.getLegalPersonIdentifier ().equals (stripCodesFromIdentifier(legalPersonIdentifier))) {
         _datasets.add (dataset);
@@ -172,11 +181,11 @@ public class DCUIConfig {
     return Arrays.asList (array);
   }
 
-  private boolean isValidIdentifier(String identifier) {
+  private boolean isValidIdentifier(final String identifier) {
     return Pattern.matches("([A-Z][A-Z]\\/){2}.{1,}", identifier);
   }
 
-  private String stripCodesFromIdentifier(String identifier) {
+  private String stripCodesFromIdentifier(final String identifier) {
 
     if (!isValidIdentifier(identifier)) {
       return null;
@@ -185,22 +194,22 @@ public class DCUIConfig {
     return identifier.substring (6);
   }
 
-  public class Dataset {
+  public static final class Dataset implements Serializable {
 
     private final String naturalPersonIdentifier;
     private final String legalPersonIdentifier;
     private final Map<String, String> concepts = new HashMap<>();
 
-    public Dataset(Config conf) {
+    public Dataset(final Config conf) {
 
       naturalPersonIdentifier = conf.getString ("NaturalPerson.identifier");
       legalPersonIdentifier = conf.getString ("LegalPerson.identifier");
 
-      for(ConfigObject _concept : conf.getObjectList ("Concepts")) {
-        Config concept = _concept.toConfig();
+      for(final ConfigObject _concept : conf.getObjectList ("Concepts")) {
+        final Config concept = _concept.toConfig();
 
-        String conceptName = concept.getString("name");
-        String conceptValue = concept.getString("value");
+        final String conceptName = concept.getString("name");
+        final String conceptValue = concept.getString("value");
 
         concepts.put(conceptName, conceptValue);
       }
@@ -221,9 +230,9 @@ public class DCUIConfig {
       return concepts;
     }
 
-    public String getConceptValue(String conceptName) {
+    public String getConceptValue(final String conceptName) {
 
-      return concepts.getOrDefault (conceptName, null);
+      return concepts.get (conceptName);
     }
   }
 }
