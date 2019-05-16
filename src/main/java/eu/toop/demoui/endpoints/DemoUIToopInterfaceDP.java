@@ -84,8 +84,11 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
                                  @Nonnull final TDEDataElementResponseValueType aValue,
                                  @Nonnull @Nonempty final String sErrorMsg) {
     aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (true));
-    aValue.setErrorCode (ToopXSDHelper140.createCode (EToopErrorCode.GEN.getID ()));
-    aValue.setResponseDescription (ToopXSDHelper140.createText ("MockError from DemoDP: " + sErrorMsg));
+    // Either error code or description
+    if (false)
+      aValue.setErrorCode (ToopXSDHelper140.createCode (EToopErrorCode.GEN.getID ()));
+    else
+      aValue.setResponseDescription (ToopXSDHelper140.createText ("MockError from DemoDP: " + sErrorMsg));
     ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "MockError from DemoDP: " + sErrorMsg);
   }
 
@@ -95,6 +98,9 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
     final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
     aConcept.addDataElementResponseValue (aValue);
+
+    aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (false));
+    aValue.setAlternativeResponseIndicator (ToopXSDHelper140.createIndicator (false));
 
     final TextType conceptName = aConcept.getConceptName ();
     if (conceptName == null || StringHelper.hasNoText (conceptName.getValue ())) {
@@ -108,8 +114,6 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         if (conceptValue == null) {
           _setError (sLogPrefix, aValue, "Concept [" + sConceptName + "] is missing in DP dataset");
         } else {
-          aValue.setAlternativeResponseIndicator (ToopXSDHelper140.createIndicator (false));
-          aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (false));
           aValue.setResponseDescription (ToopXSDHelper140.createText (conceptValue));
 
           ToopKafkaClient.send (EErrorLevel.INFO,

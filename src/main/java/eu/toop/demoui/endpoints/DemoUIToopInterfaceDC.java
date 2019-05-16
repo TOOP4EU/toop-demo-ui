@@ -47,7 +47,7 @@ import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
-  private final Consumer<Runnable>  uiHandler;
+  private final Consumer<Runnable> uiHandler;
 
   public DemoUIToopInterfaceDC (@Nonnull final Consumer<Runnable> uiHandler) {
 
@@ -64,25 +64,28 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     final String sLogPrefix = "[" + sRequestID + "] [DC] ";
 
     final TDEDataProviderType aDP = aResponse.getDataProviderCount () == 0 ? null
-        : aResponse.getDataProviderAtIndex (0);
+                                                                           : aResponse.getDataProviderAtIndex (0);
 
-    ToopKafkaClient
-        .send (EErrorLevel.INFO,
-            () -> sLogPrefix + "Received data from Data Provider: " + (aDP == null ? "null"
-                : " DPIdentifier: " + aDP.getDPIdentifier ().getValue () + ", " + " DPName: "
-                    + aDP.getDPName ().getValue () + ", " + " DPElectronicAddressIdentifier: "
-                    + aResponse.getRoutingInformation ().getDataProviderElectronicAddressIdentifier ().getValue ()));
+    ToopKafkaClient.send (EErrorLevel.INFO,
+                          () -> sLogPrefix + "Received data from Data Provider: "
+                                + (aDP == null ? "null"
+                                               : " DPIdentifier: " + aDP.getDPIdentifier ().getValue () + ", "
+                                                 + " DPName: " + aDP.getDPName ().getValue () + ", "
+                                                 + " DPElectronicAddressIdentifier: "
+                                                 + aResponse.getRoutingInformation ()
+                                                            .getDataProviderElectronicAddressIdentifier ()
+                                                            .getValue ()));
 
-    ToopKafkaClient.send(EErrorLevel.INFO, () -> sLogPrefix + "Number of attachments: " + attachments.size());
+    ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Number of attachments: " + attachments.size ());
     for (final AsicReadEntry attachment : attachments) {
-      ToopKafkaClient.send(EErrorLevel.INFO,
-              () -> sLogPrefix + "Received document: " + attachment.getEntryName() + ", size: " + attachment.payload().length);
+      ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received document: " + attachment.getEntryName ()
+                                                    + ", size: " + attachment.payload ().length);
       // attachment.payload(); <-- this is the byte[]
     }
 
     // Push a new organization bean to the UI
     try {
-      uiHandler.accept (() -> {
+      uiHandler.accept ( () -> {
 
         final UI threadUI = UI.getCurrent ();
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Current UI: " + threadUI);
@@ -92,7 +95,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
         final MainCompany bean = new MainCompany (attachments);
 
         // Get requested documents
-        if (aResponse.getDocumentRequestCount() > 0) {
+        if (aResponse.getDocumentRequestCount () > 0) {
           ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Contains requested documents");
         }
 
@@ -113,10 +116,10 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
               final String mappedConcept = sourceConceptName + " - " + toopConceptName + " - " + destinationConceptName;
 
-              for (final TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept
-                  .getDataElementResponseValue ()) {
-                ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Received a mapped concept ( "
-                    + mappedConcept + " ), response: " + aThirdLevelConceptDERValue);
+              for (final TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
+                ToopKafkaClient.send (EErrorLevel.INFO,
+                                      () -> sLogPrefix + "Received a mapped concept ( " + mappedConcept
+                                            + " ), response: " + aThirdLevelConceptDERValue);
 
                 String aValue = "";
                 if (aThirdLevelConceptDERValue.getResponseCode () != null) {
@@ -124,14 +127,14 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                 } else if (aThirdLevelConceptDERValue.getResponseIdentifier () != null) {
                   aValue = aThirdLevelConceptDERValue.getResponseIdentifier ().getValue ();
                 } else if (aThirdLevelConceptDERValue.getResponseNumeric () != null
-                    && aThirdLevelConceptDERValue.getResponseNumeric ().getValue () != null) {
+                           && aThirdLevelConceptDERValue.getResponseNumeric ().getValue () != null) {
                   aValue = aThirdLevelConceptDERValue.getResponseNumeric ().getValue ().toString ();
                 } else if (aThirdLevelConceptDERValue.getResponseDescription () != null
-                    && aThirdLevelConceptDERValue.getResponseDescription ().getValue () != null) {
+                           && aThirdLevelConceptDERValue.getResponseDescription ().getValue () != null) {
                   aValue = aThirdLevelConceptDERValue.getResponseDescription ().getValue ();
                 } else {
                   ToopKafkaClient.send (EErrorLevel.WARN, () -> sLogPrefix + "Unsupported response value provided: "
-                      + aThirdLevelConceptDERValue.toString ());
+                                                                + aThirdLevelConceptDERValue.toString ());
                 }
 
                 if (sourceConceptName.equals ("FreedoniaStreetAddress")) {
@@ -161,8 +164,8 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                 } else if (sourceConceptName.equals ("FreedoniaLegalStatusEffectiveDate")) {
                   bean.setLegalStatusEffectiveDate (aValue);
                 } else {
-                  ToopKafkaClient.send (EErrorLevel.WARN,
-                      () -> sLogPrefix + "Unsupported source concept name: '" + sourceConceptName + "'");
+                  ToopKafkaClient.send (EErrorLevel.WARN, () -> sLogPrefix + "Unsupported source concept name: '"
+                                                                + sourceConceptName + "'");
                 }
               }
             }
@@ -270,14 +273,16 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
 
           final String mappedConcept = sourceConceptName + " - " + toopConceptName + " - " + destinationConceptName;
 
-          for (final TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept
-              .getDataElementResponseValue ()) {
+          for (final TDEDataElementResponseValueType aThirdLevelConceptDERValue : aThirdLevelConcept.getDataElementResponseValue ()) {
 
             if (aThirdLevelConceptDERValue.getErrorIndicator () != null
                 && aThirdLevelConceptDERValue.getErrorIndicator ().isValue ()) {
               sb.append (" - Concept Error (").append (mappedConcept).append ("):\n");
               if (aThirdLevelConceptDERValue.getErrorCode () != null) {
                 sb.append ("     ").append (aThirdLevelConceptDERValue.getErrorCode ().getValue ()).append ("\n");
+              } else if (aThirdLevelConceptDERValue.getResponseDescription () != null) {
+                sb.append ("     ").append (aThirdLevelConceptDERValue.getResponseDescription ().getValue ())
+                  .append ("\n");
               }
             }
           }
