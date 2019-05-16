@@ -17,12 +17,12 @@ package layouts;
 
 import static org.junit.Assert.assertEquals;
 
+import eu.toop.demoui.bean.ToopDataBean;
 import org.junit.Test;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 
-import eu.toop.demoui.bean.MainCompany;
 import eu.toop.demoui.layouts.MainCompanyForm;
 
 public class MainCompanyFormTest {
@@ -57,22 +57,22 @@ public class MainCompanyFormTest {
     final String newSsNumber = "New PKL 0987 6548";
     final String newVatNumber = "New 09897656";
 
-    final MainCompany mainCompany = new MainCompany ();
-    mainCompany.setActivityDeclaration (activityDeclaration);
-    mainCompany.setAddress (address);
-    mainCompany.setBusinessCode (businessCode);
-    mainCompany.setCompanyNaceCode (companyNaceCode);
-    mainCompany.setCompanyName (companyName);
-    mainCompany.setCompanyType (companyType);
-    mainCompany.setLegalStatus (legalStatus);
-    mainCompany.setLegalStatusEffectiveDate (legalStatusEffectiveDate);
-    mainCompany.setRegistrationAuthority (registrationAuthority);
-    mainCompany.setRegistrationDate (registrationDate);
-    mainCompany.setRegistrationNumber (registrationNumber);
-    mainCompany.setSSNumber (ssNumber);
-    mainCompany.setVATNumber (vatNumber);
+    final ToopDataBean toopDataBean = new ToopDataBean();
+    toopDataBean.setActivityDeclaration (activityDeclaration);
+    toopDataBean.setAddress (address);
+    toopDataBean.setBusinessCode (businessCode);
+    toopDataBean.setCompanyNaceCode (companyNaceCode);
+    toopDataBean.setCompanyName (companyName);
+    toopDataBean.setCompanyType (companyType);
+    toopDataBean.setLegalStatus (legalStatus);
+    toopDataBean.setLegalStatusEffectiveDate (legalStatusEffectiveDate);
+    toopDataBean.setRegistrationAuthority (registrationAuthority);
+    toopDataBean.setRegistrationDate (registrationDate);
+    toopDataBean.setRegistrationNumber (registrationNumber);
+    toopDataBean.setSSNumber (ssNumber);
+    toopDataBean.setVATNumber (vatNumber);
 
-    final MainCompanyForm mainCompanyForm = new MainCompanyForm (mainCompany, false);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (toopDataBean, false);
 
     for (final Component comp : mainCompanyForm) {
       if (comp instanceof TextField) {
@@ -122,18 +122,18 @@ public class MainCompanyFormTest {
     }
     mainCompanyForm.save();
 
-    assertEquals (newActivityDeclaration, mainCompany.getActivityDeclaration ());
-    assertEquals (newAddress, mainCompany.getAddress ());
-    assertEquals (newBusinessCode, mainCompany.getBusinessCode ());
-    assertEquals (newCompanyNaceCode, mainCompany.getCompanyNaceCode ());
-    assertEquals (newCompanyName, mainCompany.getCompanyName ());
-    assertEquals (newCompanyType, mainCompany.getCompanyType ());
-    assertEquals (newLegalStatus, mainCompany.getLegalStatus ());
-    assertEquals (newLegalStatusEffectiveDate, mainCompany.getLegalStatusEffectiveDate ());
-    assertEquals (newRegistrationAuthority, mainCompany.getRegistrationAuthority ());
-    assertEquals (newRegistrationDate, mainCompany.getRegistrationDate ());
-    assertEquals (newRegistrationNumber, mainCompany.getRegistrationNumber ());
-    assertEquals (newSsNumber, mainCompany.getSSNumber ());
-    assertEquals (newVatNumber, mainCompany.getVATNumber ());
+    assertEquals (newActivityDeclaration, toopDataBean.getActivityDeclaration ());
+    assertEquals (newAddress, toopDataBean.getAddress ());
+    assertEquals (newBusinessCode, toopDataBean.getBusinessCode ());
+    assertEquals (newCompanyNaceCode, toopDataBean.getCompanyNaceCode ());
+    assertEquals (newCompanyName, toopDataBean.getCompanyName ());
+    assertEquals (newCompanyType, toopDataBean.getCompanyType ());
+    assertEquals (newLegalStatus, toopDataBean.getLegalStatus ());
+    assertEquals (newLegalStatusEffectiveDate, toopDataBean.getLegalStatusEffectiveDate ());
+    assertEquals (newRegistrationAuthority, toopDataBean.getRegistrationAuthority ());
+    assertEquals (newRegistrationDate, toopDataBean.getRegistrationDate ());
+    assertEquals (newRegistrationNumber, toopDataBean.getRegistrationNumber ());
+    assertEquals (newSsNumber, toopDataBean.getSSNumber ());
+    assertEquals (newVatNumber, toopDataBean.getVATNumber ());
   }
 }

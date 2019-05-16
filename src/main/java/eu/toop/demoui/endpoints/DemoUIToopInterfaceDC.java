@@ -16,6 +16,7 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.ui.UI;
 
+import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
@@ -32,7 +34,7 @@ import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.ToopResponseWithAttachments140;
-import eu.toop.demoui.bean.MainCompany;
+import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.layouts.DynamicRequestPage;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
 import eu.toop.demoui.view.DynamicRequest;
@@ -45,6 +47,7 @@ import eu.toop.demoui.view.RequestToSwedenOne;
 import eu.toop.demoui.view.RequestToSwedenTwo;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
+import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   private final Consumer<Runnable> uiHandler;
@@ -91,7 +94,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
         final Navigator threadUINavigator = threadUI.getNavigator ();
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Current Navigator: " + threadUINavigator);
 
-        final MainCompany bean = new MainCompany (attachments);
+        final ToopDataBean bean = new ToopDataBean (attachments);
 
         // Get requested documents
         if (aResponse.getDocumentRequestCount () > 0) {
@@ -136,6 +139,8 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                                                                 + aThirdLevelConceptDERValue.toString ());
                 }
 
+                bean.getKeyValList().add(new AbstractMap.SimpleEntry<>(sourceConceptName, aValue));
+
                 if (sourceConceptName.equals ("FreedoniaStreetAddress")) {
                   bean.setAddress (aValue);
                 } else if (sourceConceptName.equals ("FreedoniaSSNumber")) {
@@ -174,56 +179,56 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
         if (threadUINavigator.getCurrentView () instanceof PhaseTwo) {
           final PhaseTwo homeView = (PhaseTwo) threadUINavigator.getCurrentView ();
           if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
-            homeView.setMainCompany (bean);
+            homeView.setToopDataBean (bean);
             final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
             page.addMainCompanyForm ();
           }
         } else if (threadUINavigator.getCurrentView () instanceof RequestToSwedenOne) {
           final RequestToSwedenOne homeView = (RequestToSwedenOne) threadUINavigator.getCurrentView ();
           if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
-            homeView.setMainCompany (bean);
+            homeView.setToopDataBean (bean);
             final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
             page.addMainCompanyForm ();
           }
         } else if (threadUINavigator.getCurrentView () instanceof RequestToSwedenTwo) {
           final RequestToSwedenTwo homeView = (RequestToSwedenTwo) threadUINavigator.getCurrentView ();
           if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
-            homeView.setMainCompany (bean);
+            homeView.setToopDataBean (bean);
             final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
             page.addMainCompanyForm ();
           }
         } else if (threadUINavigator.getCurrentView () instanceof RequestToSloveniaOne) {
           final RequestToSloveniaOne homeView = (RequestToSloveniaOne) threadUINavigator.getCurrentView ();
           if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
-            homeView.setMainCompany (bean);
+            homeView.setToopDataBean (bean);
             final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
             page.addMainCompanyForm ();
           }
         } else if (threadUINavigator.getCurrentView () instanceof RequestToSlovakiaOne) {
           final RequestToSlovakiaOne homeView = (RequestToSlovakiaOne) threadUINavigator.getCurrentView ();
           if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
-            homeView.setMainCompany (bean);
+            homeView.setToopDataBean (bean);
             final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
             page.addMainCompanyForm ();
           }
         } else if (threadUINavigator.getCurrentView () instanceof RequestToSlovakiaTwo) {
           final RequestToSlovakiaTwo homeView = (RequestToSlovakiaTwo) threadUINavigator.getCurrentView ();
           if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
-            homeView.setMainCompany (bean);
+            homeView.setToopDataBean (bean);
             final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
             page.addMainCompanyForm ();
           }
         } else if (threadUINavigator.getCurrentView () instanceof RequestToItalyOne) {
           final RequestToItalyOne homeView = (RequestToItalyOne) threadUINavigator.getCurrentView ();
           if (homeView.getCurrentPage () instanceof RegisterWithWEEEMainPage) {
-            homeView.setMainCompany (bean);
+            homeView.setToopDataBean (bean);
             final RegisterWithWEEEMainPage page = (RegisterWithWEEEMainPage) homeView.getCurrentPage ();
             page.addMainCompanyForm ();
           }
         } else if (threadUINavigator.getCurrentView () instanceof DynamicRequest) {
           final DynamicRequest homeView = (DynamicRequest) threadUINavigator.getCurrentView ();
           if (homeView.getCurrentPage () instanceof DynamicRequestPage) {
-            homeView.setMainCompany (bean);
+            homeView.setToopDataBean (bean);
             final DynamicRequestPage page = (DynamicRequestPage) homeView.getCurrentPage ();
 
             final String expectedUuid = page.getRequestId ();
@@ -231,7 +236,14 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
             if (aResponse.getDataRequestIdentifier () != null && expectedUuid != null
                 && expectedUuid.equals (aResponse.getDataRequestIdentifier ().getValue ())) {
               if (!aResponse.hasErrorEntries ()) {
-                page.addMainCompanyForm ();
+
+                final IdentifierType documentTypeIdentifier = aResponse.getRoutingInformation ().getDocumentTypeIdentifier ();
+
+                if (documentTypeIdentifier.getValue ().contains ("registeredorganization")) {
+                  page.addMainCompanyForm ();
+                } else {
+                  page.addKeyValueForm ();
+                }
               } else {
                 page.setError (aResponse.getError ());
               }

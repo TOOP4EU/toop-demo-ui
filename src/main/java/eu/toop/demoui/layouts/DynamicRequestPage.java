@@ -51,6 +51,7 @@ import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
+import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public class DynamicRequestPage extends CustomLayout {
@@ -132,6 +133,7 @@ public class DynamicRequestPage extends CustomLayout {
     for (final EPredefinedDocumentTypeIdentifier e : EPredefinedDocumentTypeIdentifier.values ())
       if (e.getID ().contains ("::Request##"))
         aDocTypes.add (e);
+
     documentTypeField.setItems (aDocTypes);
     // Don't allow new items
     documentTypeField.setNewItemHandler (null);
@@ -207,8 +209,9 @@ public class DynamicRequestPage extends CustomLayout {
     public void buttonClick (final Button.ClickEvent clickEvent) {
 
       responseReceived = false;
-      resetError();
-      removeMainCompanyForm();
+      resetError ();
+      removeMainCompanyForm ();
+      removeKeyValueForm ();
 
       try {
         final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode () + "/";
@@ -424,15 +427,31 @@ public class DynamicRequestPage extends CustomLayout {
     responseReceived = true;
     spinner.setVisible (false);
 
-    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), false);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getToopDataBean(), false);
 
     final BaseForm baseForm = new BaseForm (mainCompanyForm, "Company details");
     addComponent (baseForm, "mainCompanyForm");
     view.setMainCompanyForm (mainCompanyForm);
   }
 
-  public void removeMainCompanyForm() {
-    removeComponent("mainCompanyForm");
+  public void addKeyValueForm () {
+
+    responseReceived = true;
+    spinner.setVisible (false);
+
+    final KeyValueForm keyValueForm = new KeyValueForm (view.getToopDataBean (), false);
+
+    final BaseForm baseForm = new BaseForm (keyValueForm, "Key value details");
+    addComponent (baseForm, "keyValueForm");
+    view.setKeyValueForm (keyValueForm);
+  }
+
+  public void removeMainCompanyForm () {
+    removeComponent ("mainCompanyForm");
+  }
+
+  public void removeKeyValueForm () {
+    removeComponent ("keyValueForm");
   }
 
   public String getRequestId () {

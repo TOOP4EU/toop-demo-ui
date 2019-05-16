@@ -19,6 +19,7 @@ import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Button;
 import eu.toop.commons.exchange.AsicReadEntry;
+import eu.toop.demoui.bean.ToopDataBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,23 +28,16 @@ import com.vaadin.data.ValidationException;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
-import eu.toop.demoui.bean.MainCompany;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class MainCompanyForm extends FormLayout {
 
   private static final Logger logger = LoggerFactory.getLogger (MainCompanyForm.class);
 
-  private final Binder<MainCompany> binder = new Binder<> ();
-  private MainCompany mainCompany;
+  private final Binder<ToopDataBean> binder = new Binder<> ();
+  private ToopDataBean toopDataBean;
 
-  public MainCompanyForm (final MainCompany mainCompany, final boolean readOnly) {
+  public MainCompanyForm (final ToopDataBean toopDataBean, final boolean readOnly) {
 
     final TextField addressField = new TextField ("Address");
     final TextField ssNumberField = new TextField ("SS number");
@@ -59,19 +53,19 @@ public class MainCompanyForm extends FormLayout {
     final TextField activityDeclarationField = new TextField ("Activity declaration");
     final TextField registrationAuthorityField = new TextField ("Registration authority");
 
-    binder.bind (addressField, MainCompany::getAddress, MainCompany::setAddress);
-    binder.bind (ssNumberField, MainCompany::getSSNumber, MainCompany::setSSNumber);
-    binder.bind (businessCodeField, MainCompany::getBusinessCode, MainCompany::setBusinessCode);
-    binder.bind (vatNumberField, MainCompany::getVATNumber, MainCompany::setVATNumber);
-    binder.bind (companyTypeField, MainCompany::getCompanyType, MainCompany::setCompanyType);
-    binder.bind (legalStatusField, MainCompany::getLegalStatus, MainCompany::setLegalStatus);
-    binder.bind (legalStatusEffectiveDateField, MainCompany::getLegalStatusEffectiveDate, MainCompany::setLegalStatusEffectiveDate);
-    binder.bind (registrationDateField, MainCompany::getRegistrationDate, MainCompany::setRegistrationDate);
-    binder.bind (registrationNumberField, MainCompany::getRegistrationNumber, MainCompany::setRegistrationNumber);
-    binder.bind (companyNameField, MainCompany::getCompanyName, MainCompany::setCompanyName);
-    binder.bind (companyNaceCodeField, MainCompany::getCompanyNaceCode, MainCompany::setCompanyNaceCode);
-    binder.bind (activityDeclarationField, MainCompany::getActivityDeclaration, MainCompany::setActivityDeclaration);
-    binder.bind (registrationAuthorityField, MainCompany::getRegistrationAuthority, MainCompany::setRegistrationAuthority);
+    binder.bind (addressField, ToopDataBean::getAddress, ToopDataBean::setAddress);
+    binder.bind (ssNumberField, ToopDataBean::getSSNumber, ToopDataBean::setSSNumber);
+    binder.bind (businessCodeField, ToopDataBean::getBusinessCode, ToopDataBean::setBusinessCode);
+    binder.bind (vatNumberField, ToopDataBean::getVATNumber, ToopDataBean::setVATNumber);
+    binder.bind (companyTypeField, ToopDataBean::getCompanyType, ToopDataBean::setCompanyType);
+    binder.bind (legalStatusField, ToopDataBean::getLegalStatus, ToopDataBean::setLegalStatus);
+    binder.bind (legalStatusEffectiveDateField, ToopDataBean::getLegalStatusEffectiveDate, ToopDataBean::setLegalStatusEffectiveDate);
+    binder.bind (registrationDateField, ToopDataBean::getRegistrationDate, ToopDataBean::setRegistrationDate);
+    binder.bind (registrationNumberField, ToopDataBean::getRegistrationNumber, ToopDataBean::setRegistrationNumber);
+    binder.bind (companyNameField, ToopDataBean::getCompanyName, ToopDataBean::setCompanyName);
+    binder.bind (companyNaceCodeField, ToopDataBean::getCompanyNaceCode, ToopDataBean::setCompanyNaceCode);
+    binder.bind (activityDeclarationField, ToopDataBean::getActivityDeclaration, ToopDataBean::setActivityDeclaration);
+    binder.bind (registrationAuthorityField, ToopDataBean::getRegistrationAuthority, ToopDataBean::setRegistrationAuthority);
 
     addressField.setReadOnly (readOnly);
     ssNumberField.setReadOnly (readOnly);
@@ -101,11 +95,10 @@ public class MainCompanyForm extends FormLayout {
     addComponent (activityDeclarationField);
     addComponent (registrationAuthorityField);
 
-    setOrganizationBean (mainCompany);
+    setToopDataBean(toopDataBean);
 
-
-    if (mainCompany.getAttachments() != null && mainCompany.getAttachments().size() > 0) {
-      for (AsicReadEntry attachment : mainCompany.getAttachments()) {
+    if (toopDataBean.getAttachments() != null && toopDataBean.getAttachments().size() > 0) {
+      for (AsicReadEntry attachment : toopDataBean.getAttachments()) {
 
         Button downloadButton = new Button("Download " + attachment.getEntryName());
 
@@ -119,18 +112,18 @@ public class MainCompanyForm extends FormLayout {
     }
   }
 
-  public void setOrganizationBean (final MainCompany mainCompany) {
+  public void setToopDataBean(final ToopDataBean toopDataBean) {
 
-    this.mainCompany = mainCompany;
-    binder.readBean (this.mainCompany);
+    this.toopDataBean = toopDataBean;
+    binder.readBean (this.toopDataBean);
   }
 
   public void save () {
 
     try {
-      binder.writeBean (mainCompany);
+      binder.writeBean (toopDataBean);
     } catch (final ValidationException e) {
-      logger.error ("Failed to write to 'mainCompany' bean");
+      logger.error ("Failed to write to 'toopDataBean' bean");
     }
   }
 

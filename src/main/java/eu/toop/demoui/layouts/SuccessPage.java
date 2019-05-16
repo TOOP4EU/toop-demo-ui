@@ -27,7 +27,7 @@ public class SuccessPage extends CustomLayout {
 
     setHeight ("100%");
 
-    String companyName = view.getMainCompany ().getCompanyName ();
+    String companyName = view.getToopDataBean ().getCompanyName ();
     if (companyName.isEmpty ()) {
       companyName = "Zizi mat";
     }

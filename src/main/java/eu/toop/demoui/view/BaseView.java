@@ -20,18 +20,20 @@ import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.CustomLayout;
 
 import eu.toop.demoui.bean.Identity;
-import eu.toop.demoui.bean.MainCompany;
+import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.bean.NewCompany;
+import eu.toop.demoui.layouts.KeyValueForm;
 import eu.toop.demoui.layouts.MainCompanyForm;
 
 public class BaseView extends CustomLayout implements View {
 
   private AbstractLayout page;
   private Identity identity = new Identity ();
-  private MainCompany mainCompany = new MainCompany ();
+  private ToopDataBean toopDataBean = new ToopDataBean();
   private NewCompany newCompany = new NewCompany ();
 
   private MainCompanyForm mainCompanyForm = null;
+  private KeyValueForm keyValueForm = null;
 
   public BaseView () {
 
@@ -64,14 +66,14 @@ public class BaseView extends CustomLayout implements View {
     this.identity = identity;
   }
 
-  public MainCompany getMainCompany () {
+  public ToopDataBean getToopDataBean () {
 
-    return mainCompany;
+    return toopDataBean;
   }
 
-  public void setMainCompany (MainCompany mainCompany) {
+  public void setToopDataBean (ToopDataBean toopDataBean) {
 
-    this.mainCompany = mainCompany;
+    this.toopDataBean = toopDataBean;
   }
 
   public NewCompany getNewCompany () {
@@ -92,6 +94,11 @@ public class BaseView extends CustomLayout implements View {
   public void setMainCompanyForm (MainCompanyForm mainCompanyForm) {
 
     this.mainCompanyForm = mainCompanyForm;
+  }
+
+  public void setKeyValueForm (KeyValueForm keyValueForm) {
+
+    this.keyValueForm = keyValueForm;
   }
 
   @Override

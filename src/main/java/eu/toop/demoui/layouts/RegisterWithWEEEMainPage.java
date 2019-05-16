@@ -71,7 +71,7 @@ public class RegisterWithWEEEMainPage extends CustomLayout {
 
     spinner.setVisible (false);
 
-    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), false);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getToopDataBean(), false);
 
     final BaseForm baseForm = new BaseForm (mainCompanyForm, "Preview of company details");
     addComponent (baseForm, "mainCompanyForm");

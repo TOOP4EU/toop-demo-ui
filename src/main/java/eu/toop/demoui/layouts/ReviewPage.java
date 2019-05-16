@@ -34,7 +34,7 @@ public class ReviewPage extends CustomLayout {
     final NewCompanyForm newCompanyForm = new NewCompanyForm (view.getNewCompany (), true);
     addComponent (newCompanyForm, "newCompanyForm");
 
-    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), true);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getToopDataBean (), true);
     addComponent (mainCompanyForm, "mainCompanyForm");
 
     final Button nextButton = new Button ("Proceed");

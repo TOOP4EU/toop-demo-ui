@@ -19,7 +19,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-import eu.toop.demoui.bean.MainCompany;
+import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.view.BaseView;
 
 public class ManualDataEntry extends CustomLayout {
@@ -42,7 +42,7 @@ public class ManualDataEntry extends CustomLayout {
     addComponent (manualDataEntryButton, "manualDataEntryButton");
 
     manualDataEntryButton.addClickListener (event -> {
-      view.setMainCompany (new MainCompany ());
+      view.setToopDataBean (new ToopDataBean ());
       manualDataEntryButton.setEnabled (false);
       addMainCompanyForm ();
     });
@@ -50,7 +50,7 @@ public class ManualDataEntry extends CustomLayout {
 
   public void addMainCompanyForm () {
 
-    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getMainCompany (), false);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getToopDataBean (), false);
 
     final BaseForm baseForm = new BaseForm (mainCompanyForm, "Enter company details");
     addComponent (baseForm, "mainCompanyForm");

@@ -19,8 +19,11 @@ import com.helger.commons.collection.impl.ICommonsList;
 import eu.toop.commons.exchange.AsicReadEntry;
 
 import java.io.Serializable;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainCompany implements Serializable {
+public class ToopDataBean implements Serializable {
 
   private String address;
   private String ssNumber;
@@ -36,12 +39,13 @@ public class MainCompany implements Serializable {
   private String activityDeclaration;
   private String registrationAuthority;
   private ICommonsList<AsicReadEntry> attachments = null;
+  private List<AbstractMap.SimpleEntry<String, String>> keyValList = new ArrayList<> ();
 
-  public MainCompany() {
+  public ToopDataBean () {
 
   }
 
-  public MainCompany(final ICommonsList<AsicReadEntry> attachments) {
+  public ToopDataBean (final ICommonsList<AsicReadEntry> attachments) {
     this.attachments = attachments;
   }
 
@@ -175,7 +179,15 @@ public class MainCompany implements Serializable {
     this.registrationAuthority = registrationAuthority;
   }
 
-  public ICommonsList<AsicReadEntry> getAttachments() {
+  public ICommonsList<AsicReadEntry> getAttachments () {
     return attachments;
+  }
+
+  public List<AbstractMap.SimpleEntry<String, String>> getKeyValList () {
+    return keyValList;
+  }
+
+  public void setKeyValList (List<AbstractMap.SimpleEntry<String, String>> keyValList) {
+    this.keyValList = keyValList;
   }
 }
