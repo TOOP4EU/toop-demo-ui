@@ -206,6 +206,7 @@ public class DynamicRequestPage extends CustomLayout {
     @Override
     public void buttonClick (final Button.ClickEvent clickEvent) {
 
+      responseReceived = false;
       resetError();
       removeMainCompanyForm();
 
