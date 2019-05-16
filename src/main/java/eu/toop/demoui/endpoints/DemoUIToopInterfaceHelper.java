@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.helger.commons.annotation.Nonempty;
 import com.helger.commons.datetime.PDTFactory;
 import com.helger.commons.datetime.PDTToString;
+import com.helger.commons.io.file.FileOperationManager;
 
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
@@ -29,18 +30,20 @@ public final class DemoUIToopInterfaceHelper {
   }
 
   public static void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
-    final String filePath = DCUIConfig.getDumpRequestDirectory () + "/request-dump-"
-                            + _getCurrentDateTimeForFilename () + ".log";
-
-    if (ToopWriter.request140 ().write (aRequest, new File (filePath)).isFailure ())
+    final String filePath = DCUIConfig.getDumpRequestDirectory () + "/request-dump-" + _getCurrentDateTimeForFilename ()
+                            + ".log";
+    final File f = new File (filePath);
+    FileOperationManager.INSTANCE.createDirRecursiveIfNotExisting (f.getParentFile ());
+    if (ToopWriter.request140 ().write (aRequest, f).isFailure ())
       LOGGER.error ("Failed to write request to '" + filePath + "'");
   }
 
   public static void dumpResponse (@Nonnull final TDETOOPResponseType aResponse) {
     final String filePath = DCUIConfig.getDumpResponseDirectory () + "/response-dump-"
                             + _getCurrentDateTimeForFilename () + ".log";
-
-    if (ToopWriter.response140 ().write (aResponse, new File (filePath)).isFailure ())
+    final File f = new File (filePath);
+    FileOperationManager.INSTANCE.createDirRecursiveIfNotExisting (f.getParentFile ());
+    if (ToopWriter.response140 ().write (aResponse, f).isFailure ())
       LOGGER.error ("Failed to write response to '" + filePath + "'");
   }
 
