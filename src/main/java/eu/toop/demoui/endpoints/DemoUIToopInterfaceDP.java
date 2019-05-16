@@ -148,9 +148,13 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     final EPredefinedDocumentTypeIdentifier eRequestDocType = EPredefinedDocumentTypeIdentifier.getFromDocumentTypeIdentifierOrNull (aDocTypeID.getSchemeID (),
                                                                                                                                      aDocTypeID.getValue ());
     if (eRequestDocType != null) {
-      try {
-        final EPredefinedDocumentTypeIdentifier eResponseDocType = ReverseDocumentTypeMapping.getReverseDocumentType (eRequestDocType);
-
+      final EPredefinedDocumentTypeIdentifier eResponseDocType = ReverseDocumentTypeMapping.getReverseDocumentTypeOrNull (eRequestDocType);
+      if (eResponseDocType == null) {
+        // Found no reverse document type
+        ToopKafkaClient.send (EErrorLevel.ERROR,
+                              () -> sLogPrefix + "Found no response document type for '" + aDocTypeID.getSchemeID ()
+                                    + "::" + aDocTypeID.getValue () + "'");
+      } else {
         // Set new doc type in response
         ToopKafkaClient.send (EErrorLevel.INFO,
                               () -> sLogPrefix + "Switching document type '" + eRequestDocType.getURIEncoded ()
@@ -158,11 +162,6 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         aResponse.getRoutingInformation ()
                  .setDocumentTypeIdentifier (ToopXSDHelper140.createIdentifier (eResponseDocType.getScheme (),
                                                                                 eResponseDocType.getID ()));
-      } catch (final IllegalArgumentException ex) {
-        // Found no reverse document type
-        ToopKafkaClient.send (EErrorLevel.INFO,
-                              () -> sLogPrefix + "Found no response document type for '" + aDocTypeID.getSchemeID ()
-                                    + "::" + aDocTypeID.getValue () + "'");
       }
     }
     return aResponse;

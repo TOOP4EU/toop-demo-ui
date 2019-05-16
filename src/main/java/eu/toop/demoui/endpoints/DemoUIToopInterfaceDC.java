@@ -63,8 +63,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     final String sRequestID = aResponse.getDataRequestIdentifier ().getValue ();
     final String sLogPrefix = "[" + sRequestID + "] [DC] ";
 
-    final TDEDataProviderType aDP = aResponse.getDataProviderCount () == 0 ? null
-                                                                           : aResponse.getDataProviderAtIndex (0);
+    final TDEDataProviderType aDP = aResponse.hasNoDataProviderEntries () ? null : aResponse.getDataProviderAtIndex (0);
 
     ToopKafkaClient.send (EErrorLevel.INFO,
                           () -> sLogPrefix + "Received data from Data Provider: "
