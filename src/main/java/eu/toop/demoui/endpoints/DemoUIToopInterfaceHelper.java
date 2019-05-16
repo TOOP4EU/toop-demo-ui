@@ -1,16 +1,17 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.File;
+import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.helger.commons.annotation.Nonempty;
 import com.helger.commons.datetime.PDTFactory;
-import com.helger.commons.datetime.PDTToString;
 import com.helger.commons.io.file.FileOperationManager;
+import com.helger.commons.string.StringHelper;
+import com.helger.datetime.util.PDTIOHelper;
 
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
@@ -22,16 +23,13 @@ public final class DemoUIToopInterfaceHelper {
 
   private DemoUIToopInterfaceHelper () {}
 
-  @Nonnull
-  @Nonempty
-  private static String _getCurrentDateTimeForFilename () {
-    // Never use ":" in filenames (Windows...)
-    return PDTToString.getAsString ("uuuu-MM-dd-HH-mm-ss", PDTFactory.getCurrentLocalDateTime ());
-  }
-
   public static void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
-    final String filePath = DCUIConfig.getDumpRequestDirectory () + "/request-dump-" + _getCurrentDateTimeForFilename ()
-                            + ".log";
+    final LocalDateTime aNow = PDTFactory.getCurrentLocalDateTime ();
+    // Never use ":" in filenames (Windows...)
+    final String filePath = DCUIConfig.getDumpRequestDirectory () + "/" + aNow.getYear () + "/"
+                            + StringHelper.getLeadingZero (aNow.getMonthValue (), 2) + "/"
+                            + StringHelper.getLeadingZero (aNow.getDayOfMonth (), 2) + "/" + "request-dump-"
+                            + PDTIOHelper.getTimeForFilename (aNow.toLocalTime ()) + ".log";
     final File f = new File (filePath);
     FileOperationManager.INSTANCE.createDirRecursiveIfNotExisting (f.getParentFile ());
     if (ToopWriter.request140 ().write (aRequest, f).isFailure ())
@@ -39,8 +37,11 @@ public final class DemoUIToopInterfaceHelper {
   }
 
   public static void dumpResponse (@Nonnull final TDETOOPResponseType aResponse) {
-    final String filePath = DCUIConfig.getDumpResponseDirectory () + "/response-dump-"
-                            + _getCurrentDateTimeForFilename () + ".log";
+    final LocalDateTime aNow = PDTFactory.getCurrentLocalDateTime ();
+    final String filePath = DCUIConfig.getDumpResponseDirectory () + "/" + aNow.getYear () + "/"
+                            + StringHelper.getLeadingZero (aNow.getMonthValue (), 2) + "/"
+                            + StringHelper.getLeadingZero (aNow.getDayOfMonth (), 2) + "/" + "response-dump-"
+                            + PDTIOHelper.getTimeForFilename (aNow.toLocalTime ()) + ".log";
     final File f = new File (filePath);
     FileOperationManager.INSTANCE.createDirRecursiveIfNotExisting (f.getParentFile ());
     if (ToopWriter.response140 ().write (aResponse, f).isFailure ())
