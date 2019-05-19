@@ -51,7 +51,6 @@ import eu.toop.demoui.view.BaseView;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
-import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public class DynamicRequestPage extends CustomLayout {
@@ -109,7 +108,7 @@ public class DynamicRequestPage extends CustomLayout {
 
     setHeight ("100%");
 
-    resetError();
+    resetError ();
 
     spinner.setCaption ("Please wait while your request for data is processed...");
     spinner.setStyleName ("spinner");
@@ -277,13 +276,21 @@ public class DynamicRequestPage extends CustomLayout {
         final String srcCountryCode = DCUIConfig.getSenderCountryCode ();
         final String dstCountryCode = countryCodeField.getValue ();
         final EPredefinedDocumentTypeIdentifier eDocumentTypeID = documentTypeField.getValue ();
+        final EPredefinedProcessIdentifier eProcessID;
+        if (eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE
+            || eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE_LIST
+            || eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE
+            || eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE_LIST)
+          eProcessID = EPredefinedProcessIdentifier.TWOPHASEDREQUESTRESPONSE;
+        else if (type == ERequestType.DATA)
+          eProcessID = EPredefinedProcessIdentifier.DATAREQUESTRESPONSE;
+        else
+          eProcessID = EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE;
         final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
                                                                                      dstCountryCode,
                                                                                      ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                                                                                                                         DCUIConfig.getSenderIdentifierValue ()),
-                                                                                     eDocumentTypeID,
-                                                                                     type == ERequestType.DATA ? EPredefinedProcessIdentifier.DATAREQUESTRESPONSE
-                                                                                                               : EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE,
+                                                                                     eDocumentTypeID, eProcessID,
                                                                                      type == ERequestType.DATA ? conceptList
                                                                                                                : null);
 
@@ -418,8 +425,8 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (conceptErrorsLabel, "conceptErrorsLabel");
   }
 
-  public void resetError() {
-    removeComponent("errorLabel");
+  public void resetError () {
+    removeComponent ("errorLabel");
   }
 
   public void addMainCompanyForm () {
@@ -427,7 +434,7 @@ public class DynamicRequestPage extends CustomLayout {
     responseReceived = true;
     spinner.setVisible (false);
 
-    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getToopDataBean(), false);
+    final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getToopDataBean (), false);
 
     final BaseForm baseForm = new BaseForm (mainCompanyForm, "Company details");
     addComponent (baseForm, "mainCompanyForm");
