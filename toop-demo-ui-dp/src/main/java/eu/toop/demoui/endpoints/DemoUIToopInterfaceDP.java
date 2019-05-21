@@ -388,6 +388,8 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
     final TDETOOPResponseType aResponse = aResponseWA.getResponse ();
     final ICommonsList <AsicReadEntry> attachments = aResponseWA.attachments ();
 
+    DemoUIToopInterfaceHelper.dumpResponse (aResponse);
+
     final IdentifierType docUuid = aResponse.getDocumentUniversalUniqueIdentifier ();
     final String sRequestID = (docUuid != null ? docUuid.getValue () : "");
     final String sLogPrefix = "[" + sRequestID + "] ";
