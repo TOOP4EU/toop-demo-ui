@@ -17,8 +17,8 @@ public class DPUIInitListener implements ServletContextListener
     ToopInterfaceManager.setInterfaceDP (new DemoUIToopInterfaceDP ());
 
     ToopKafkaSettings.setKafkaEnabled (true);
-    ToopKafkaSettings.defaultProperties ().put ("bootstrap.servers", DCUIConfig.getTrackerURL ());
-    ToopKafkaSettings.setKafkaTopic (DCUIConfig.getTrackerTopic ());
+    ToopKafkaSettings.defaultProperties ().put ("bootstrap.servers", DPUIConfig.getTrackerURL ());
+    ToopKafkaSettings.setKafkaTopic (DPUIConfig.getTrackerTopic ());
   }
 
   public void contextDestroyed (final ServletContextEvent aSce)

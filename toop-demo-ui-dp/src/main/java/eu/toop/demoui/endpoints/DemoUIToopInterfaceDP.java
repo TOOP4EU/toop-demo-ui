@@ -64,7 +64,7 @@ import eu.toop.commons.exchange.ToopRequestWithAttachments140;
 import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
-import eu.toop.demoui.DCUIConfig;
+import eu.toop.demoui.DPUIConfig;
 import eu.toop.demoui.DPUIDatasets;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
@@ -134,11 +134,11 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
                .setDataProviderElectronicAddressIdentifier (ToopXSDHelper140.createIdentifier ("elonia@register.example.org"));
 
       final TDEDataProviderType p = new TDEDataProviderType ();
-      p.setDPIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency", DCUIConfig.getResponderIdentifierScheme (),
-                                                            DCUIConfig.getResponderIdentifierValue ()));
+      p.setDPIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency", DPUIConfig.getResponderIdentifierScheme (),
+                                                            DPUIConfig.getResponderIdentifierValue ()));
       p.setDPName (ToopXSDHelper140.createText ("EloniaDP"));
       final TDEAddressType pa = new TDEAddressType ();
-      pa.setCountryCode (ToopXSDHelper140.createCodeWithLOA (DCUIConfig.getProviderCountryCode ()));
+      pa.setCountryCode (ToopXSDHelper140.createCodeWithLOA (DPUIConfig.getProviderCountryCode ()));
       p.setDPLegalAddress (pa);
       aResponse.addDataProvider (p);
     }

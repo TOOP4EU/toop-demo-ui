@@ -16,7 +16,7 @@ import com.helger.datetime.util.PDTIOHelper;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.jaxb.ToopWriter;
-import eu.toop.demoui.DCUIConfig;
+import eu.toop.demoui.DPUIConfig;
 
 public final class DemoUIToopInterfaceHelper {
   private static final Logger LOGGER = LoggerFactory.getLogger (DemoUIToopInterfaceHelper.class);
@@ -26,7 +26,7 @@ public final class DemoUIToopInterfaceHelper {
   public static void dumpRequest (@Nonnull final TDETOOPRequestType aRequest) {
     final LocalDateTime aNow = PDTFactory.getCurrentLocalDateTime ();
     // Never use ":" in filenames (Windows...)
-    final String filePath = DCUIConfig.getDumpRequestDirectory () + "/" + aNow.getYear () + "/"
+    final String filePath = DPUIConfig.getDumpRequestDirectory () + "/" + aNow.getYear () + "/"
                             + StringHelper.getLeadingZero (aNow.getMonthValue (), 2) + "/"
                             + StringHelper.getLeadingZero (aNow.getDayOfMonth (), 2) + "/" + "request-dump-"
                             + PDTIOHelper.getTimeForFilename (aNow.toLocalTime ()) + ".log";
@@ -38,7 +38,7 @@ public final class DemoUIToopInterfaceHelper {
 
   public static void dumpResponse (@Nonnull final TDETOOPResponseType aResponse) {
     final LocalDateTime aNow = PDTFactory.getCurrentLocalDateTime ();
-    final String filePath = DCUIConfig.getDumpResponseDirectory () + "/" + aNow.getYear () + "/"
+    final String filePath = DPUIConfig.getDumpResponseDirectory () + "/" + aNow.getYear () + "/"
                             + StringHelper.getLeadingZero (aNow.getMonthValue (), 2) + "/"
                             + StringHelper.getLeadingZero (aNow.getDayOfMonth (), 2) + "/" + "response-dump-"
                             + PDTIOHelper.getTimeForFilename (aNow.toLocalTime ()) + ".log";
