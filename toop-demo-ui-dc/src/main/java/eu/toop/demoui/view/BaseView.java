@@ -20,8 +20,8 @@ import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.CustomLayout;
 
 import eu.toop.demoui.bean.Identity;
-import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.bean.NewCompany;
+import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.layouts.KeyValueForm;
 import eu.toop.demoui.layouts.MainCompanyForm;
 

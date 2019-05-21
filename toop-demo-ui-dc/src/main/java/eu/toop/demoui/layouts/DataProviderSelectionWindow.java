@@ -19,6 +19,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
+
 import eu.toop.demoui.view.BaseView;
 
 public class DataProviderSelectionWindow extends Window {

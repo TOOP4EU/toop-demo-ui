@@ -1,5 +1,11 @@
 package eu.toop.demoui.layouts;
 
+import java.io.ByteArrayInputStream;
+import java.util.AbstractMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.server.FileDownloader;
@@ -7,17 +13,9 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.TextField;
+
 import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.demoui.bean.ToopDataBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayInputStream;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 public class KeyValueForm extends FormLayout {
 

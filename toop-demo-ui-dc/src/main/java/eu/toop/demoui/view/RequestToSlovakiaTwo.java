@@ -15,13 +15,14 @@
  */
 package eu.toop.demoui.view;
 
+import java.time.LocalDate;
+
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.ViewChangeListener;
+
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
 import eu.toop.kafkaclient.ToopKafkaClient;
-
-import java.time.LocalDate;
 
 public class RequestToSlovakiaTwo extends BaseView {
 

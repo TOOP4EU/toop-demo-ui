@@ -15,55 +15,55 @@
  */
 package eu.toop.demoui.view;
 
+import java.time.LocalDate;
+
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.ViewChangeListener;
+
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
-import java.time.LocalDate;
-
-public class RequestToSloveniaOne extends BaseView {
+public class RequestToItalyOne extends BaseView {
 
     private String eidasAttributes = "";
 
-    public RequestToSloveniaOne () {
+    public RequestToItalyOne() {
 
-      setCurrentPage (new RegisterWithWEEEMainPage (this));
+        setCurrentPage (new RegisterWithWEEEMainPage (this));
     }
 
     @Override
     public void enter (ViewChangeListener.ViewChangeEvent event) {
 
-      Identity newIdentity = new Identity ();
-      newIdentity.setIdentifier ("SI/GF/198801");
-      newIdentity.setFirstName ("Gregor");
-      newIdentity.setFamilyName ("Vzorec");
-      newIdentity.setBirthPlace ("Ljubljana");
-      newIdentity.setBirthDate (LocalDate.of (1988, 05, 10));
-      newIdentity.setNationality ("SI");
+        Identity newIdentity = new Identity ();
+        newIdentity.setIdentifier ("IT/GF/SNGCLG37M31G889L");
+        newIdentity.setFirstName ("Giacomo");
+        newIdentity.setFamilyName ("Sangalli");
+        newIdentity.setBirthDate (LocalDate.of (1974, 12, 22));
+        newIdentity.setNationality ("IT");
 
-      newIdentity.setLegalPersonIdentifier ("SI/GF/198801");
-      newIdentity.setLegalPersonName ("Petrol");
-      newIdentity.setLegalPersonNationality ("SI");
+        newIdentity.setLegalPersonIdentifier ("IT/GF/ITRI.00851260158");
+        newIdentity.setLegalPersonNationality ("IT");
+        newIdentity.setLegalPersonName("FIN-EXPO S.R.L.");
 
-      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Identifier: " + newIdentity.getIdentifier ());
-      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID First name: " + newIdentity.getFirstName ());
-      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Family name: " + newIdentity.getFamilyName ());
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Identifier: " + newIdentity.getIdentifier ());
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID First name: " + newIdentity.getFirstName ());
+        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Received eID Family name: " + newIdentity.getFamilyName ());
 
-      setIdentity (newIdentity);
+        setIdentity (newIdentity);
 
-      setCurrentPage (new RegisterWithWEEEMainPage (this));
+        setCurrentPage (new RegisterWithWEEEMainPage (this));
     }
 
     public String getEidasAttributes () {
 
-      return eidasAttributes;
+        return eidasAttributes;
     }
 
     public void setEidasAttributes (String eidasAttributes) {
 
-      this.eidasAttributes = eidasAttributes;
+        this.eidasAttributes = eidasAttributes;
     }
 
     @Override

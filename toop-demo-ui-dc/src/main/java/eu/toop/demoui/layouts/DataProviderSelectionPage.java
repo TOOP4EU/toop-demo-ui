@@ -15,16 +15,20 @@
  */
 package eu.toop.demoui.layouts;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.pd.searchapi.v1.MatchType;
 import com.helger.pd.searchapi.v1.ResultListType;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.themes.ValoTheme;
+
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.kafkaclient.ToopKafkaClient;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DataProviderSelectionPage extends CustomLayout {
 

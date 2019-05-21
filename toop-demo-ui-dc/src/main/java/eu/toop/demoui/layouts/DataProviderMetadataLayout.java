@@ -15,14 +15,14 @@
  */
 package eu.toop.demoui.layouts;
 
+import java.util.List;
+
 import com.helger.pd.searchapi.v1.EntityType;
 import com.helger.pd.searchapi.v1.IDType;
 import com.helger.pd.searchapi.v1.MatchType;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
-
-import java.util.List;
 
 public class DataProviderMetadataLayout extends CustomLayout {
 

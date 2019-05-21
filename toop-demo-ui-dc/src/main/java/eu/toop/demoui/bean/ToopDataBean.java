@@ -15,13 +15,14 @@
  */
 package eu.toop.demoui.bean;
 
-import com.helger.commons.collection.impl.ICommonsList;
-import eu.toop.commons.exchange.AsicReadEntry;
-
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.helger.commons.collection.impl.ICommonsList;
+
+import eu.toop.commons.exchange.AsicReadEntry;
 
 public class ToopDataBean implements Serializable {
 

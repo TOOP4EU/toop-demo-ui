@@ -15,20 +15,21 @@
  */
 package eu.toop.demoui.layouts;
 
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.StreamResource;
-import com.vaadin.ui.Button;
-import eu.toop.commons.exchange.AsicReadEntry;
-import eu.toop.demoui.bean.ToopDataBean;
+import java.io.ByteArrayInputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
-import java.io.ByteArrayInputStream;
+import eu.toop.commons.exchange.AsicReadEntry;
+import eu.toop.demoui.bean.ToopDataBean;
 
 public class MainCompanyForm extends FormLayout {
 
