@@ -31,19 +31,24 @@ import com.helger.commons.string.StringHelper;
  * @author Philip Helger
  */
 @WebServlet ("")
-public class RootServlet extends HttpServlet {
+public class RootServlet extends HttpServlet
+{
   @Override
-  protected void doGet (final HttpServletRequest req, final HttpServletResponse resp) {
+  protected void doGet (final HttpServletRequest req, final HttpServletResponse resp)
+  {
 
-    String sRedirectURL = req.getContextPath () + "/ui";
+    String sRedirectURL = req.getContextPath () + "/index.html";
 
     final String sQueryString = req.getQueryString ();
     if (StringHelper.hasText (sQueryString))
       sRedirectURL += "?" + sQueryString;
 
-    try {
+    try
+    {
       resp.sendRedirect (sRedirectURL);
-    } catch (final IOException e) {
+    }
+    catch (final IOException e)
+    {
       resp.setStatus (HttpServletResponse.SC_TEMPORARY_REDIRECT);
       resp.setHeader (CHttpHeader.LOCATION, sRedirectURL);
     }
