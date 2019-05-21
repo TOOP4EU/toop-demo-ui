@@ -66,6 +66,7 @@ import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
 import eu.toop.demoui.DPUIConfig;
 import eu.toop.demoui.DPUIDatasets;
+import eu.toop.demoui.DPDataset;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
@@ -94,7 +95,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
   private static void _applyStaticDataset (@Nonnull final String sLogPrefix,
                                            @Nonnull final TDEConceptRequestType aConcept,
-                                           final DPUIDatasets.Dataset dataset) {
+                                           final DPDataset dataset) {
 
     final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
     aConcept.addDataElementResponseValue (aValue);
@@ -168,7 +169,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
   }
 
   private static void _applyConceptValues (final TDEDataElementRequestType aDER, final String sLogPrefix,
-                                           final DPUIDatasets.Dataset dataset) {
+                                           final DPDataset dataset) {
 
     final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
     if (aFirstLevelConcept != null) {
@@ -250,10 +251,10 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
     // Get datasets from config
     final DPUIDatasets dpDatasets = new DPUIDatasets ();
 
-    final List<DPUIDatasets.Dataset> datasets = dpDatasets.getDatasetsByIdentifier (naturalPersonIdentifier,
+    final List<DPDataset> datasets = dpDatasets.getDatasetsByIdentifier (naturalPersonIdentifier,
                                                                                       legalEntityIdentifier);
 
-    final DPUIDatasets.Dataset dataset;
+    final DPDataset dataset;
     if (datasets.size () > 0) {
       dataset = datasets.get (0);
       ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Dataset found");

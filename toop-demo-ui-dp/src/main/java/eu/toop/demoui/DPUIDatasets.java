@@ -15,11 +15,8 @@
  */
 package eu.toop.demoui;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -33,7 +30,7 @@ import com.typesafe.config.ConfigSyntax;
 
 public class DPUIDatasets {
 
-  private final List<Dataset> datasets = new ArrayList<> ();
+  private final List<DPDataset> datasets = new ArrayList<> ();
 
   public DPUIDatasets() {
 
@@ -45,25 +42,25 @@ public class DPUIDatasets {
     for (final ConfigObject _dataset : conf.getObjectList("Datasets")) {
       final Config dataset = _dataset.toConfig();
 
-      datasets.add(new Dataset (dataset));
+      datasets.add(new DPDataset (dataset));
     }
   }
 
   @Nonnull
   @ReturnsMutableObject
-  public List<Dataset> getDatasets () {
+  public List<DPDataset> getDatasets () {
     return datasets;
   }
 
-  public List<Dataset> getDatasetsByIdentifier(final String naturalPersonIdentifier, final String legalPersonIdentifier) {
+  public List<DPDataset> getDatasetsByIdentifier(final String naturalPersonIdentifier, final String legalPersonIdentifier) {
 
-    final List<Dataset> _datasets = new ArrayList<> ();
+    final List<DPDataset> _datasets = new ArrayList<> ();
 
     if (naturalPersonIdentifier == null && legalPersonIdentifier == null) {
       return _datasets;
     }
 
-    for (final Dataset dataset : datasets) {
+    for (final DPDataset dataset : datasets) {
 
       boolean npMatch = true;
       boolean leMatch = true;
@@ -86,10 +83,10 @@ public class DPUIDatasets {
     return _datasets;
   }
 
-  public List<Dataset> getDatasetsByNaturalPersonIdentifier(final String naturalPersonIdentifier) {
+  public List<DPDataset> getDatasetsByNaturalPersonIdentifier(final String naturalPersonIdentifier) {
 
-    final List<Dataset> _datasets = new ArrayList<> ();
-    for (final Dataset dataset : datasets) {
+    final List<DPDataset> _datasets = new ArrayList<> ();
+    for (final DPDataset dataset : datasets) {
 
       if (dataset.getNaturalPersonIdentifier ().equals (stripCodesFromIdentifier(naturalPersonIdentifier))) {
         _datasets.add (dataset);
@@ -99,10 +96,10 @@ public class DPUIDatasets {
     return _datasets;
   }
 
-  public List<Dataset> getDatasetsByLegalPersonIdentifier(final String legalPersonIdentifier) {
+  public List<DPDataset> getDatasetsByLegalPersonIdentifier(final String legalPersonIdentifier) {
 
-    final List<Dataset> _datasets = new ArrayList<> ();
-    for (final Dataset dataset : datasets) {
+    final List<DPDataset> _datasets = new ArrayList<> ();
+    for (final DPDataset dataset : datasets) {
 
       if (dataset.getLegalPersonIdentifier ().equals (stripCodesFromIdentifier(legalPersonIdentifier))) {
         _datasets.add (dataset);
@@ -123,47 +120,5 @@ public class DPUIDatasets {
     }
 
     return identifier.substring (6);
-  }
-
-  public static final class Dataset implements Serializable {
-
-    private final String naturalPersonIdentifier;
-    private final String legalPersonIdentifier;
-    private final Map<String, String> concepts = new HashMap<>();
-
-    public Dataset(final Config conf) {
-
-      naturalPersonIdentifier = conf.getString ("NaturalPerson.identifier");
-      legalPersonIdentifier = conf.getString ("LegalPerson.identifier");
-
-      for(final ConfigObject _concept : conf.getObjectList ("Concepts")) {
-        final Config concept = _concept.toConfig();
-
-        final String conceptName = concept.getString("name");
-        final String conceptValue = concept.getString("value");
-
-        concepts.put(conceptName, conceptValue);
-      }
-    }
-
-    public String getNaturalPersonIdentifier () {
-
-      return naturalPersonIdentifier;
-    }
-
-    public String getLegalPersonIdentifier () {
-
-      return legalPersonIdentifier;
-    }
-
-    public Map<String, String> getConcepts () {
-
-      return concepts;
-    }
-
-    public String getConceptValue(final String conceptName) {
-
-      return concepts.get (conceptName);
-    }
   }
 }

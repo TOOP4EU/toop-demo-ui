@@ -30,7 +30,7 @@ public class DPUIDatasetsTest {
 
     assertEquals (dpDS.getDatasets ().size (), 1);
 
-    for (final DPUIDatasets.Dataset dataset : dpDS.getDatasets ()) {
+    for (final DPDataset dataset : dpDS.getDatasets ()) {
       assertEquals (dataset.getNaturalPersonIdentifier (), "12345");
       assertEquals (dataset.getLegalPersonIdentifier (), "");
       assertEquals (dataset.getConcepts ().size(), 13);
