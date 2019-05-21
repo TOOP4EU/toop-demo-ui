@@ -27,7 +27,8 @@ import com.helger.photon.jetty.JettyStarter;
  */
 @Immutable
 public final class RunInJettyDEMOUI_DC {
-  public static void main(final String[] args) throws Exception {
-    new JettyStarter(RunInJettyDEMOUI_DC.class).setPort(8080).run();
-  }
+    public static void main(final String[] args) throws Exception {
+	new JettyStarter(RunInJettyDEMOUI_DC.class).setContainerIncludeJarPattern(".*\\.jar$|.*/classes/.*")
+		.setPort(8080).run();
+    }
 }

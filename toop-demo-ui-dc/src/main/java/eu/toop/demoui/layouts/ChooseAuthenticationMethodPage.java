@@ -36,6 +36,7 @@ public class ChooseAuthenticationMethodPage extends CustomLayout {
     final Button freedoniaCredentialsButton = new Button ("Freedonia credentials");
     freedoniaCredentialsButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     freedoniaCredentialsButton.addStyleName (" freedonia-auth-method-button");
+    freedoniaCredentialsButton.setEnabled(false);
     addComponent (freedoniaCredentialsButton, "freedoniaCredentialsButton");
 
     final Button nextButton = new Button ("European eID");

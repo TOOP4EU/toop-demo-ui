@@ -36,47 +36,26 @@ public class DCUIConfig {
   }
 
   public static String getDestinationCountryCode () {
-
     return rb.getString ("destination.country.code");
   }
 
   public static String getSenderIdentifierScheme () {
-
     return rb.getString ("sender.identifier.scheme");
   }
 
   public static String getSenderIdentifierValue () {
-
     return rb.getString ("sender.identifier.value");
   }
 
   public static String getSenderCountryCode () {
-
     return rb.getString ("sender.country.code");
   }
 
-  public static String getResponderIdentifierScheme () {
-
-    return rb.getString ("responder.identifier.scheme");
-  }
-
-  public static String getResponderIdentifierValue () {
-
-    return rb.getString ("responder.identifier.value");
-  }
-
-  public static String getProviderCountryCode () {
-
-    return rb.getString ("provider.country.code");
-  }
-
   public static String getDumpRequestDirectory() {
-
     return rb.getString ("dump.request.directory");
   }
 
   public static String getDumpResponseDirectory() {
-
     return rb.getString ("dump.response.directory");
   }
 
