@@ -19,7 +19,6 @@ import java.util.ResourceBundle;
 
 public class DPUIConfig
 {
-
   private static final ResourceBundle rb = ResourceBundle.getBundle ("dcui");
 
   private DPUIConfig ()

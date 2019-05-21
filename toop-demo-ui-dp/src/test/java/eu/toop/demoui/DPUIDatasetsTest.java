@@ -1,4 +1,5 @@
 package eu.toop.demoui;
+
 /**
  * Copyright (C) 2018-2019 toop.eu
  *
@@ -21,21 +22,25 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class DPUIDatasetsTest {
+public class DPUIDatasetsTest
+{
 
   @Test
-  public void testBasic() {
+  public void testBasic ()
+  {
 
-    final DPUIDatasets dpDS = new DPUIDatasets ();
+    final DPUIDatasets dpDS = DPUIDatasets.INSTANCE;
 
     assertEquals (dpDS.getDatasets ().size (), 1);
 
-    for (final DPDataset dataset : dpDS.getDatasets ()) {
+    for (final DPDataset dataset : dpDS.getDatasets ())
+    {
       assertEquals (dataset.getNaturalPersonIdentifier (), "12345");
       assertEquals (dataset.getLegalPersonIdentifier (), "");
-      assertEquals (dataset.getConcepts ().size(), 13);
+      assertEquals (dataset.getConcepts ().size (), 13);
 
-      for (final Map.Entry<String, String> concept : dataset.getConcepts ().entrySet()) {
+      for (final Map.Entry <String, String> concept : dataset.getConcepts ().entrySet ())
+      {
 
         assertNotNull (concept.getKey ());
         assertNotNull (concept.getValue ());

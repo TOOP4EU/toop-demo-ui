@@ -36,7 +36,6 @@ public class RootServlet extends HttpServlet
   @Override
   protected void doGet (final HttpServletRequest req, final HttpServletResponse resp)
   {
-
     String sRedirectURL = req.getContextPath () + "/index.html";
 
     final String sQueryString = req.getQueryString ();

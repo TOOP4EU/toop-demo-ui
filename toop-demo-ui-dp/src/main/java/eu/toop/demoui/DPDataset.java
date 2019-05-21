@@ -16,50 +16,58 @@
 package eu.toop.demoui;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.helger.commons.collection.impl.CommonsHashMap;
+import com.helger.commons.collection.impl.ICommonsMap;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigObject;
 
-public final class DPDataset implements Serializable {
+public final class DPDataset implements Serializable
+{
+  private final String m_sNaturalPersonIdentifier;
+  private final String m_sLegalPersonIdentifier;
+  private final ICommonsMap <String, String> m_aConcepts = new CommonsHashMap <> ();
 
-  private final String naturalPersonIdentifier;
-  private final String legalPersonIdentifier;
-  private final Map<String, String> concepts = new HashMap<>();
+  public DPDataset (final Config conf)
+  {
+    m_sNaturalPersonIdentifier = conf.getString ("NaturalPerson.identifier");
+    m_sLegalPersonIdentifier = conf.getString ("LegalPerson.identifier");
 
-  public DPDataset(final Config conf) {
+    for (final ConfigObject _concept : conf.getObjectList ("Concepts"))
+    {
+      final Config concept = _concept.toConfig ();
 
-    naturalPersonIdentifier = conf.getString ("NaturalPerson.identifier");
-    legalPersonIdentifier = conf.getString ("LegalPerson.identifier");
+      final String conceptName = concept.getString ("name");
+      final String conceptValue = concept.getString ("value");
 
-    for(final ConfigObject _concept : conf.getObjectList ("Concepts")) {
-      final Config concept = _concept.toConfig();
-
-      final String conceptName = concept.getString("name");
-      final String conceptValue = concept.getString("value");
-
-      concepts.put(conceptName, conceptValue);
+      m_aConcepts.put (conceptName, conceptValue);
     }
   }
 
-  public String getNaturalPersonIdentifier () {
-
-    return naturalPersonIdentifier;
+  @Nullable
+  public String getNaturalPersonIdentifier ()
+  {
+    return m_sNaturalPersonIdentifier;
   }
 
-  public String getLegalPersonIdentifier () {
-
-    return legalPersonIdentifier;
+  @Nullable
+  public String getLegalPersonIdentifier ()
+  {
+    return m_sLegalPersonIdentifier;
   }
 
-  public Map<String, String> getConcepts () {
-
-    return concepts;
+  @Nonnull
+  public ICommonsMap <String, String> getConcepts ()
+  {
+    return m_aConcepts;
   }
 
-  public String getConceptValue(final String conceptName) {
-
-    return concepts.get (conceptName);
+  @Nullable
+  public String getConceptValue (@Nullable final String conceptName)
+  {
+    return m_aConcepts.get (conceptName);
   }
 }

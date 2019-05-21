@@ -19,106 +19,104 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.helger.commons.annotation.ReturnsMutableObject;
 import com.helger.commons.regex.RegExHelper;
+import com.helger.commons.string.StringHelper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigObject;
 import com.typesafe.config.ConfigParseOptions;
 import com.typesafe.config.ConfigSyntax;
 
-public class DPUIDatasets {
+public class DPUIDatasets
+{
+  public static final DPUIDatasets INSTANCE = new DPUIDatasets ();
 
-  private final List<DPDataset> datasets = new ArrayList<> ();
+  private final List <DPDataset> m_aDatasets = new ArrayList <> ();
 
-  public DPUIDatasets() {
+  private DPUIDatasets ()
+  {
+    final ConfigParseOptions opt = ConfigParseOptions.defaults ();
+    opt.setSyntax (ConfigSyntax.CONF);
 
-    final ConfigParseOptions opt = ConfigParseOptions.defaults();
-    opt.setSyntax(ConfigSyntax.CONF);
+    final Config conf = ConfigFactory.parseResources ("dataset.conf").resolve ();
 
-    final Config conf = ConfigFactory.parseResources("dataset.conf").resolve();
+    for (final ConfigObject _dataset : conf.getObjectList ("Datasets"))
+    {
+      final Config dataset = _dataset.toConfig ();
 
-    for (final ConfigObject _dataset : conf.getObjectList("Datasets")) {
-      final Config dataset = _dataset.toConfig();
-
-      datasets.add(new DPDataset (dataset));
+      m_aDatasets.add (new DPDataset (dataset));
     }
   }
 
   @Nonnull
   @ReturnsMutableObject
-  public List<DPDataset> getDatasets () {
-    return datasets;
+  public List <DPDataset> getDatasets ()
+  {
+    return m_aDatasets;
   }
 
-  public List<DPDataset> getDatasetsByIdentifier(final String naturalPersonIdentifier, final String legalPersonIdentifier) {
-
-    final List<DPDataset> _datasets = new ArrayList<> ();
-
-    if (naturalPersonIdentifier == null && legalPersonIdentifier == null) {
-      return _datasets;
-    }
-
-    for (final DPDataset dataset : datasets) {
-
-      boolean npMatch = true;
-      boolean leMatch = true;
-
-      if (naturalPersonIdentifier != null &&
-          !dataset.getNaturalPersonIdentifier ().equals (stripCodesFromIdentifier(naturalPersonIdentifier))) {
-        npMatch = false;
-      }
-
-      if (legalPersonIdentifier != null &&
-          !dataset.getLegalPersonIdentifier ().equals (stripCodesFromIdentifier(legalPersonIdentifier))) {
-        leMatch = false;
-      }
-
-      if (npMatch && leMatch) {
-        _datasets.add (dataset);
+  @Nonnull
+  public List <DPDataset> getDatasetsByIdentifier (@Nullable final String naturalPersonIdentifier,
+                                                   @Nullable final String legalPersonIdentifier)
+  {
+    final List <DPDataset> ret = new ArrayList <> ();
+    if (naturalPersonIdentifier != null || legalPersonIdentifier != null)
+    {
+      final String sStrippedNP = _stripCodesFromIdentifier (naturalPersonIdentifier);
+      final String sStrippedLP = _stripCodesFromIdentifier (legalPersonIdentifier);
+      for (final DPDataset dataset : m_aDatasets)
+      {
+        final boolean npMatch = naturalPersonIdentifier == null ||
+                                dataset.getNaturalPersonIdentifier ().equals (sStrippedNP);
+        final boolean leMatch = legalPersonIdentifier == null ||
+                                dataset.getLegalPersonIdentifier ().equals (sStrippedLP);
+        if (npMatch && leMatch)
+        {
+          ret.add (dataset);
+        }
       }
     }
-
-    return _datasets;
+    return ret;
   }
 
-  public List<DPDataset> getDatasetsByNaturalPersonIdentifier(final String naturalPersonIdentifier) {
-
-    final List<DPDataset> _datasets = new ArrayList<> ();
-    for (final DPDataset dataset : datasets) {
-
-      if (dataset.getNaturalPersonIdentifier ().equals (stripCodesFromIdentifier(naturalPersonIdentifier))) {
-        _datasets.add (dataset);
-      }
-    }
-
-    return _datasets;
+  @Nonnull
+  public List <DPDataset> getDatasetsByNaturalPersonIdentifier (@Nullable final String naturalPersonIdentifier)
+  {
+    final List <DPDataset> ret = new ArrayList <> ();
+    final String sStripped = _stripCodesFromIdentifier (naturalPersonIdentifier);
+    for (final DPDataset dataset : m_aDatasets)
+      if (dataset.getNaturalPersonIdentifier ().equals (sStripped))
+        ret.add (dataset);
+    return ret;
   }
 
-  public List<DPDataset> getDatasetsByLegalPersonIdentifier(final String legalPersonIdentifier) {
-
-    final List<DPDataset> _datasets = new ArrayList<> ();
-    for (final DPDataset dataset : datasets) {
-
-      if (dataset.getLegalPersonIdentifier ().equals (stripCodesFromIdentifier(legalPersonIdentifier))) {
-        _datasets.add (dataset);
-      }
-    }
-
-    return _datasets;
+  @Nonnull
+  public List <DPDataset> getDatasetsByLegalPersonIdentifier (@Nullable final String legalPersonIdentifier)
+  {
+    final List <DPDataset> ret = new ArrayList <> ();
+    final String sStripped = _stripCodesFromIdentifier (legalPersonIdentifier);
+    for (final DPDataset dataset : m_aDatasets)
+      if (dataset.getLegalPersonIdentifier ().equals (sStripped))
+        ret.add (dataset);
+    return ret;
   }
 
-  private static boolean isValidIdentifier(final String identifier) {
-    return RegExHelper.stringMatchesPattern ("([A-Z][A-Z]\\/){2}.+", identifier);
+  private static boolean _isValidIdentifier (@Nullable final String identifier)
+  {
+    return StringHelper.hasText (identifier) && RegExHelper.stringMatchesPattern ("([A-Z][A-Z]\\/){2}.+", identifier);
   }
 
-  private String stripCodesFromIdentifier(final String identifier) {
-
-    if (!isValidIdentifier(identifier)) {
+  @Nullable
+  private static String _stripCodesFromIdentifier (@Nullable final String identifier)
+  {
+    if (!_isValidIdentifier (identifier))
       return null;
-    }
 
+    // Strip of "countryCode/countryCode/" where countryCode is 2 letters,
+    // making it 2+1+2+1=6
     return identifier.substring (6);
   }
 }
