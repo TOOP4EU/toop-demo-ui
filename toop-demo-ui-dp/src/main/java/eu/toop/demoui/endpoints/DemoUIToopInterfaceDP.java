@@ -65,7 +65,7 @@ import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
 import eu.toop.demoui.DCUIConfig;
-import eu.toop.demoui.DCUIDPDatasets;
+import eu.toop.demoui.DPUIDatasets;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
@@ -94,7 +94,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
 
   private static void _applyStaticDataset (@Nonnull final String sLogPrefix,
                                            @Nonnull final TDEConceptRequestType aConcept,
-                                           final DCUIDPDatasets.Dataset dataset) {
+                                           final DPUIDatasets.Dataset dataset) {
 
     final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
     aConcept.addDataElementResponseValue (aValue);
@@ -168,7 +168,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
   }
 
   private static void _applyConceptValues (final TDEDataElementRequestType aDER, final String sLogPrefix,
-                                           final DCUIDPDatasets.Dataset dataset) {
+                                           final DPUIDatasets.Dataset dataset) {
 
     final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
     if (aFirstLevelConcept != null) {
@@ -248,12 +248,12 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
       legalEntityIdentifier = null;
 
     // Get datasets from config
-    final DCUIDPDatasets dpDatasets = new DCUIDPDatasets ();
+    final DPUIDatasets dpDatasets = new DPUIDatasets ();
 
-    final List<DCUIDPDatasets.Dataset> datasets = dpDatasets.getDatasetsByIdentifier (naturalPersonIdentifier,
+    final List<DPUIDatasets.Dataset> datasets = dpDatasets.getDatasetsByIdentifier (naturalPersonIdentifier,
                                                                                       legalEntityIdentifier);
 
-    final DCUIDPDatasets.Dataset dataset;
+    final DPUIDatasets.Dataset dataset;
     if (datasets.size () > 0) {
       dataset = datasets.get (0);
       ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Dataset found");

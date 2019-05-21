@@ -19,7 +19,7 @@ import java.io.IOException;
 
 import com.helger.photon.jetty.JettyStopper;
 
-public final class JettyStopDEMOUI {
+public final class JettyStopDEMOUI_DC {
   public static void main(final String[] args) throws IOException {
     new JettyStopper().run();
   }

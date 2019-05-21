@@ -31,11 +31,11 @@ import com.typesafe.config.ConfigObject;
 import com.typesafe.config.ConfigParseOptions;
 import com.typesafe.config.ConfigSyntax;
 
-public class DCUIDPDatasets {
+public class DPUIDatasets {
 
   private final List<Dataset> datasets = new ArrayList<> ();
 
-  public DCUIDPDatasets() {
+  public DPUIDatasets() {
 
     final ConfigParseOptions opt = ConfigParseOptions.defaults();
     opt.setSyntax(ConfigSyntax.CONF);

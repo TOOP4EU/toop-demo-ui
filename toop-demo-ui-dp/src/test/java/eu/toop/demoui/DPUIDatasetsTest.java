@@ -21,16 +21,16 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class DCUIDPDatasetsTest {
+public class DPUIDatasetsTest {
 
   @Test
   public void testBasic() {
 
-    final DCUIDPDatasets dpDS = new DCUIDPDatasets ();
+    final DPUIDatasets dpDS = new DPUIDatasets ();
 
     assertEquals (dpDS.getDatasets ().size (), 1);
 
-    for (final DCUIDPDatasets.Dataset dataset : dpDS.getDatasets ()) {
+    for (final DPUIDatasets.Dataset dataset : dpDS.getDatasets ()) {
       assertEquals (dataset.getNaturalPersonIdentifier (), "12345");
       assertEquals (dataset.getLegalPersonIdentifier (), "");
       assertEquals (dataset.getConcepts ().size(), 13);

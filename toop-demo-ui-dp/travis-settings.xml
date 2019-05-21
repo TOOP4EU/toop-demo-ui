@@ -16,14 +16,12 @@
     limitations under the License.
 
 -->
-<web-app version="3.0" 
-         xmlns="http://java.sun.com/xml/ns/javaee" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <display-name>TOOP Demo UI DC</display-name>
-    <description>https://github.com/toop4eu/toop-demo-ui</description>
-
-    <session-config>
-        <session-timeout>60</session-timeout>
-    </session-config>
-</web-app>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+  <servers>
+    <server>
+      <id>ossrh</id>
+      <username>${env.SONATYPE_USERNAME}</username>
+      <password>${env.SONATYPE_PASSWORD}</password>
+    </server>
+  </servers>
+</settings>

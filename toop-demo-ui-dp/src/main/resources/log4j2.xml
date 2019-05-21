@@ -16,14 +16,16 @@
     limitations under the License.
 
 -->
-<web-app version="3.0" 
-         xmlns="http://java.sun.com/xml/ns/javaee" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <display-name>TOOP Demo UI DC</display-name>
-    <description>https://github.com/toop4eu/toop-demo-ui</description>
-
-    <session-config>
-        <session-timeout>60</session-timeout>
-    </session-config>
-</web-app>
+<Configuration status="info" strict="true">
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <!-- Location may be an issue when async logging is used! -->
+      <PatternLayout pattern="[TOOP DemoUI DP][%date{ISO8601}] [%-5level] [%thread] %msg -- %location%n" />
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="STDOUT" />
+    </Root>
+  </Loggers>
+</Configuration>
