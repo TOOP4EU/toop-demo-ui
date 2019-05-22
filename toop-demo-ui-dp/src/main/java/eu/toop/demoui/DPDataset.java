@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 
 import com.helger.commons.collection.impl.CommonsHashMap;
 import com.helger.commons.collection.impl.ICommonsMap;
+import com.helger.commons.string.StringHelper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigObject;
 
@@ -31,19 +32,25 @@ public final class DPDataset implements Serializable
   private final String m_sLegalPersonIdentifier;
   private final ICommonsMap <String, String> m_aConcepts = new CommonsHashMap <> ();
 
-  public DPDataset (final Config conf)
+  @Nullable
+  private static String _unify (@Nullable final String s)
   {
-    m_sNaturalPersonIdentifier = conf.getString ("NaturalPerson.identifier");
-    m_sLegalPersonIdentifier = conf.getString ("LegalPerson.identifier");
+    // Merge "" and null to null
+    return StringHelper.hasNoText (s) ? null : s;
+  }
 
-    for (final ConfigObject _concept : conf.getObjectList ("Concepts"))
+  public DPDataset (@Nonnull final Config conf)
+  {
+    m_sNaturalPersonIdentifier = _unify (conf.getString ("NaturalPerson.identifier"));
+    m_sLegalPersonIdentifier = _unify (conf.getString ("LegalPerson.identifier"));
+
+    for (final ConfigObject aConcept : conf.getObjectList ("Concepts"))
     {
-      final Config concept = _concept.toConfig ();
-
-      final String conceptName = concept.getString ("name");
-      final String conceptValue = concept.getString ("value");
-
-      m_aConcepts.put (conceptName, conceptValue);
+      final Config concept = aConcept.toConfig ();
+      final String sName = _unify (concept.getString ("name"));
+      final String sValue = _unify (concept.getString ("value"));
+      if (sName != null)
+        m_aConcepts.put (sName, sValue);
     }
   }
 

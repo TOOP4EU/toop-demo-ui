@@ -17,9 +17,9 @@ package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
@@ -79,8 +79,8 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
   private static boolean _canUseConcept (@Nonnull final TDEConceptRequestType aConcept)
   {
     // This class can only deliver to "DP" concept types without child entries
-    return aConcept.hasNoConceptRequestEntries () &&
-           EConceptType.DP.getID ().equals (aConcept.getConceptTypeCode ().getValue ());
+    return EConceptType.DP.getID ().equals (aConcept.getConceptTypeCode ().getValue ()) &&
+           aConcept.hasNoConceptRequestEntries ();
   }
 
   private static void _setError (@Nonnull final String sLogPrefix,
@@ -98,9 +98,8 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
 
   private static void _applyStaticDataset (@Nonnull final String sLogPrefix,
                                            @Nonnull final TDEConceptRequestType aConcept,
-                                           final DPDataset dataset)
+                                           @Nullable final DPDataset aDataset)
   {
-
     final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
     aConcept.addDataElementResponseValue (aValue);
 
@@ -114,24 +113,24 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
     }
     else
     {
-      if (dataset == null)
+      if (aDataset == null)
       {
         _setError (sLogPrefix, aValue, "No DP dataset found");
       }
       else
       {
         final String sConceptName = conceptName.getValue ();
-        final String conceptValue = dataset.getConceptValue (sConceptName);
-        if (conceptValue == null)
+        final String sConceptValue = aDataset.getConceptValue (sConceptName);
+        if (sConceptValue == null)
         {
           _setError (sLogPrefix, aValue, "Concept [" + sConceptName + "] is missing in DP dataset");
         }
         else
         {
-          aValue.setResponseDescription (ToopXSDHelper140.createText (conceptValue));
+          aValue.setResponseDescription (ToopXSDHelper140.createText (sConceptValue));
 
           ToopKafkaClient.send (EErrorLevel.INFO,
-                                () -> sLogPrefix + "Populated concept [" + sConceptName + "]: [" + conceptValue + "]");
+                                () -> sLogPrefix + "Populated concept [" + sConceptName + "]: [" + sConceptValue + "]");
         }
       }
     }
@@ -195,31 +194,46 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
     return aResponse;
   }
 
-  private static void _applyConceptValues (final TDEDataElementRequestType aDER,
+  private static void _applyConceptValues (@Nonnull final TDEDataElementRequestType aDER,
                                            final String sLogPrefix,
                                            final DPDataset dataset)
   {
-
     final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
     if (aFirstLevelConcept != null)
     {
-      for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ())
+      boolean bDidApplyResponse = false;
+      if (_canUseConcept (aFirstLevelConcept))
       {
-        for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ())
+        // Apply on first level - highly unlikely but who knows....
+        _applyStaticDataset (sLogPrefix, aFirstLevelConcept, dataset);
+        bDidApplyResponse = true;
+      }
+      else
+        second: for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ())
         {
-          if (_canUseConcept (aThirdLevelConcept))
+          if (_canUseConcept (aSecondLevelConcept))
           {
-            _applyStaticDataset (sLogPrefix, aThirdLevelConcept, dataset);
+            // Apply on second level - used if directly started with TC concepts
+            _applyStaticDataset (sLogPrefix, aSecondLevelConcept, dataset);
+            bDidApplyResponse = true;
+            break second;
           }
-          else
+          for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ())
           {
+            if (_canUseConcept (aThirdLevelConcept))
+            {
+              // Apply on third level
+              _applyStaticDataset (sLogPrefix, aThirdLevelConcept, dataset);
+              bDidApplyResponse = true;
+              break second;
+            }
             // 3 level nesting is maximum
-            ToopKafkaClient.send (EErrorLevel.ERROR,
-                                  () -> sLogPrefix +
-                                        "A third level concept that is unusable - weird: " +
-                                        aThirdLevelConcept);
           }
         }
+
+      if (!bDidApplyResponse)
+      {
+        ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Found no place to provide response value in Data");
       }
     }
   }
@@ -303,36 +317,33 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
     // Get datasets from config
     final DPUIDatasets dpDatasets = DPUIDatasets.INSTANCE;
 
-    final List <DPDataset> datasets = dpDatasets.getDatasetsByIdentifier (naturalPersonIdentifier,
-                                                                          legalEntityIdentifier);
+    final ICommonsList <DPDataset> datasets = dpDatasets.getDatasetsByIdentifier (naturalPersonIdentifier,
+                                                                                  legalEntityIdentifier);
 
-    final DPDataset dataset;
-    if (datasets.size () > 0)
-    {
-      dataset = datasets.get (0);
+    final DPDataset dataset = datasets.getFirst ();
+    if (dataset != null)
       ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Dataset found");
-    }
     else
-    {
-      dataset = null;
       ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "No dataset found");
-    }
 
     // build response
     final TDETOOPResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
     aResponse.setSpecificationIdentifier (ToopXSDHelper140.createSpecificationIdentifierResponse ());
 
     // handle document request
-    final List <AsicWriteEntry> documentEntries = new ArrayList <> ();
+    final ICommonsList <AsicWriteEntry> documentEntries = new CommonsArrayList <> ();
     if (aResponse.hasDocumentRequestEntries ())
     {
       final TDEDocumentRequestType documentRequestType = aResponse.getDocumentRequestAtIndex (0);
       if (documentRequestType != null)
       {
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Handling a document request");
+
+        final String sPDFName = "SeaWindDOC.pdf";
+
         final TDEDocumentType tdeDocument = new TDEDocumentType ();
-        tdeDocument.setDocumentURI (ToopXSDHelper140.createIdentifier ("file:/attachments/SeaWindDOC.pdf"));
-        tdeDocument.setDocumentMimeTypeCode (ToopXSDHelper140.createCode ("application/pdf"));
+        tdeDocument.setDocumentURI (ToopXSDHelper140.createIdentifier ("file:/attachments/" + sPDFName));
+        tdeDocument.setDocumentMimeTypeCode (ToopXSDHelper140.createCode (CMimeType.APPLICATION_PDF.getAsString ()));
         tdeDocument.setDocumentTypeCode (documentRequestType.getDocumentRequestTypeCode ());
 
         final TDEIssuerType issuerType = new TDEIssuerType ();
@@ -357,7 +368,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
 
         // Dynamically create PDF
         final byte [] fakeDocument = _createFakePDF (aRequest);
-        final AsicWriteEntry entry = new AsicWriteEntry ("SeaWindDOC.pdf", fakeDocument, CMimeType.APPLICATION_PDF);
+        final AsicWriteEntry entry = new AsicWriteEntry (sPDFName, fakeDocument, CMimeType.APPLICATION_PDF);
         documentEntries.add (entry);
       }
     }
@@ -373,6 +384,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
     try
     {
       DemoUIToopInterfaceHelper.dumpResponse (aResponse);
+      // Signing happpens internally
       ToopInterfaceClient.sendResponseToToopConnector (aResponse,
                                                        ToopInterfaceConfig.getToopConnectorDPUrl (),
                                                        documentEntries);
@@ -397,17 +409,13 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
     final StringBuilder sb = new StringBuilder ();
     sb.append (sLogPrefix);
     sb.append ("Received TOOP Error Response from TC.");
-
     sb.append (" Contains ").append (attachments.size ()).append (" documents(s)\n");
 
     if (aResponse.hasErrorEntries ())
     {
       sb.append (" Contains ").append (aResponse.getErrorCount ()).append (" error(s)\n");
-
       for (final TDEErrorType error : aResponse.getError ())
-      {
         sb.append (error).append ("\n");
-      }
       ToopKafkaClient.send (EErrorLevel.ERROR, sb::toString);
     }
     else

@@ -15,13 +15,12 @@
  */
 package eu.toop.demoui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.helger.commons.annotation.ReturnsMutableObject;
+import com.helger.commons.collection.impl.CommonsArrayList;
+import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.regex.RegExHelper;
 import com.helger.commons.string.StringHelper;
 import com.typesafe.config.Config;
@@ -34,7 +33,7 @@ public class DPUIDatasets
 {
   public static final DPUIDatasets INSTANCE = new DPUIDatasets ();
 
-  private final List <DPDataset> m_aDatasets = new ArrayList <> ();
+  private final ICommonsList <DPDataset> m_aDatasets = new CommonsArrayList <> ();
 
   private DPUIDatasets ()
   {
@@ -42,27 +41,25 @@ public class DPUIDatasets
     opt.setSyntax (ConfigSyntax.CONF);
 
     final Config conf = ConfigFactory.parseResources ("dataset.conf").resolve ();
-
-    for (final ConfigObject _dataset : conf.getObjectList ("Datasets"))
+    for (final ConfigObject aConfigDataset : conf.getObjectList ("Datasets"))
     {
-      final Config dataset = _dataset.toConfig ();
-
+      final Config dataset = aConfigDataset.toConfig ();
       m_aDatasets.add (new DPDataset (dataset));
     }
   }
 
   @Nonnull
   @ReturnsMutableObject
-  public List <DPDataset> getDatasets ()
+  public ICommonsList <DPDataset> getDatasets ()
   {
     return m_aDatasets;
   }
 
   @Nonnull
-  public List <DPDataset> getDatasetsByIdentifier (@Nullable final String naturalPersonIdentifier,
-                                                   @Nullable final String legalPersonIdentifier)
+  public ICommonsList <DPDataset> getDatasetsByIdentifier (@Nullable final String naturalPersonIdentifier,
+                                                           @Nullable final String legalPersonIdentifier)
   {
-    final List <DPDataset> ret = new ArrayList <> ();
+    final ICommonsList <DPDataset> ret = new CommonsArrayList <> ();
     if (naturalPersonIdentifier != null || legalPersonIdentifier != null)
     {
       final String sStrippedNP = _stripCodesFromIdentifier (naturalPersonIdentifier);
@@ -82,31 +79,10 @@ public class DPUIDatasets
     return ret;
   }
 
-  @Nonnull
-  public List <DPDataset> getDatasetsByNaturalPersonIdentifier (@Nullable final String naturalPersonIdentifier)
-  {
-    final List <DPDataset> ret = new ArrayList <> ();
-    final String sStripped = _stripCodesFromIdentifier (naturalPersonIdentifier);
-    for (final DPDataset dataset : m_aDatasets)
-      if (dataset.getNaturalPersonIdentifier ().equals (sStripped))
-        ret.add (dataset);
-    return ret;
-  }
-
-  @Nonnull
-  public List <DPDataset> getDatasetsByLegalPersonIdentifier (@Nullable final String legalPersonIdentifier)
-  {
-    final List <DPDataset> ret = new ArrayList <> ();
-    final String sStripped = _stripCodesFromIdentifier (legalPersonIdentifier);
-    for (final DPDataset dataset : m_aDatasets)
-      if (dataset.getLegalPersonIdentifier ().equals (sStripped))
-        ret.add (dataset);
-    return ret;
-  }
-
   private static boolean _isValidIdentifier (@Nullable final String identifier)
   {
-    return StringHelper.hasText (identifier) && RegExHelper.stringMatchesPattern ("([A-Z][A-Z]\\/){2}.+", identifier);
+    return StringHelper.getLength (identifier) > 6 &&
+           RegExHelper.stringMatchesPattern ("([A-Z][A-Z]\\/){2}.+", identifier);
   }
 
   @Nullable
