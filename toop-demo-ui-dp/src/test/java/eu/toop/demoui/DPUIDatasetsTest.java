@@ -17,6 +17,7 @@ package eu.toop.demoui;
  */
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.Map;
 
@@ -24,27 +25,47 @@ import org.junit.Test;
 
 public class DPUIDatasetsTest
 {
-
   @Test
   public void testBasic ()
   {
+    final DPUIDatasets aDSList = DPUIDatasets.INSTANCE;
 
-    final DPUIDatasets dpDS = DPUIDatasets.INSTANCE;
+    assertEquals (aDSList.getDatasets ().size (), 1);
+    final DPDataset dataset = aDSList.getDatasets ().get (0);
 
-    assertEquals (dpDS.getDatasets ().size (), 1);
+    assertEquals (dataset.getNaturalPersonIdentifier (), "12345");
+    assertNull (dataset.getLegalPersonIdentifier ());
+    assertEquals (dataset.getConcepts ().size (), 13);
 
-    for (final DPDataset dataset : dpDS.getDatasets ())
+    for (final Map.Entry <String, String> concept : dataset.getConcepts ().entrySet ())
     {
-      assertEquals (dataset.getNaturalPersonIdentifier (), "12345");
-      assertEquals (dataset.getLegalPersonIdentifier (), "");
-      assertEquals (dataset.getConcepts ().size (), 13);
-
-      for (final Map.Entry <String, String> concept : dataset.getConcepts ().entrySet ())
-      {
-
-        assertNotNull (concept.getKey ());
-        assertNotNull (concept.getValue ());
-      }
+      assertNotNull (concept.getKey ());
+      assertNotNull (concept.getValue ());
     }
+  }
+
+  @Test
+  public void testGetDatasetsByIdentifier ()
+  {
+    final DPUIDatasets aDSList = DPUIDatasets.INSTANCE;
+
+    assertEquals (1, aDSList.getDatasetsByIdentifier ("AT/BE/12345", "").size ());
+    assertEquals (1, aDSList.getDatasetsByIdentifier ("AT/BE/12345", null).size ());
+    // LP is invalid -> null
+    assertEquals (1, aDSList.getDatasetsByIdentifier ("AT/BE/12345", "LP1").size ());
+    // LP is valid, but not mapped
+    assertEquals (0, aDSList.getDatasetsByIdentifier ("AT/BE/12345", "AT/BE/LP1").size ());
+    // LP is invalid -> null
+    // No such ID in list
+    assertEquals (0, aDSList.getDatasetsByIdentifier ("AT/BE/bla", "LP1").size ());
+
+    assertEquals (0, aDSList.getDatasetsByIdentifier ("bla", "").size ());
+    assertEquals (0, aDSList.getDatasetsByIdentifier ("bla", null).size ());
+    assertEquals (0, aDSList.getDatasetsByIdentifier ("AT/BE/", "LP1").size ());
+    assertEquals (0, aDSList.getDatasetsByIdentifier (null, "LP1").size ());
+    assertEquals (0, aDSList.getDatasetsByIdentifier ("", "").size ());
+    assertEquals (0, aDSList.getDatasetsByIdentifier ("", null).size ());
+    assertEquals (0, aDSList.getDatasetsByIdentifier (null, "").size ());
+    assertEquals (0, aDSList.getDatasetsByIdentifier (null, null).size ());
   }
 }

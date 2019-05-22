@@ -21,13 +21,12 @@ import javax.annotation.Nullable;
 import com.helger.commons.annotation.ReturnsMutableObject;
 import com.helger.commons.collection.impl.CommonsArrayList;
 import com.helger.commons.collection.impl.ICommonsList;
+import com.helger.commons.equals.EqualsHelper;
 import com.helger.commons.regex.RegExHelper;
 import com.helger.commons.string.StringHelper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigObject;
-import com.typesafe.config.ConfigParseOptions;
-import com.typesafe.config.ConfigSyntax;
 
 public class DPUIDatasets
 {
@@ -37,9 +36,6 @@ public class DPUIDatasets
 
   private DPUIDatasets ()
   {
-    final ConfigParseOptions opt = ConfigParseOptions.defaults ();
-    opt.setSyntax (ConfigSyntax.CONF);
-
     final Config conf = ConfigFactory.parseResources ("dataset.conf").resolve ();
     for (final ConfigObject aConfigDataset : conf.getObjectList ("Datasets"))
     {
@@ -55,6 +51,20 @@ public class DPUIDatasets
     return m_aDatasets;
   }
 
+  @Nullable
+  private static String _stripCodesFromIdentifier (@Nullable final String identifier)
+  {
+    if (StringHelper.getLength (identifier) <= 6)
+      return null;
+
+    if (!RegExHelper.stringMatchesPattern ("([A-Z][A-Z]\\/){2}.+", identifier))
+      return null;
+
+    // Strip of "countryCode/countryCode/" where countryCode is 2 letters,
+    // making it 2+1+2+1=6
+    return identifier.substring (6);
+  }
+
   @Nonnull
   public ICommonsList <DPDataset> getDatasetsByIdentifier (@Nullable final String naturalPersonIdentifier,
                                                            @Nullable final String legalPersonIdentifier)
@@ -66,10 +76,8 @@ public class DPUIDatasets
       final String sStrippedLP = _stripCodesFromIdentifier (legalPersonIdentifier);
       for (final DPDataset dataset : m_aDatasets)
       {
-        final boolean npMatch = naturalPersonIdentifier == null ||
-                                dataset.getNaturalPersonIdentifier ().equals (sStrippedNP);
-        final boolean leMatch = legalPersonIdentifier == null ||
-                                dataset.getLegalPersonIdentifier ().equals (sStrippedLP);
+        final boolean npMatch = EqualsHelper.equals (dataset.getNaturalPersonIdentifier (), sStrippedNP);
+        final boolean leMatch = EqualsHelper.equals (dataset.getLegalPersonIdentifier (), sStrippedLP);
         if (npMatch && leMatch)
         {
           ret.add (dataset);
@@ -77,22 +85,5 @@ public class DPUIDatasets
       }
     }
     return ret;
-  }
-
-  private static boolean _isValidIdentifier (@Nullable final String identifier)
-  {
-    return StringHelper.getLength (identifier) > 6 &&
-           RegExHelper.stringMatchesPattern ("([A-Z][A-Z]\\/){2}.+", identifier);
-  }
-
-  @Nullable
-  private static String _stripCodesFromIdentifier (@Nullable final String identifier)
-  {
-    if (!_isValidIdentifier (identifier))
-      return null;
-
-    // Strip of "countryCode/countryCode/" where countryCode is 2 letters,
-    // making it 2+1+2+1=6
-    return identifier.substring (6);
   }
 }

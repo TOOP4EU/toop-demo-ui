@@ -39,16 +39,16 @@ public final class DPDataset implements Serializable
     return StringHelper.hasNoText (s) ? null : s;
   }
 
-  public DPDataset (@Nonnull final Config conf)
+  DPDataset (@Nonnull final Config conf)
   {
     m_sNaturalPersonIdentifier = _unify (conf.getString ("NaturalPerson.identifier"));
     m_sLegalPersonIdentifier = _unify (conf.getString ("LegalPerson.identifier"));
 
     for (final ConfigObject aConcept : conf.getObjectList ("Concepts"))
     {
-      final Config concept = aConcept.toConfig ();
-      final String sName = _unify (concept.getString ("name"));
-      final String sValue = _unify (concept.getString ("value"));
+      final Config aConceptConfig = aConcept.toConfig ();
+      final String sName = _unify (aConceptConfig.getString ("name"));
+      final String sValue = _unify (aConceptConfig.getString ("value"));
       if (sName != null)
         m_aConcepts.put (sName, sValue);
     }
