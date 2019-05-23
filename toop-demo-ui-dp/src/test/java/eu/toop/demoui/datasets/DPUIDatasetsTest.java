@@ -1,4 +1,4 @@
-package eu.toop.demoui;
+package eu.toop.demoui.datasets;
 
 /**
  * Copyright (C) 2018-2019 toop.eu
@@ -22,6 +22,9 @@ import static org.junit.Assert.assertNull;
 import java.util.Map;
 
 import org.junit.Test;
+
+import eu.toop.demoui.datasets.DPDataset;
+import eu.toop.demoui.datasets.DPUIDatasets;
 
 public class DPUIDatasetsTest
 {

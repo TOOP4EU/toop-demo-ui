@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.toop.demoui;
+package eu.toop.demoui.datasets;
 
 import java.io.Serializable;
 
