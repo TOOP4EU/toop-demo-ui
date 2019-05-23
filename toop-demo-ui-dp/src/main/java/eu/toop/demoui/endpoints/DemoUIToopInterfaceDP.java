@@ -401,7 +401,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
     try
     {
       DemoUIToopInterfaceHelper.dumpResponse (aResponse);
-      // Signing happpens internally
+      // Signing happens internally
       ToopInterfaceClient.sendResponseToToopConnector (aResponse,
                                                        ToopInterfaceConfig.getToopConnectorDPUrl (),
                                                        documentEntries);

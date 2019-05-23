@@ -42,7 +42,8 @@ public class ListDataSetsServlet extends HttpServlet
   protected void doGet (final HttpServletRequest req, final HttpServletResponse resp) throws IOException
   {
     final StringBuilder aSB = new StringBuilder ();
-    aSB.append ("<html><head><title>DataSet</title></head><body><h1>Known Datasets</h1>");
+    aSB.append ("<!DOCTYPE html>\n");
+    aSB.append ("<html><head><title>TOOP DemoUI DP Datasets</title></head><body><h1>Known Datasets</h1>");
     aSB.append ("<div>A total of ")
        .append (DPUIDatasets.INSTANCE.getDatasets ().size ())
        .append (" dataset(s) is/are contained.</div>");

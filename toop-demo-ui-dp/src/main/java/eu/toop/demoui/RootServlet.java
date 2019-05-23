@@ -26,7 +26,7 @@ import com.helger.commons.http.CHttpHeader;
 import com.helger.commons.string.StringHelper;
 
 /**
- * Servlet for initially redirecting to "/ui"
+ * Servlet for initially redirecting to "/index.html"
  *
  * @author Philip Helger
  */
