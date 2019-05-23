@@ -27,6 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.helger.commons.mime.CMimeType;
 import com.helger.commons.string.StringHelper;
 
+import eu.toop.demoui.datasets.DPDataset;
+import eu.toop.demoui.datasets.DPUIDatasets;
+
 /**
  * Servlet for listing all data sets
  *
