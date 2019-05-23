@@ -29,9 +29,12 @@ public class DCUIInitListener implements ServletContextListener {
     public void contextInitialized(final ServletContextEvent aSce) {
 	ToopInterfaceManager.setInterfaceDC(new DemoUIToopInterfaceDC(x -> DCUI.hackedThis.access(x)));
 
-	ToopKafkaSettings.setKafkaEnabled(true);
-	ToopKafkaSettings.defaultProperties().put("bootstrap.servers", DCUIConfig.getTrackerURL());
-	ToopKafkaSettings.setKafkaTopic(DCUIConfig.getTrackerTopic());
+	if (DCUIConfig.isTrackerEnabled()) {
+	    ToopKafkaSettings.setKafkaEnabled(true);
+	    ToopKafkaSettings.defaultProperties().put("bootstrap.servers", DCUIConfig.getTrackerURL());
+	    ToopKafkaSettings.setKafkaTopic(DCUIConfig.getTrackerTopic());
+	} else
+	    ToopKafkaSettings.setKafkaEnabled(false);
     }
 
     public void contextDestroyed(final ServletContextEvent aSce) {

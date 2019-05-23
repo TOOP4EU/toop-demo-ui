@@ -17,6 +17,8 @@ package eu.toop.demoui;
 
 import java.util.ResourceBundle;
 
+import com.helger.commons.string.StringParser;
+
 public class DPUIConfig
 {
   private static final ResourceBundle rb = ResourceBundle.getBundle ("dcui");
@@ -47,6 +49,11 @@ public class DPUIConfig
   public static String getDumpResponseDirectory ()
   {
     return rb.getString ("dump.response.directory");
+  }
+
+  public static boolean isTrackerEnabled ()
+  {
+    return StringParser.parseBool (rb.getString ("toop.tracker.enabled"), true);
   }
 
   public static String getTrackerURL ()

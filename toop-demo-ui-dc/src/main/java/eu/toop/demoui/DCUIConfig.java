@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.helger.commons.string.StringHelper;
+import com.helger.commons.string.StringParser;
 
 public class DCUIConfig {
 
@@ -57,6 +58,10 @@ public class DCUIConfig {
 
   public static String getDumpResponseDirectory() {
     return rb.getString ("dump.response.directory");
+  }
+
+  public static boolean isTrackerEnabled () {
+    return StringParser.parseBool (rb.getString ("toop.tracker.enabled"), true);
   }
 
   public static String getTrackerURL () {

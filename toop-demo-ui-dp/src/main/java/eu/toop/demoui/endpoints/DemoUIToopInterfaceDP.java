@@ -123,7 +123,9 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
         final String sConceptValue = aDataset.getConceptValue (sConceptName);
         if (sConceptValue == null)
         {
-          _setError (sLogPrefix, aValue, "Concept [" + sConceptName + "] is missing in DP dataset");
+          // No such entry in mapping -> just leave empty
+          if (false)
+            _setError (sLogPrefix, aValue, "Concept [" + sConceptName + "] is missing in DP dataset");
         }
         else
         {
