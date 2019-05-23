@@ -37,6 +37,7 @@ import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
+import eu.toop.commons.usecase.EToopEntityType;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceHelper;
 import eu.toop.demoui.view.BaseView;
@@ -98,7 +99,7 @@ public class ConfirmToopDataFetchingPage extends Window {
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
         {
-          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("NP"));
+          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.NATURAL_PERSON.getID()));
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
           aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + view.getIdentity ().getIdentifier ()));
           aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFamilyName ()));
@@ -113,7 +114,7 @@ public class ConfirmToopDataFetchingPage extends Window {
 
         if (view.getIdentity ().getLegalPersonIdentifier () != null
             && !view.getIdentity ().getLegalPersonIdentifier ().isEmpty ()) {
-          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("LE"));
+          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.LEGAL_ENTITY.getID()));
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (
               ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + view.getIdentity ().getLegalPersonIdentifier ()));

@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
+import com.helger.commons.timing.StopWatch;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -45,6 +46,7 @@ import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
+import eu.toop.commons.usecase.EToopEntityType;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceHelper;
 import eu.toop.demoui.view.BaseView;
@@ -81,6 +83,7 @@ public class DynamicRequestPage extends CustomLayout {
 
   private Label requestIdLabel = null;
   private boolean responseReceived = false;
+  private final StopWatch sw = StopWatch.createdStopped();
 
   private final static List<ConceptValue> conceptList = new ArrayList<> ();
 
@@ -211,6 +214,7 @@ public class DynamicRequestPage extends CustomLayout {
       resetError ();
       removeMainCompanyForm ();
       removeKeyValueForm ();
+      sw.start();
 
       try {
         final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode () + "/";
@@ -231,7 +235,7 @@ public class DynamicRequestPage extends CustomLayout {
 
           String naturalPersonIdentifier = "";
           if (!naturalPersonIdentifierField.isEmpty ()) {
-            aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("NP"));
+            aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.NATURAL_PERSON.getID()));
             naturalPersonIdentifier = identifierPrefix + naturalPersonIdentifierField.getValue ();
           }
           aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (naturalPersonIdentifier));
@@ -256,7 +260,7 @@ public class DynamicRequestPage extends CustomLayout {
         }
 
         if (!legalPersonUniqueIdentifierField.isEmpty ()) {
-          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode ("LE"));
+          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.LEGAL_ENTITY.getID()));
           final TDELegalPersonType aLE = new TDELegalPersonType ();
           aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix
                                                                                         + legalPersonUniqueIdentifierField.getValue ()));
@@ -352,10 +356,15 @@ public class DynamicRequestPage extends CustomLayout {
     }
   }
 
-  public void setError (final List<TDEErrorType> errors) {
+  private void _onResponseReceived () {
+      responseReceived = true;
+      spinner.setVisible (false);
+      sw.stop();
+      addComponent (new Label ("Last request took "+ sw.getMillis()+" milliseconds"), "durationText");
+  }
 
-    responseReceived = true;
-    spinner.setVisible (false);
+  public void setError (final List<TDEErrorType> errors) {
+    _onResponseReceived();
 
     final StringBuilder sb = new StringBuilder ();
 
@@ -403,8 +412,7 @@ public class DynamicRequestPage extends CustomLayout {
 
   public void setErrorTimeout () {
 
-    responseReceived = true;
-    spinner.setVisible (false);
+    _onResponseReceived();
 
     final StringBuilder sb = new StringBuilder ();
     sb.append (" Error: ").append ("\n");
@@ -417,8 +425,7 @@ public class DynamicRequestPage extends CustomLayout {
 
   public void setConceptErrors (final String conceptErrors) {
 
-    responseReceived = true;
-    spinner.setVisible (false);
+    _onResponseReceived();
 
     conceptErrorsLabel = new Label (conceptErrors);
     conceptErrorsLabel.setContentMode (ContentMode.PREFORMATTED);
@@ -431,8 +438,7 @@ public class DynamicRequestPage extends CustomLayout {
 
   public void addMainCompanyForm () {
 
-    responseReceived = true;
-    spinner.setVisible (false);
+    _onResponseReceived();
 
     final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getToopDataBean (), false);
 
@@ -443,8 +449,7 @@ public class DynamicRequestPage extends CustomLayout {
 
   public void addKeyValueForm () {
 
-    responseReceived = true;
-    spinner.setVisible (false);
+    _onResponseReceived();
 
     final KeyValueForm keyValueForm = new KeyValueForm (view.getToopDataBean (), false);
 
