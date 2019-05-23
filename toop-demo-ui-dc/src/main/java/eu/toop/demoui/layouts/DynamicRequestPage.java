@@ -63,7 +63,6 @@ public class DynamicRequestPage extends CustomLayout {
 
   private final BaseView view;
   private final ProgressBar spinner = new ProgressBar ();
-  private static final String TOOP_BUTTON_STYLE = ValoTheme.BUTTON_BORDERLESS + " freedonia";
 
   private final ComboBox<String> countryCodeField = new ComboBox<> ();
   private final ComboBox<EPredefinedDocumentTypeIdentifier> documentTypeField = new ComboBox<> ();
@@ -214,7 +213,7 @@ public class DynamicRequestPage extends CustomLayout {
       resetError ();
       removeMainCompanyForm ();
       removeKeyValueForm ();
-      sw.start();
+      sw.restart();
 
       try {
         final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode () + "/";
