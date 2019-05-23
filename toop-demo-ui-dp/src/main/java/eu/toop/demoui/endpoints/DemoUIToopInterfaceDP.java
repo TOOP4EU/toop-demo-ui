@@ -106,8 +106,8 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
     aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (false));
     aValue.setAlternativeResponseIndicator (ToopXSDHelper140.createIndicator (false));
 
-    final TextType conceptName = aConcept.getConceptName ();
-    if (conceptName == null || StringHelper.hasNoText (conceptName.getValue ()))
+    final TextType aConceptName = aConcept.getConceptName ();
+    if (aConceptName == null || StringHelper.hasNoText (aConceptName.getValue ()))
     {
       _setError (sLogPrefix, aValue, "Concept name is missing in request: " + aConcept);
     }
@@ -119,7 +119,7 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
       }
       else
       {
-        final String sConceptName = conceptName.getValue ();
+        final String sConceptName = aConceptName.getValue ();
         final String sConceptValue = aDataset.getConceptValue (sConceptName);
         if (sConceptValue == null)
         {
