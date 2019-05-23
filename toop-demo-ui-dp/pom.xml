@@ -48,6 +48,11 @@
       <email>ixuz(at)gmail.com</email>
       <url>http://antwik.com</url>
     </developer>
+    <developer>
+      <id>philip</id>
+      <name>Philip Helger</name>
+      <email>ph(at)helger.com</email>
+    </developer>
   </developers>
   
   <dependencies>
@@ -55,12 +60,6 @@
     <dependency>
       <groupId>com.helger</groupId>
       <artifactId>ph-pdf-layout4</artifactId>
-    </dependency>
-
-    <!-- Configuration -->
-    <dependency>
-      <groupId>com.typesafe</groupId>
-      <artifactId>config</artifactId>
     </dependency>
 
     <!-- Test stuff -->

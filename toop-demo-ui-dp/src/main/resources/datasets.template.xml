@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Datasets>
+  <Dataset>
+    <NaturalPerson>12345</NaturalPerson>
+    <LegalPerson>54321</LegalPerson>
+    <Concept name="CONCEPT_NAME1">CONCEPT_VALUE1</Concept>
+    <Concept name="CONCEPT_NAME2">CONCEPT_VALUE2</Concept>
+    <Concept name="CONCEPT_NAME3">CONCEPT_VALUE3</Concept>
+  </Dataset>
+</Datasets>

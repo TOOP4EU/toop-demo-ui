@@ -22,25 +22,30 @@ import com.helger.commons.annotation.ReturnsMutableObject;
 import com.helger.commons.collection.impl.CommonsArrayList;
 import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.equals.EqualsHelper;
+import com.helger.commons.io.resource.ClassPathResource;
 import com.helger.commons.regex.RegExHelper;
 import com.helger.commons.string.StringHelper;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigObject;
+import com.helger.xml.EXMLParserFeature;
+import com.helger.xml.microdom.IMicroDocument;
+import com.helger.xml.microdom.IMicroElement;
+import com.helger.xml.microdom.serialize.MicroReader;
+import com.helger.xml.serialize.read.SAXReaderSettings;
 
 public class DPUIDatasets
 {
-  public static final DPUIDatasets INSTANCE = new DPUIDatasets ();
+  public static final DPUIDatasets INSTANCE = new DPUIDatasets ("datasets.xml");
 
   private final ICommonsList <DPDataset> m_aDatasets = new CommonsArrayList <> ();
 
-  private DPUIDatasets ()
+  DPUIDatasets (@Nonnull final String sFilename)
   {
-    final Config conf = ConfigFactory.parseResources ("dataset.conf").resolve ();
-    for (final ConfigObject aConfigDataset : conf.getObjectList ("Datasets"))
+    final IMicroDocument aDoc = MicroReader.readMicroXML (new ClassPathResource (sFilename),
+                                                          new SAXReaderSettings ().setFeatureValues (EXMLParserFeature.AVOID_XML_ATTACKS));
+    if (aDoc == null)
+      throw new IllegalArgumentException ("Failed to read data sets from '" + sFilename + "'");
+    for (final IMicroElement eItem : aDoc.getDocumentElement ().getAllChildElements ())
     {
-      final Config dataset = aConfigDataset.toConfig ();
-      m_aDatasets.add (new DPDataset (dataset));
+      m_aDatasets.add (new DPDataset (eItem));
     }
   }
 

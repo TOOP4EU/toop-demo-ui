@@ -23,8 +23,8 @@ import javax.annotation.Nullable;
 import com.helger.commons.collection.impl.CommonsHashMap;
 import com.helger.commons.collection.impl.ICommonsMap;
 import com.helger.commons.string.StringHelper;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigObject;
+import com.helger.xml.microdom.IMicroElement;
+import com.helger.xml.microdom.util.MicroHelper;
 
 public final class DPDataset implements Serializable
 {
@@ -39,16 +39,14 @@ public final class DPDataset implements Serializable
     return StringHelper.hasNoText (s) ? null : s;
   }
 
-  DPDataset (@Nonnull final Config conf)
+  DPDataset (@Nonnull final IMicroElement eItem)
   {
-    m_sNaturalPersonIdentifier = _unify (conf.getString ("NaturalPerson.identifier"));
-    m_sLegalPersonIdentifier = _unify (conf.getString ("LegalPerson.identifier"));
-
-    for (final ConfigObject aConcept : conf.getObjectList ("Concepts"))
+    m_sNaturalPersonIdentifier = _unify (MicroHelper.getChildTextContentTrimmed (eItem, "NaturalPerson"));
+    m_sLegalPersonIdentifier = _unify (MicroHelper.getChildTextContentTrimmed (eItem, "LegalPerson"));
+    for (final IMicroElement eConcept : eItem.getAllChildElements ("Concept"))
     {
-      final Config aConceptConfig = aConcept.toConfig ();
-      final String sName = _unify (aConceptConfig.getString ("name"));
-      final String sValue = _unify (aConceptConfig.getString ("value"));
+      final String sName = _unify (eConcept.getAttributeValue ("name"));
+      final String sValue = _unify (eConcept.getTextContentTrimmed ());
       if (sName != null)
         m_aConcepts.put (sName, sValue);
     }

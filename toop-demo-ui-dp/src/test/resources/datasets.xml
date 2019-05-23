@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Datasets>
+  <Dataset>
+    <NaturalPerson>12345</NaturalPerson>
+    <Concept name="TestActivityDeclaration">Manufacture of other testing equipment</Concept>
+    <Concept name="TestAddress">Testvegen 234, 321 44, Tete, Test</Concept>
+    <Concept name="TestBusinessCode">TE 234556-6213</Concept>
+    <Concept name="TestCompanyNaceCode">T27.9</Concept>
+    <Concept name="TestCompanyName">Test mat</Concept>
+    <Concept name="TestCompanyType">Limited</Concept>
+    <Concept name="TestLegalStatus">Active</Concept>
+    <Concept name="TestLegalStatusEffectiveDate">2012-01-12</Concept>
+    <Concept name="TestRegistrationAuthority">Test Agency</Concept>
+    <Concept name="TestRegistrationDate">2012-01-12</Concept>
+    <Concept name="TestRegistrationNumber">11325</Concept>
+    <Concept name="TestSSNumber">987654321</Concept>
+    <Concept name="TestVATNumber">TE11325528514A01</Concept>
+  </Dataset>
+</Datasets>

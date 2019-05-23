@@ -68,4 +68,14 @@ public class DPUIDatasetsTest
     assertEquals (0, aDSList.getDatasetsByIdentifier (null, "").size ());
     assertEquals (0, aDSList.getDatasetsByIdentifier (null, null).size ());
   }
+
+  @SuppressWarnings ("unused")
+  @Test
+  public void testReadAllPredefined ()
+  {
+    // Just ensure they can be read
+    new DPUIDatasets ("datasets.xml");
+    new DPUIDatasets ("datasets.elonia.xml");
+    new DPUIDatasets ("datasets.template.xml");
+  }
 }
