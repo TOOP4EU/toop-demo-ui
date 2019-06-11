@@ -33,9 +33,11 @@ import eu.toop.commons.dataexchange.v140.TDEAddressWithLOAType;
 import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
 import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
 import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
+import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
+import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
-import eu.toop.iface.ToopInterfaceClient;
+import eu.toop.demoui.DCToToopInterfaceMapper;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
@@ -78,8 +80,10 @@ public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
       conceptList.add (new ConceptValue (conceptNamespace, "FreedoniaLegalStatus"));
 
       // Notify the logger and Package-Tracker that we are sending a TOOP Message!
-      ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting concepts: "
-          + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
+      ToopKafkaClient.send (EErrorLevel.INFO,
+                            () -> "[DC] Requesting concepts: "
+                                  + StringHelper.getImplodedMapped (", ", conceptList,
+                                                                    x -> x.getNamespace () + "#" + x.getValue ()));
 
       final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
       aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (dataSubjectTypeCode));
@@ -106,10 +110,15 @@ public class MockRequestToSwedenDPTwo extends VerticalLayout implements View {
         aDS.setLegalPerson (aLE);
       }
 
-      ToopInterfaceClient.createRequestAndSendToToopConnector (aDS, srcCountryCode, naturalPersonNationality,
-          ToopXSDHelper140.createIdentifier ("iso6523-actorid-upis", "9999:freedonia"),
-          EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
-          EPredefinedProcessIdentifier.DATAREQUESTRESPONSE, conceptList);
+      @SuppressWarnings ("deprecation")
+      final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
+                                                                                   naturalPersonNationality,
+                                                                                   ToopXSDHelper140.createIdentifier ("iso6523-actorid-upis",
+                                                                                                                      "9999:freedonia"),
+                                                                                   EPredefinedDocumentTypeIdentifier.REQUEST_REGISTEREDORGANIZATION,
+                                                                                   EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
+                                                                                   conceptList);
+      DCToToopInterfaceMapper.sendRequest (aRequest, getUI ());
     } catch (final IOException | ToopErrorException ex) {
       // Convert from checked to unchecked
       throw new RuntimeException (ex);

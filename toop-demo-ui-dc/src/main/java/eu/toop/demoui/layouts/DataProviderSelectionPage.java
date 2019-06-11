@@ -32,72 +32,72 @@ import eu.toop.kafkaclient.ToopKafkaClient;
 
 public class DataProviderSelectionPage extends CustomLayout {
 
-    private final ComboBox<MatchType> dpSelector = new ComboBox<>("Select data provider");
-    private final ProgressBar spinner = new ProgressBar ();
-    String dpScheme = "";
-    String dpValue = "";
-    private final DataProviderMetadataLayout dpMetadataLayout = new DataProviderMetadataLayout();
+  private final ComboBox<MatchType> dpSelector = new ComboBox<> ("Select data provider");
+  private final ProgressBar spinner = new ProgressBar ();
+  String dpScheme = "";
+  String dpValue = "";
+  private final DataProviderMetadataLayout dpMetadataLayout = new DataProviderMetadataLayout ();
 
-    final Button proceedButton = new Button ("Proceed");
+  final Button proceedButton = new Button ("Proceed");
 
-    public DataProviderSelectionPage(final String countryCode) {
-        super ("DataProviderSelectionPage");
+  public DataProviderSelectionPage (final String countryCode) {
+    super ("DataProviderSelectionPage");
 
-        spinner.setCaption ("Please wait while data providers are fetched...");
-        spinner.setStyleName ("spinner");
-        spinner.setIndeterminate (true);
-        spinner.setVisible (true);
-        addComponent (spinner, "spinner");
+    spinner.setCaption ("Please wait while data providers are fetched...");
+    spinner.setStyleName ("spinner");
+    spinner.setIndeterminate (true);
+    spinner.setVisible (true);
+    addComponent (spinner, "spinner");
 
-        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Finding data providers...");
+    ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Finding data providers...");
 
-        final List<MatchType> listOfMatches = new ArrayList<>();
+    final List<MatchType> listOfMatches = new ArrayList<> ();
 
-        final ResultListType result = ToopInterfaceClient.searchDataProvider(countryCode, "");
-        if (result != null) {
-            listOfMatches.addAll(result.getMatch());
-        }
+    final ResultListType result = ToopInterfaceClient.searchDataProvider (countryCode, null);
+    if (result != null)
+      listOfMatches.addAll (result.getMatch ());
 
-        spinner.setVisible (false);
+    spinner.setVisible (false);
 
-        dpSelector.setStyleName("dpSelector");
-        dpSelector.setItems(listOfMatches);
-        dpSelector.setItemCaptionGenerator(matchType -> matchType.getParticipantID().getScheme() + "::" + matchType.getParticipantID().getValue());
-        dpSelector.addValueChangeListener(event -> {
-            if (event.getSource().isEmpty()) {
-                dpScheme = "";
-                dpValue = "";
-                proceedButton.setEnabled(false);
-                dpMetadataLayout.setData(null);
-            } else  {
-                dpScheme = event.getValue().getParticipantID().getScheme();
-                dpValue = event.getValue().getParticipantID().getValue();
-                dpMetadataLayout.setData(event.getValue());
-                proceedButton.setEnabled(true);
-            }
-        });
-        addComponent(dpSelector, "dpSelector");
-        addComponent(dpMetadataLayout, "dpMetadataLayout");
+    dpSelector.setStyleName ("dpSelector");
+    dpSelector.setItems (listOfMatches);
+    dpSelector.setItemCaptionGenerator (matchType -> matchType.getParticipantID ().getScheme () + "::"
+                                                     + matchType.getParticipantID ().getValue ());
+    dpSelector.addValueChangeListener (event -> {
+      if (event.getSource ().isEmpty ()) {
+        dpScheme = "";
+        dpValue = "";
+        proceedButton.setEnabled (false);
+        dpMetadataLayout.setData (null);
+      } else {
+        dpScheme = event.getValue ().getParticipantID ().getScheme ();
+        dpValue = event.getValue ().getParticipantID ().getValue ();
+        dpMetadataLayout.setData (event.getValue ());
+        proceedButton.setEnabled (true);
+      }
+    });
+    addComponent (dpSelector, "dpSelector");
+    addComponent (dpMetadataLayout, "dpMetadataLayout");
 
-        proceedButton.setEnabled(false);
-        proceedButton.addClickListener(event -> {
-            onProceed(dpScheme, dpValue);
-        });
-        proceedButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
-        proceedButton.addStyleName ("ConsentAgreeButton");
+    proceedButton.setEnabled (false);
+    proceedButton.addClickListener (event -> {
+      onProceed (dpScheme, dpValue);
+    });
+    proceedButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
+    proceedButton.addStyleName ("ConsentAgreeButton");
 
-        addComponent(proceedButton, "proceedButton");
-    }
+    addComponent (proceedButton, "proceedButton");
+  }
 
-    protected void onProceed(String dpScheme, String dpValue) {
-        //
-    }
+  protected void onProceed (final String dpScheme, final String dpValue) {
+    //
+  }
 
-    public String getScheme() {
-        return dpScheme;
-    }
+  public String getScheme () {
+    return dpScheme;
+  }
 
-    public String getValue() {
-        return dpValue;
-    }
+  public String getValue () {
+    return dpValue;
+  }
 }

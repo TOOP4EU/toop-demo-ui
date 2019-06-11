@@ -49,10 +49,10 @@ import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.EToopEntityType;
+import eu.toop.demoui.DCToToopInterfaceMapper;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceHelper;
 import eu.toop.demoui.view.BaseView;
-import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
@@ -337,7 +337,7 @@ public class DynamicRequestPage extends CustomLayout {
         ToopKafkaClient.send (EErrorLevel.INFO,
                               () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
 
-        ToopInterfaceClient.sendRequestToToopConnector (aRequest);
+        DCToToopInterfaceMapper.sendRequest (aRequest, getUI ());
 
         spinner.setVisible (true);
         // setEnabled (false);

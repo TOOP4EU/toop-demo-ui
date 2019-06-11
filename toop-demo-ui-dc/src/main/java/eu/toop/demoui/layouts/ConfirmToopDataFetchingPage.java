@@ -38,10 +38,10 @@ import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.ToopMessageBuilder140;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.EToopEntityType;
+import eu.toop.demoui.DCToToopInterfaceMapper;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceHelper;
 import eu.toop.demoui.view.BaseView;
-import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
 
@@ -92,16 +92,19 @@ public class ConfirmToopDataFetchingPage extends Window {
         conceptList.add (new ConceptValue (DCUIConfig.getConceptNamespace (), "FreedoniaLegalStatusEffectiveDate"));
 
         // Notify the logger and Package-Tracker that we are sending a TOOP Message!
-        ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting concepts: "
-            + StringHelper.getImplodedMapped (", ", conceptList, x -> x.getNamespace () + "#" + x.getValue ()));
+        ToopKafkaClient.send (EErrorLevel.INFO,
+                              () -> "[DC] Requesting concepts: "
+                                    + StringHelper.getImplodedMapped (", ", conceptList,
+                                                                      x -> x.getNamespace () + "#" + x.getValue ()));
 
-        final String identifierPrefix = DCUIConfig.getSenderCountryCode() + "/" + destinationCountryCode + "/";
+        final String identifierPrefix = DCUIConfig.getSenderCountryCode () + "/" + destinationCountryCode + "/";
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
         {
-          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.NATURAL_PERSON.getID()));
+          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.NATURAL_PERSON.getID ()));
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
-          aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + view.getIdentity ().getIdentifier ()));
+          aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix
+                                                                             + view.getIdentity ().getIdentifier ()));
           aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFamilyName ()));
           aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getFirstName ()));
           aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
@@ -114,36 +117,40 @@ public class ConfirmToopDataFetchingPage extends Window {
 
         if (view.getIdentity ().getLegalPersonIdentifier () != null
             && !view.getIdentity ().getLegalPersonIdentifier ().isEmpty ()) {
-          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.LEGAL_ENTITY.getID()));
+          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.LEGAL_ENTITY.getID ()));
           final TDELegalPersonType aLE = new TDELegalPersonType ();
-          aLE.setLegalPersonUniqueIdentifier (
-              ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + view.getIdentity ().getLegalPersonIdentifier ()));
+          aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix
+                                                                                        + view.getIdentity ()
+                                                                                              .getLegalPersonIdentifier ()));
           aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (view.getIdentity ().getLegalPersonName ()));
           final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
           // Destination country to use
-          aAddress
-              .setCountryCode (ToopXSDHelper140.createCodeWithLOA (view.getIdentity ().getLegalPersonNationality ()));
+          aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (view.getIdentity ()
+                                                                           .getLegalPersonNationality ()));
           aLE.setLegalPersonLegalAddress (aAddress);
           aDS.setLegalPerson (aLE);
         }
 
         ToopKafkaClient.send (EErrorLevel.INFO,
-            () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
+                              () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
 
-        final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, DCUIConfig.getSenderCountryCode(),
-            destinationCountryCode,
-            ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
-                DCUIConfig.getSenderIdentifierValue ()),
-                EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_REGISTEREDORGANIZATION_1_40,
-                EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
-                conceptList);
+        @SuppressWarnings ("deprecation")
+        final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS,
+                                                                                     DCUIConfig.getSenderCountryCode (),
+                                                                                     destinationCountryCode,
+                                                                                     ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
+                                                                                                                        DCUIConfig.getSenderIdentifierValue ()),
+                                                                                     EPredefinedDocumentTypeIdentifier.URN_EU_TOOP_NS_DATAEXCHANGE_1P40_REQUEST_URN_EU_TOOP_REQUEST_REGISTEREDORGANIZATION_1_40,
+                                                                                     EPredefinedProcessIdentifier.DATAREQUESTRESPONSE,
+                                                                                     conceptList);
 
         aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifierUUID ());
-        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier(EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME, "urn:eu:toop:ns:dataexchange-1p40::Request"));
+        aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier (EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME,
+                                                                                "urn:eu:toop:ns:dataexchange-1p40::Request"));
 
         DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
-        ToopInterfaceClient.sendRequestToToopConnector (aRequest);
+        DCToToopInterfaceMapper.sendRequest (aRequest, getUI ());
       } catch (final IOException | ToopErrorException ex) {
         // Convert from checked to unchecked
         throw new RuntimeException (ex);

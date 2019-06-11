@@ -26,18 +26,18 @@ import eu.toop.kafkaclient.ToopKafkaSettings;
 
 @WebListener
 public class DCUIInitListener implements ServletContextListener {
-    public void contextInitialized(final ServletContextEvent aSce) {
-	ToopInterfaceManager.setInterfaceDC(new DemoUIToopInterfaceDC(x -> DCUI.hackedThis.access(x)));
+  public void contextInitialized (final ServletContextEvent aSce) {
+    ToopInterfaceManager.setInterfaceDC (new DemoUIToopInterfaceDC ());
 
-	if (DCUIConfig.isTrackerEnabled()) {
-	    ToopKafkaSettings.setKafkaEnabled(true);
-	    ToopKafkaSettings.defaultProperties().put("bootstrap.servers", DCUIConfig.getTrackerURL());
-	    ToopKafkaSettings.setKafkaTopic(DCUIConfig.getTrackerTopic());
-	} else
-	    ToopKafkaSettings.setKafkaEnabled(false);
-    }
+    if (DCUIConfig.isTrackerEnabled ()) {
+      ToopKafkaSettings.setKafkaEnabled (true);
+      ToopKafkaSettings.defaultProperties ().put ("bootstrap.servers", DCUIConfig.getTrackerURL ());
+      ToopKafkaSettings.setKafkaTopic (DCUIConfig.getTrackerTopic ());
+    } else
+      ToopKafkaSettings.setKafkaEnabled (false);
+  }
 
-    public void contextDestroyed(final ServletContextEvent aSce) {
-	ToopKafkaClient.close();
-    }
+  public void contextDestroyed (final ServletContextEvent aSce) {
+    ToopKafkaClient.close ();
+  }
 }

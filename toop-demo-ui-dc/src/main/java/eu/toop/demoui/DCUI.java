@@ -50,12 +50,8 @@ import eu.toop.demoui.view.RequestToSwedenTwo;
  */
 @Theme ("DCUITheme")
 public class DCUI extends UI {
-  static DCUI hackedThis = null;
-
   @Override
   protected void init (final VaadinRequest vaadinRequest) {
-    hackedThis = this;
-
     // Add a custom request handler
     VaadinSession.getCurrent ().addRequestHandler ( (session, request, response) -> {
 
