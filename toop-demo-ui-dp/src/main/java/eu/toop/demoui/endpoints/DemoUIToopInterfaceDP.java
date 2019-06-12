@@ -16,47 +16,19 @@
 package eu.toop.demoui.endpoints;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-
-import com.helger.commons.annotation.Nonempty;
 import com.helger.commons.collection.impl.CommonsArrayList;
 import com.helger.commons.collection.impl.ICommonsList;
-import com.helger.commons.datetime.PDTFactory;
 import com.helger.commons.error.level.EErrorLevel;
-import com.helger.commons.io.stream.NonBlockingByteArrayOutputStream;
-import com.helger.commons.mime.CMimeType;
-import com.helger.commons.state.EChange;
-import com.helger.commons.string.StringHelper;
-import com.helger.pdflayout4.PDFCreationException;
-import com.helger.pdflayout4.PageLayoutPDF;
-import com.helger.pdflayout4.base.EPLPlaceholder;
-import com.helger.pdflayout4.base.PLPageSet;
-import com.helger.pdflayout4.element.text.PLText;
-import com.helger.pdflayout4.spec.EHorzAlignment;
-import com.helger.pdflayout4.spec.FontSpec;
-import com.helger.pdflayout4.spec.PreloadFont;
 
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
-import eu.toop.commons.concept.EConceptType;
 import eu.toop.commons.dataexchange.v140.TDEAddressType;
-import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
-import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
-import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
 import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
-import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
-import eu.toop.commons.dataexchange.v140.TDEDocumentRequestType;
-import eu.toop.commons.dataexchange.v140.TDEDocumentResponseType;
-import eu.toop.commons.dataexchange.v140.TDEDocumentType;
 import eu.toop.commons.dataexchange.v140.TDEErrorType;
-import eu.toop.commons.dataexchange.v140.TDEIssuerType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
-import eu.toop.commons.error.EToopErrorCode;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.AsicWriteEntry;
@@ -66,93 +38,14 @@ import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
 import eu.toop.demoui.DPUIConfig;
-import eu.toop.demoui.datasets.DPDataset;
-import eu.toop.demoui.datasets.DPUIDatasets;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
-import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
 public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
 {
-  private static boolean _canUseConcept (@Nonnull final TDEConceptRequestType aConcept)
-  {
-    // This class can only deliver to:
-    // - "DP" concept types
-    // - leaf entries
-    // - that don't have a response yet
-    return EConceptType.DP.getID ().equals (aConcept.getConceptTypeCode ().getValue ()) &&
-           aConcept.hasNoConceptRequestEntries () &&
-           aConcept.getDataElementResponseValueCount () == 0;
-  }
-
-  private static void _setError (@Nonnull final String sLogPrefix,
-                                 @Nonnull final TDEDataElementResponseValueType aValue,
-                                 @Nonnull @Nonempty final String sErrorMsg)
-  {
-    aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (true));
-    // Either error code or description
-    if (false)
-      aValue.setErrorCode (ToopXSDHelper140.createCode (EToopErrorCode.GEN.getID ()));
-    else
-      aValue.setResponseDescription (ToopXSDHelper140.createText ("MockError from DemoDP: " + sErrorMsg));
-    ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "MockError from DemoDP: " + sErrorMsg);
-  }
-
-  @Nonnull
-  private static EChange _applyStaticDataset (@Nonnull final String sLogPrefix,
-                                              @Nonnull final TDEConceptRequestType aConcept,
-                                              @Nullable final DPDataset aDataset)
-  {
-    final EChange eChange;
-
-    final TDEDataElementResponseValueType aValue = new TDEDataElementResponseValueType ();
-    aValue.setErrorIndicator (ToopXSDHelper140.createIndicator (false));
-    aValue.setAlternativeResponseIndicator (ToopXSDHelper140.createIndicator (false));
-
-    final TextType aConceptName = aConcept.getConceptName ();
-    if (aConceptName == null || StringHelper.hasNoText (aConceptName.getValue ()))
-    {
-      _setError (sLogPrefix, aValue, "Concept name is missing in request: " + aConcept);
-      eChange = EChange.CHANGED;
-    }
-    else
-    {
-      if (aDataset == null)
-      {
-        _setError (sLogPrefix, aValue, "No DP dataset found");
-        eChange = EChange.CHANGED;
-      }
-      else
-      {
-        final String sConceptName = aConceptName.getValue ();
-        final String sConceptValue = aDataset.getConceptValue (sConceptName);
-        if (sConceptValue == null)
-        {
-          // No such entry in mapping
-          if (false)
-            _setError (sLogPrefix, aValue, "Concept [" + sConceptName + "] is missing in DP dataset");
-          else
-            eChange = EChange.UNCHANGED;
-        }
-        else
-        {
-          aValue.setResponseDescription (ToopXSDHelper140.createText (sConceptValue));
-
-          ToopKafkaClient.send (EErrorLevel.INFO,
-                                () -> sLogPrefix + "Populated concept [" + sConceptName + "]: [" + sConceptValue + "]");
-          eChange = EChange.CHANGED;
-        }
-      }
-    }
-
-    if (eChange.isChanged ())
-      aConcept.addDataElementResponseValue (aValue);
-    return eChange;
-  }
-
   @Nonnull
   private static TDETOOPResponseType _createResponseFromRequest (@Nonnull final TDETOOPRequestType aRequest,
                                                                  @Nonnull final String sLogPrefix)
@@ -211,83 +104,6 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
     return aResponse;
   }
 
-  private static void _applyConceptValues (@Nonnull final TDEDataElementRequestType aDER,
-                                           final String sLogPrefix,
-                                           final DPDataset dataset)
-  {
-    final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
-    if (aFirstLevelConcept != null)
-    {
-      boolean bDidApplyResponse = false;
-      if (_canUseConcept (aFirstLevelConcept))
-      {
-        // Apply on first level - highly unlikely but who knows....
-        _applyStaticDataset (sLogPrefix, aFirstLevelConcept, dataset);
-        bDidApplyResponse = true;
-      }
-      else
-        second: for (final TDEConceptRequestType aSecondLevelConcept : aFirstLevelConcept.getConceptRequest ())
-        {
-          if (_canUseConcept (aSecondLevelConcept))
-          {
-            // Apply on second level - used if directly started with TC concepts
-            _applyStaticDataset (sLogPrefix, aSecondLevelConcept, dataset);
-            bDidApplyResponse = true;
-            break second;
-          }
-          for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ())
-          {
-            if (_canUseConcept (aThirdLevelConcept))
-            {
-              // Apply on third level
-              _applyStaticDataset (sLogPrefix, aThirdLevelConcept, dataset);
-              bDidApplyResponse = true;
-              break second;
-            }
-            // 3 level nesting is maximum
-          }
-        }
-
-      if (!bDidApplyResponse)
-      {
-        ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Found no place to provide response value in Data");
-      }
-    }
-  }
-
-  private static byte [] _createFakePDF (@Nonnull final TDETOOPRequestType aRequest)
-  {
-    try (final NonBlockingByteArrayOutputStream aBAOS = new NonBlockingByteArrayOutputStream ())
-    {
-      final FontSpec r10 = new FontSpec (PreloadFont.REGULAR, 10);
-      final FontSpec r10b = new FontSpec (PreloadFont.REGULAR_BOLD, 10);
-      final PLPageSet aPS1 = new PLPageSet (PDRectangle.A4).setMargin (30);
-
-      aPS1.setPageHeader (new PLText ("Demo document created by TOOP Demo UI",
-                                      r10).setHorzAlign (EHorzAlignment.CENTER));
-      aPS1.setPageFooter (new PLText ("Page " +
-                                      EPLPlaceholder.PAGESET_PAGE_NUMBER.getVariable () +
-                                      " of " +
-                                      EPLPlaceholder.PAGESET_PAGE_COUNT.getVariable (),
-                                      r10b).setReplacePlaceholder (true).setHorzAlign (EHorzAlignment.RIGHT));
-      aPS1.addElement (new PLText ("This is the response to the request with UUID " +
-                                   aRequest.getDocumentUniversalUniqueIdentifier ().getValue (),
-                                   r10));
-      aPS1.addElement (new PLText ("This dummy document was created at " +
-                                   PDTFactory.getCurrentLocalDateTime ().toString (),
-                                   r10));
-
-      final PageLayoutPDF aPageLayout = new PageLayoutPDF ();
-      aPageLayout.addPageSet (aPS1);
-      aPageLayout.renderTo (aBAOS);
-      return aBAOS.getBufferOrCopy ();
-    }
-    catch (final PDFCreationException ex)
-    {
-      throw new RuntimeException (ex);
-    }
-  }
-
   public void onToopRequest (@Nonnull final ToopRequestWithAttachments140 aRequestWA) throws IOException
   {
     final TDETOOPRequestType aRequest = aRequestWA.getRequest ();
@@ -302,105 +118,26 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
 
     DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
-    // Record matching to dataset
-
-    // Try to find dataset for natural person
-    final TDEDataRequestSubjectType ds = aRequest.getDataRequestSubject ();
-    final String naturalPersonIdentifier;
-    final String legalEntityIdentifier;
-
-    if (ds.getNaturalPerson () != null &&
-        ds.getNaturalPerson ().getPersonIdentifier () != null &&
-        StringHelper.hasText (ds.getNaturalPerson ().getPersonIdentifier ().getValue ()))
-    {
-      naturalPersonIdentifier = ds.getNaturalPerson ().getPersonIdentifier ().getValue ();
-      ToopKafkaClient.send (EErrorLevel.INFO,
-                            () -> sLogPrefix + "Record matching NaturalPerson: " + naturalPersonIdentifier);
-    }
-    else
-      naturalPersonIdentifier = null;
-
-    if (ds.getLegalPerson () != null &&
-        ds.getLegalPerson ().getLegalPersonUniqueIdentifier () != null &&
-        StringHelper.hasText (ds.getLegalPerson ().getLegalPersonUniqueIdentifier ().getValue ()))
-    {
-      legalEntityIdentifier = ds.getLegalPerson ().getLegalPersonUniqueIdentifier ().getValue ();
-      ToopKafkaClient.send (EErrorLevel.INFO,
-                            () -> sLogPrefix + "Record matching LegalPerson: " + legalEntityIdentifier);
-    }
-    else
-      legalEntityIdentifier = null;
-
-    // Get datasets from config
-    final DPUIDatasets dpDatasets = DPUIDatasets.INSTANCE;
-
-    final ICommonsList <DPDataset> datasets = dpDatasets.getDatasetsByIdentifier (naturalPersonIdentifier,
-                                                                                  legalEntityIdentifier);
-
-    final DPDataset dataset = datasets.getFirst ();
-    if (dataset != null)
-      ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Dataset found");
-    else
-      ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "No dataset found");
-
     // build response
     final TDETOOPResponseType aResponse = _createResponseFromRequest (aRequest, sLogPrefix);
     aResponse.setSpecificationIdentifier (ToopXSDHelper140.createSpecificationIdentifierResponse ());
 
-    // handle document request
     final ICommonsList <AsicWriteEntry> documentEntries = new CommonsArrayList <> ();
+
+    // Record matching to dataset
+    if (aRequest.hasDataElementRequestEntries ())
+      HandlerDataRequest.handle (sLogPrefix, aRequest, aResponse);
+
+    // handle document request
     if (aResponse.hasDocumentRequestEntries ())
-    {
-      final TDEDocumentRequestType documentRequestType = aResponse.getDocumentRequestAtIndex (0);
-      if (documentRequestType != null)
-      {
-        ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Handling a document request");
-
-        final String sPDFName = "SeaWindDOC.pdf";
-
-        final TDEDocumentType tdeDocument = new TDEDocumentType ();
-        tdeDocument.setDocumentURI (ToopXSDHelper140.createIdentifier ("file:/attachments/" + sPDFName));
-        tdeDocument.setDocumentMimeTypeCode (ToopXSDHelper140.createCode (CMimeType.APPLICATION_PDF.getAsString ()));
-        tdeDocument.setDocumentTypeCode (documentRequestType.getDocumentRequestTypeCode ());
-
-        final TDEIssuerType issuerType = new TDEIssuerType ();
-        issuerType.setDocumentIssuerIdentifier (ToopXSDHelper140.createIdentifier ("elonia",
-                                                                                   "toop-doctypeid-qns",
-                                                                                   "EE12345678"));
-        issuerType.setDocumentIssuerName (ToopXSDHelper140.createText ("EE-EMA"));
-
-        final TDEDocumentResponseType documentResponseType = new TDEDocumentResponseType ();
-        documentResponseType.addDocument (tdeDocument);
-        documentResponseType.setDocumentName (ToopXSDHelper140.createText ("ISMCompliance"));
-        documentResponseType.setDocumentDescription (ToopXSDHelper140.createText ("Document of Compliance (DOC)"));
-        documentResponseType.setDocumentIdentifier (ToopXSDHelper140.createIdentifier ("077SM/16"));
-        documentResponseType.setDocumentIssueDate (ToopXSDHelper140.createDateWithLOANow ());
-        documentResponseType.setDocumentIssuePlace (ToopXSDHelper140.createText ("Pallen, Elonia"));
-        documentResponseType.setDocumentIssuer (issuerType);
-        documentResponseType.setLegalReference (ToopXSDHelper140.createText ("SOLAS 1974"));
-        documentResponseType.setDocumentRemarks (new ArrayList <> ());
-        documentResponseType.setErrorIndicator (ToopXSDHelper140.createIndicator (false));
-
-        documentRequestType.setDocumentResponse (new CommonsArrayList <> (documentResponseType));
-
-        // Dynamically create PDF
-        final byte [] fakeDocument = _createFakePDF (aRequest);
-        final AsicWriteEntry entry = new AsicWriteEntry (sPDFName, fakeDocument, CMimeType.APPLICATION_PDF);
-        documentEntries.add (entry);
-      }
-    }
-
-    // add all the mapped values in the response
-    for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ())
-    {
-      _applyConceptValues (aDER, sLogPrefix, dataset);
-    }
+      HandlerDocumentRequestPDF.handle (sLogPrefix, aRequest, aResponse, documentEntries);
 
     // send back to toop-connector at /from-dp
     // The URL must be configured in toop-interface.properties file
     try
     {
       DemoUIToopInterfaceHelper.dumpResponse (aResponse);
+
       // Signing happens internally
       ToopInterfaceClient.sendResponseToToopConnector (aResponse,
                                                        ToopInterfaceConfig.getToopConnectorDPUrl (),
