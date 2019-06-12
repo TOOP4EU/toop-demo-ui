@@ -116,6 +116,11 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
                                 "Received DP Backend Request" +
                                 (attachments.isEmpty () ? "" : " with " + attachments.size () + " attachment(s)"));
 
+    final IdentifierType aDocType = aRequest.getRoutingInformation ().getDocumentTypeIdentifier ();
+    final EPredefinedDocumentTypeIdentifier eDocType = aDocType == null ? null
+                                                                        : EPredefinedDocumentTypeIdentifier.getFromDocumentTypeIdentifierOrNull (aDocType.getSchemeID (),
+                                                                                                                                                 aDocType.getValue ());
+
     DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
     // build response
@@ -130,7 +135,13 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP
 
     // handle document request
     if (aResponse.hasDocumentRequestEntries ())
-      HandlerDocumentRequestPDF.handle (sLogPrefix, aRequest, aResponse, documentEntries);
+    {
+      if (eDocType == EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE_LIST ||
+          eDocType == EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE_LIST)
+        HandlerDocumentRequestList.handle (sLogPrefix, aResponse);
+      else
+        HandlerDocumentRequestPDF.handle (sLogPrefix, aRequest, aResponse, documentEntries);
+    }
 
     // send back to toop-connector at /from-dp
     // The URL must be configured in toop-interface.properties file

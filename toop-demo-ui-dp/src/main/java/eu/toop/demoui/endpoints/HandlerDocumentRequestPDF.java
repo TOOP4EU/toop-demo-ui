@@ -77,7 +77,7 @@ final class HandlerDocumentRequestPDF
     final TDEDocumentRequestType documentRequestType = aResponse.getDocumentRequestAtIndex (0);
     if (documentRequestType != null)
     {
-      ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Handling a document request");
+      ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Handling a document request/PDF");
 
       final String sPDFName = "SeaWindDOC.pdf";
 

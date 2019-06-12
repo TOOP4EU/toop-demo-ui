@@ -316,7 +316,8 @@ public class DynamicRequestPage extends CustomLayout {
           documentRequestType.setDocumentURI (ToopXSDHelper140.createIdentifier ("https://koolitus.emde.ee/cc/b0/67/123456"));
           documentRequestType.setDocumentRequestIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency",
                                                                                                "toop-doctypeid-qns",
-                                                                                               "600db318-02c2-4c43-b272-f9268615c076"));
+                                                                                               UUID.randomUUID ()
+                                                                                                   .toString ()));
           documentRequestType.setDocumentRequestTypeCode (ToopXSDHelper140.createCode ("ETR"));
           aRequest.addDocumentRequest (documentRequestType);
         }
@@ -328,8 +329,8 @@ public class DynamicRequestPage extends CustomLayout {
           aRequest.setRoutingInformation (routingInformation);
 
           ToopKafkaClient.send (EErrorLevel.INFO,
-                                () -> String.format ("[DC] Set routing information to specific data provider: [%s, %s]",
-                                                     dataProviderScheme.getValue (), dataProviderName.getValue ()));
+                                () -> "[DC] Set routing information to specific data provider: ["
+                                      + dataProviderScheme.getValue () + ", " + dataProviderName.getValue () + "]");
         }
 
         DemoUIToopInterfaceHelper.dumpRequest (aRequest);
@@ -346,9 +347,8 @@ public class DynamicRequestPage extends CustomLayout {
         timeoutTimer.schedule (new TimerTask () {
           @Override
           public void run () {
-            if (!responseReceived) {
+            if (!responseReceived)
               setErrorTimeout ();
-            }
           }
         }, 60000);
       } catch (final IOException | ToopErrorException ex) {
