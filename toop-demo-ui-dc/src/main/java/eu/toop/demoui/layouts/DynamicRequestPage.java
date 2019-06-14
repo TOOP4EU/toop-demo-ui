@@ -231,52 +231,73 @@ public class DynamicRequestPage extends CustomLayout {
         }
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
-        {
+        if (!naturalPersonIdentifierField.isEmpty ()) {
+          boolean bCanAddNaturalPerson = true;
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
-          aDS.setNaturalPerson (aNP);
 
-          String naturalPersonIdentifier = "";
-          if (!naturalPersonIdentifierField.isEmpty ()) {
+          // Mandatory field - checked in Schematrin
+          {
             aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.NATURAL_PERSON.getID ()));
-            naturalPersonIdentifier = identifierPrefix + naturalPersonIdentifierField.getValue ();
+            final String naturalPersonIdentifier = naturalPersonIdentifierField.getValue ();
+            if (StringHelper.hasText (naturalPersonIdentifier))
+              aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix
+                                                                                 + naturalPersonIdentifier));
+            else
+              bCanAddNaturalPerson = false;
           }
-          aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (naturalPersonIdentifier));
 
+          // Mandatory field
           String naturalPersonFirstName = "";
           if (!naturalPersonFirstNameField.isEmpty ()) {
             naturalPersonFirstName = naturalPersonFirstNameField.getValue ();
           }
           aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (naturalPersonFirstName));
 
+          // Mandatory field
           String naturalPersonFamilyName = "";
           if (!naturalPersonFamilyNameField.isEmpty ()) {
             naturalPersonFamilyName = naturalPersonFamilyNameField.getValue ();
           }
           aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (naturalPersonFamilyName));
 
+          // Mandatory field
           aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
 
           final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
           aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
           aNP.setNaturalPersonLegalAddress (aAddress);
+
+          if (bCanAddNaturalPerson) {
+            aDS.setNaturalPerson (aNP);
+          }
         }
 
         if (!legalPersonUniqueIdentifierField.isEmpty ()) {
-          aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.LEGAL_ENTITY.getID ()));
-          final TDELegalPersonType aLE = new TDELegalPersonType ();
-          aLE.setLegalPersonUniqueIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix
-                                                                                        + legalPersonUniqueIdentifierField.getValue ()));
+          boolean bCanAddLegalPerson = true;
+          final TDELegalPersonType aLP = new TDELegalPersonType ();
 
+          // Mandatory field
+          final String id = legalPersonUniqueIdentifierField.getValue ();
+          if (StringHelper.hasText (id))
+            aLP.setLegalPersonUniqueIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + id));
+          else
+            bCanAddLegalPerson = false;
+
+          // Mandatory field
           String legalName = "";
           if (!legalPersonCompanyNameField.isEmpty ()) {
             legalName = legalPersonCompanyNameField.getValue ();
           }
-          aLE.setLegalName (ToopXSDHelper140.createTextWithLOA (legalName));
+          aLP.setLegalName (ToopXSDHelper140.createTextWithLOA (legalName));
 
           final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
           aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
-          aLE.setLegalPersonLegalAddress (aAddress);
-          aDS.setLegalPerson (aLE);
+          aLP.setLegalPersonLegalAddress (aAddress);
+
+          if (bCanAddLegalPerson) {
+            aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.LEGAL_ENTITY.getID ()));
+            aDS.setLegalPerson (aLP);
+          }
         }
 
         final String srcCountryCode = DCUIConfig.getSenderCountryCode ();
