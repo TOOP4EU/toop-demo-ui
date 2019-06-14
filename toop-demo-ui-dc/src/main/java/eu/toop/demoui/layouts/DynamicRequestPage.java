@@ -73,6 +73,7 @@ public class DynamicRequestPage extends CustomLayout {
   private final TextField naturalPersonFamilyNameField = new TextField ();
   private final TextField legalPersonUniqueIdentifierField = new TextField ();
   private final TextField legalPersonCompanyNameField = new TextField ();
+  private final TextField documentIdentifierField = new TextField();
   private final TextField dataProviderScheme = new TextField ();
   private final TextField dataProviderName = new TextField ();
   private Label errorLabel = null;
@@ -149,6 +150,7 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (naturalPersonFamilyNameField, "naturalPersonFamilyNameField");
     addComponent (legalPersonUniqueIdentifierField, "legalPersonUniqueIdentifierField");
     addComponent (legalPersonCompanyNameField, "legalPersonCompanyNameField");
+    addComponent(documentIdentifierField, "documentIdentifierField");
     addComponent (dataProviderScheme, "dataProviderScheme");
     addComponent (dataProviderName, "dataProviderName");
 
