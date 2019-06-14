@@ -18,6 +18,7 @@ package eu.toop.demoui.endpoints;
 import java.io.IOException;
 import java.util.AbstractMap;
 
+import java.util.AbstractMap.SimpleEntry;
 import javax.annotation.Nonnull;
 
 import com.helger.commons.collection.impl.ICommonsList;
@@ -96,6 +97,14 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
       // Get requested documents
       if (aResponse.getDocumentRequestCount () > 0) {
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Contains requested documents");
+        aResponse.getDocumentRequest().forEach( dRec -> {
+          dRec.getDocumentResponse().forEach(dResp -> {
+            bean.getKeyValList().add(new SimpleEntry<>("Document Name:",dResp.getDocumentName().getValue()));
+            bean.getKeyValList().add(new SimpleEntry<>("Document Issue Date:",dResp.getDocumentIssueDate().getValue().toString()));
+            bean.getKeyValList().add(new SimpleEntry<>("Document Description:",dResp.getDocumentDescription().getValue()));
+            bean.getKeyValList().add(new SimpleEntry<>("Document Identifier:",dResp.getDocumentIdentifier().getValue()));
+          });
+        });
       }
 
       // Inspect all mapped values
