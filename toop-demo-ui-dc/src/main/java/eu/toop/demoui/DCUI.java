@@ -27,17 +27,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
-import eu.toop.demoui.view.DynamicRequest;
-import eu.toop.demoui.view.MockRequestToSwedenDPOne;
-import eu.toop.demoui.view.MockRequestToSwedenDPTwo;
-import eu.toop.demoui.view.PhaseOne;
-import eu.toop.demoui.view.PhaseTwo;
-import eu.toop.demoui.view.RequestToItalyOne;
-import eu.toop.demoui.view.RequestToSlovakiaOne;
-import eu.toop.demoui.view.RequestToSlovakiaTwo;
-import eu.toop.demoui.view.RequestToSloveniaOne;
-import eu.toop.demoui.view.RequestToSwedenOne;
-import eu.toop.demoui.view.RequestToSwedenTwo;
+import eu.toop.demoui.view.*;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -98,6 +88,10 @@ public class DCUI extends UI {
 
     final DynamicRequest dynamicRequest = new DynamicRequest ();
     navigator.addView ("dynamicRequest", dynamicRequest);
+
+    final Maritime maritime = new Maritime();
+    navigator.addView("maritime", maritime);
+
 
     final String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
     if (eidasAttributes != null) {

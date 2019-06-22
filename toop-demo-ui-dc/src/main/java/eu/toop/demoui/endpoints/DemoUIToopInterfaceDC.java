@@ -36,15 +36,9 @@ import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.demoui.DCToToopInterfaceMapper;
 import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.layouts.DynamicRequestPage;
+import eu.toop.demoui.layouts.MaritimePage;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
-import eu.toop.demoui.view.DynamicRequest;
-import eu.toop.demoui.view.PhaseTwo;
-import eu.toop.demoui.view.RequestToItalyOne;
-import eu.toop.demoui.view.RequestToSlovakiaOne;
-import eu.toop.demoui.view.RequestToSlovakiaTwo;
-import eu.toop.demoui.view.RequestToSloveniaOne;
-import eu.toop.demoui.view.RequestToSwedenOne;
-import eu.toop.demoui.view.RequestToSwedenTwo;
+import eu.toop.demoui.view.*;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
@@ -259,6 +253,37 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
               page.setConceptErrors (conceptErrors);
             }
           }
+        }
+      } else if (threadUINavigator.getCurrentView () instanceof Maritime) {
+        final Maritime homeView = (Maritime) threadUINavigator.getCurrentView();
+        if (homeView.getCurrentPage() instanceof MaritimePage) {
+          homeView.setToopDataBean(bean);
+          final MaritimePage page = (MaritimePage) homeView.getCurrentPage();
+
+//          final String expectedUuid = page.getRequestId ();
+//
+//          if (aResponse.getDataRequestIdentifier () != null && expectedUuid != null
+//                  && expectedUuid.equals (aResponse.getDataRequestIdentifier ().getValue ())) {
+//            if (!aResponse.hasErrorEntries ()) {
+//
+//              final IdentifierType documentTypeIdentifier = aResponse.getRoutingInformation ()
+//                      .getDocumentTypeIdentifier ();
+//
+//              if (documentTypeIdentifier.getValue ().contains ("registeredorganization")) {
+//                page.addMainCompanyForm ();
+//              } else {
+//                page.addKeyValueForm ();
+//              }
+//            } else {
+//              page.setError (aResponse.getError ());
+//            }
+//
+//            final String conceptErrors = getConceptErrors (aResponse);
+//            if (!conceptErrors.isEmpty ()) {
+//              page.setConceptErrors (conceptErrors);
+//            }
+//          }
+//        }
         }
       }
 
