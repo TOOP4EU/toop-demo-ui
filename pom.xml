@@ -86,12 +86,12 @@
       <dependency>
         <groupId>eu.toop</groupId>
         <artifactId>toop-commons</artifactId>
-        <version>0.10.4</version>
+        <version>0.10.5</version>
       </dependency>
       <dependency>
         <groupId>eu.toop</groupId>
         <artifactId>toop-interface</artifactId>
-        <version>0.10.4</version>
+        <version>0.10.5</version>
       </dependency>
       <dependency>
         <groupId>com.helger</groupId>
