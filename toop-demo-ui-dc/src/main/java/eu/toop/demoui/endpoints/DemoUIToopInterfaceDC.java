@@ -95,8 +95,13 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
           dRec.getDocumentResponse().forEach(dResp -> {
             bean.getKeyValList().add(new SimpleEntry<>("Document Name:",dResp.getDocumentName().getValue()));
             bean.getKeyValList().add(new SimpleEntry<>("Document Issue Date:",dResp.getDocumentIssueDate().getValue().toString()));
+            bean.getKeyValList().add(new SimpleEntry<>("Document Issue Place:",dResp.getDocumentIssuePlace().getValue()));
             bean.getKeyValList().add(new SimpleEntry<>("Document Description:",dResp.getDocumentDescription().getValue()));
             bean.getKeyValList().add(new SimpleEntry<>("Document Identifier:",dResp.getDocumentIdentifier().getValue()));
+            dResp.getDocument().forEach(doc -> {
+              bean.getKeyValList().add(new SimpleEntry<>("Document URI:", doc.getDocumentURI().getValue()));
+              bean.getKeyValList().add(new SimpleEntry<>("Document MIME Type:", doc.getDocumentMimeTypeCode().getValue()));
+            });
           });
         });
       }
