@@ -57,8 +57,10 @@ import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
-public class DynamicRequestPage extends CustomLayout {
-  private static enum ERequestType {
+public class DynamicRequestPage extends CustomLayout
+{
+  private static enum ERequestType
+  {
     DATA,
     DOCUMENT
   }
@@ -66,8 +68,8 @@ public class DynamicRequestPage extends CustomLayout {
   private final BaseView view;
   private final ProgressBar spinner = new ProgressBar ();
 
-  private final ComboBox<String> countryCodeField = new ComboBox<> ();
-  private final ComboBox<EPredefinedDocumentTypeIdentifier> documentTypeField = new ComboBox<> ();
+  private final ComboBox <String> countryCodeField = new ComboBox <> ();
+  private final ComboBox <EPredefinedDocumentTypeIdentifier> documentTypeField = new ComboBox <> ();
   private final TextField naturalPersonIdentifierField = new TextField ();
   private final TextField naturalPersonFirstNameField = new TextField ();
   private final TextField naturalPersonFamilyNameField = new TextField ();
@@ -85,11 +87,12 @@ public class DynamicRequestPage extends CustomLayout {
   private Label requestIdLabel = null;
   private boolean responseReceived = false;
   private final StopWatch sw = StopWatch.createdStopped ();
-  private final Timer timeoutTimer = new Timer ();
+  private Timer timeoutTimer;
 
-  private final static List<ConceptValue> conceptList = new ArrayList<> ();
+  private final static List <ConceptValue> conceptList = new ArrayList <> ();
 
-  static {
+  static
+  {
     final String sNS = DCUIConfig.getConceptNamespace ();
     conceptList.add (new ConceptValue (sNS, "FreedoniaStreetAddress"));
     conceptList.add (new ConceptValue (sNS, "FreedoniaSSNumber"));
@@ -106,7 +109,8 @@ public class DynamicRequestPage extends CustomLayout {
     conceptList.add (new ConceptValue (sNS, "FreedoniaLegalStatusEffectiveDate"));
   }
 
-  public DynamicRequestPage (final BaseView view) {
+  public DynamicRequestPage (final BaseView view)
+  {
 
     super ("DynamicRequestPage");
     this.view = view;
@@ -133,7 +137,7 @@ public class DynamicRequestPage extends CustomLayout {
     countryCodeField.setItems (DCUIConfig.getCountryCodes ());
     documentTypeField.setStyleName ("documentTypeDropdown");
     // add all Request document types only
-    final List<EPredefinedDocumentTypeIdentifier> aDocTypes = new ArrayList<> ();
+    final List <EPredefinedDocumentTypeIdentifier> aDocTypes = new ArrayList <> ();
     for (final EPredefinedDocumentTypeIdentifier e : EPredefinedDocumentTypeIdentifier.values ())
       if (e.getID ().contains ("::Request##"))
         aDocTypes.add (e);
@@ -155,9 +159,11 @@ public class DynamicRequestPage extends CustomLayout {
     dataProvidersFindButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
     dataProvidersFindButton.addClickListener ( (evt) -> {
 
-      new DataProviderSelectionWindow (view, countryCodeField.getValue ()) {
+      new DataProviderSelectionWindow (view, countryCodeField.getValue ())
+      {
         @Override
-        public void onSave (final String participantScheme, final String participantValue) {
+        public void onSave (final String participantScheme, final String participantValue)
+        {
           dataProviderScheme.setValue (participantScheme);
           dataProviderName.setValue (participantValue);
 
@@ -168,7 +174,8 @@ public class DynamicRequestPage extends CustomLayout {
         }
 
         @Override
-        public void onCancel () {
+        public void onCancel ()
+        {
           dataProvidersFindButton.setVisible (true);
           dataProvidersManualButton.setVisible (true);
           dataProviderScheme.setVisible (false);
@@ -201,16 +208,19 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (sendDocumentRequestButton, "sendDocumentRequestButton");
   }
 
-  class SendRequest implements Button.ClickListener {
+  class SendRequest implements Button.ClickListener
+  {
 
     private final ERequestType type;
 
-    public SendRequest (final ERequestType type) {
+    public SendRequest (final ERequestType type)
+    {
       this.type = type;
     }
 
     @Override
-    public void buttonClick (final Button.ClickEvent clickEvent) {
+    public void buttonClick (final Button.ClickEvent clickEvent)
+    {
 
       responseReceived = false;
       resetError ();
@@ -218,20 +228,26 @@ public class DynamicRequestPage extends CustomLayout {
       removeKeyValueForm ();
       sw.restart ();
 
-      try {
+      try
+      {
         final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode () + "/";
 
-        if (type == ERequestType.DATA) {
+        if (type == ERequestType.DATA)
+        {
           ToopKafkaClient.send (EErrorLevel.INFO,
-                                () -> "[DC] Requesting concepts: "
-                                      + StringHelper.getImplodedMapped (", ", conceptList,
-                                                                        x -> x.getNamespace () + "#" + x.getValue ()));
-        } else {
+                                () -> "[DC] Requesting concepts: " +
+                                      StringHelper.getImplodedMapped (", ",
+                                                                      conceptList,
+                                                                      x -> x.getNamespace () + "#" + x.getValue ()));
+        }
+        else
+        {
           ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting document.");
         }
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
-        if (!naturalPersonIdentifierField.isEmpty ()) {
+        if (!naturalPersonIdentifierField.isEmpty ())
+        {
           boolean bCanAddNaturalPerson = true;
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
 
@@ -240,22 +256,24 @@ public class DynamicRequestPage extends CustomLayout {
             aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.NATURAL_PERSON.getID ()));
             final String naturalPersonIdentifier = naturalPersonIdentifierField.getValue ();
             if (StringHelper.hasText (naturalPersonIdentifier))
-              aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix
-                                                                                 + naturalPersonIdentifier));
+              aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix +
+                                                                                 naturalPersonIdentifier));
             else
               bCanAddNaturalPerson = false;
           }
 
           // Mandatory field
           String naturalPersonFirstName = "";
-          if (!naturalPersonFirstNameField.isEmpty ()) {
+          if (!naturalPersonFirstNameField.isEmpty ())
+          {
             naturalPersonFirstName = naturalPersonFirstNameField.getValue ();
           }
           aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (naturalPersonFirstName));
 
           // Mandatory field
           String naturalPersonFamilyName = "";
-          if (!naturalPersonFamilyNameField.isEmpty ()) {
+          if (!naturalPersonFamilyNameField.isEmpty ())
+          {
             naturalPersonFamilyName = naturalPersonFamilyNameField.getValue ();
           }
           aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (naturalPersonFamilyName));
@@ -267,12 +285,14 @@ public class DynamicRequestPage extends CustomLayout {
           aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
           aNP.setNaturalPersonLegalAddress (aAddress);
 
-          if (bCanAddNaturalPerson) {
+          if (bCanAddNaturalPerson)
+          {
             aDS.setNaturalPerson (aNP);
           }
         }
 
-        if (!legalPersonUniqueIdentifierField.isEmpty ()) {
+        if (!legalPersonUniqueIdentifierField.isEmpty ())
+        {
           boolean bCanAddLegalPerson = true;
           final TDELegalPersonType aLP = new TDELegalPersonType ();
 
@@ -285,7 +305,8 @@ public class DynamicRequestPage extends CustomLayout {
 
           // Mandatory field
           String legalName = "";
-          if (!legalPersonCompanyNameField.isEmpty ()) {
+          if (!legalPersonCompanyNameField.isEmpty ())
+          {
             legalName = legalPersonCompanyNameField.getValue ();
           }
           aLP.setLegalName (ToopXSDHelper140.createTextWithLOA (legalName));
@@ -294,7 +315,8 @@ public class DynamicRequestPage extends CustomLayout {
           aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
           aLP.setLegalPersonLegalAddress (aAddress);
 
-          if (bCanAddLegalPerson) {
+          if (bCanAddLegalPerson)
+          {
             aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.LEGAL_ENTITY.getID ()));
             aDS.setLegalPerson (aLP);
           }
@@ -304,27 +326,31 @@ public class DynamicRequestPage extends CustomLayout {
         final String dstCountryCode = countryCodeField.getValue ();
         final EPredefinedDocumentTypeIdentifier eDocumentTypeID = documentTypeField.getValue ();
         final EPredefinedProcessIdentifier eProcessID;
-        if (eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE
-            || eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE_LIST
-            || eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE
-            || eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE_LIST)
+        if (eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE ||
+            eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE_LIST ||
+            eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE ||
+            eDocumentTypeID == EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE_LIST)
           eProcessID = EPredefinedProcessIdentifier.TWOPHASEDREQUESTRESPONSE;
-        else if (type == ERequestType.DATA)
-          eProcessID = EPredefinedProcessIdentifier.DATAREQUESTRESPONSE;
         else
-          eProcessID = EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE;
-        final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
+          if (type == ERequestType.DATA)
+            eProcessID = EPredefinedProcessIdentifier.DATAREQUESTRESPONSE;
+          else
+            eProcessID = EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE;
+        final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS,
+                                                                                     srcCountryCode,
                                                                                      dstCountryCode,
                                                                                      ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
                                                                                                                         DCUIConfig.getSenderIdentifierValue ()),
-                                                                                     eDocumentTypeID, eProcessID,
+                                                                                     eDocumentTypeID,
+                                                                                     eProcessID,
                                                                                      type == ERequestType.DATA ? conceptList
                                                                                                                : null);
 
         final UUID uuid = UUID.randomUUID ();
         requestIdLabel = new Label (uuid.toString ());
         addComponent (requestIdLabel, "requestId");
-        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("UUID", null,
+        aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("UUID",
+                                                                                          null,
                                                                                           uuid.toString ()));
         aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier (EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME,
                                                                                 eDocumentTypeID.getID ()
@@ -332,7 +358,8 @@ public class DynamicRequestPage extends CustomLayout {
                                                                                                            eDocumentTypeID.getID ()
                                                                                                                           .indexOf ("##"))));
 
-        if (type == ERequestType.DOCUMENT) {
+        if (type == ERequestType.DOCUMENT)
+        {
           final TDEDocumentRequestType documentRequestType = new TDEDocumentRequestType ();
           documentRequestType.setDocumentURI (ToopXSDHelper140.createIdentifier ("https://koolitus.emde.ee/cc/b0/67/123456"));
           documentRequestType.setDocumentRequestIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency",
@@ -343,15 +370,19 @@ public class DynamicRequestPage extends CustomLayout {
           aRequest.addDocumentRequest (documentRequestType);
         }
 
-        if (!dataProviderScheme.isEmpty () && !dataProviderName.isEmpty ()) {
+        if (!dataProviderScheme.isEmpty () && !dataProviderName.isEmpty ())
+        {
           final TDERoutingInformationType routingInformation = aRequest.getRoutingInformation ();
           routingInformation.setDataProviderElectronicAddressIdentifier (ToopXSDHelper140.createIdentifier (dataProviderScheme.getValue (),
                                                                                                             dataProviderName.getValue ()));
           aRequest.setRoutingInformation (routingInformation);
 
           ToopKafkaClient.send (EErrorLevel.INFO,
-                                () -> "[DC] Set routing information to specific data provider: ["
-                                      + dataProviderScheme.getValue () + ", " + dataProviderName.getValue () + "]");
+                                () -> "[DC] Set routing information to specific data provider: [" +
+                                      dataProviderScheme.getValue () +
+                                      ", " +
+                                      dataProviderName.getValue () +
+                                      "]");
         }
 
         DemoUIToopInterfaceHelper.dumpRequest (aRequest);
@@ -365,65 +396,96 @@ public class DynamicRequestPage extends CustomLayout {
         // setEnabled (false);
 
         // Fake response
-        timeoutTimer.schedule (new TimerTask () {
-          @Override
-          public void run () {
-            if (!responseReceived)
-              setErrorTimeout ();
-          }
-        }, 60000);
-      } catch (final IOException | ToopErrorException ex) {
+        if (timeoutTimer == null)
+        {
+          timeoutTimer = new Timer ();
+          timeoutTimer.schedule (new TimerTask ()
+          {
+            @Override
+            public void run ()
+            {
+              if (!responseReceived)
+                setErrorTimeout ();
+            }
+          }, 60000);
+        }
+      }
+      catch (final IOException | ToopErrorException ex)
+      {
         // Convert from checked to unchecked
         throw new RuntimeException (ex);
       }
     }
   }
 
-  private void _onResponseReceived () {
+  private void _onResponseReceived ()
+  {
     responseReceived = true;
-    timeoutTimer.cancel ();
+    if (timeoutTimer != null)
+    {
+      timeoutTimer.cancel ();
+      timeoutTimer = null;
+    }
     spinner.setVisible (false);
     sw.stop ();
     addComponent (new Label ("Last request took " + sw.getMillis () + " milliseconds"), "durationText");
   }
 
-  public void setError (final List<TDEErrorType> errors) {
+  public void setError (final List <TDEErrorType> errors)
+  {
     _onResponseReceived ();
 
     final StringBuilder sb = new StringBuilder ();
 
-    for (final TDEErrorType tdeErrorType : errors) {
+    for (final TDEErrorType tdeErrorType : errors)
+    {
       sb.append (" Error: ").append ("\n");
 
-      if (tdeErrorType.getOrigin () != null) {
+      if (tdeErrorType.getOrigin () != null)
+      {
         sb.append (" - Origin: ").append (tdeErrorType.getOrigin ().getValue ()).append ("\n");
-      } else {
+      }
+      else
+      {
         sb.append (" - Origin: ").append ("N/A").append ("\n");
       }
 
-      if (tdeErrorType.getCategory () != null) {
+      if (tdeErrorType.getCategory () != null)
+      {
         sb.append (" - Category: ").append (tdeErrorType.getCategory ().getValue ()).append ("\n");
-      } else {
+      }
+      else
+      {
         sb.append (" - Category: ").append ("N/A").append ("\n");
       }
 
-      if (tdeErrorType.getErrorCode () != null) {
+      if (tdeErrorType.getErrorCode () != null)
+      {
         sb.append (" - Error Code: ").append (tdeErrorType.getErrorCode ().getValue ()).append ("\n");
-      } else {
+      }
+      else
+      {
         sb.append (" - Error Code: ").append ("N/A").append ("\n");
       }
 
-      if (tdeErrorType.getSeverity () != null) {
+      if (tdeErrorType.getSeverity () != null)
+      {
         sb.append (" - Severity: ").append (tdeErrorType.getSeverity ().getValue ()).append ("\n");
-      } else {
+      }
+      else
+      {
         sb.append (" - Severity: ").append ("N/A").append ("\n");
       }
 
-      for (final TextType errorText : tdeErrorType.getErrorText ()) {
+      for (final TextType errorText : tdeErrorType.getErrorText ())
+      {
 
-        if (errorText != null) {
+        if (errorText != null)
+        {
           sb.append (" - Error Text: ").append (errorText.getValue ()).append ("\n");
-        } else {
+        }
+        else
+        {
           sb.append (" - Error Text: ").append ("N/A").append ("\n");
         }
       }
@@ -434,7 +496,8 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (errorLabel, "errorLabel");
   }
 
-  public void setErrorTimeout () {
+  public void setErrorTimeout ()
+  {
 
     _onResponseReceived ();
 
@@ -447,7 +510,8 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (errorLabel, "errorLabel");
   }
 
-  public void setConceptErrors (final String conceptErrors) {
+  public void setConceptErrors (final String conceptErrors)
+  {
 
     _onResponseReceived ();
 
@@ -456,11 +520,13 @@ public class DynamicRequestPage extends CustomLayout {
     addComponent (conceptErrorsLabel, "conceptErrorsLabel");
   }
 
-  public void resetError () {
+  public void resetError ()
+  {
     removeComponent ("errorLabel");
   }
 
-  public void addMainCompanyForm () {
+  public void addMainCompanyForm ()
+  {
 
     _onResponseReceived ();
 
@@ -471,7 +537,8 @@ public class DynamicRequestPage extends CustomLayout {
     view.setMainCompanyForm (mainCompanyForm);
   }
 
-  public void addKeyValueForm () {
+  public void addKeyValueForm ()
+  {
 
     _onResponseReceived ();
 
@@ -482,16 +549,20 @@ public class DynamicRequestPage extends CustomLayout {
     view.setKeyValueForm (keyValueForm);
   }
 
-  public void removeMainCompanyForm () {
+  public void removeMainCompanyForm ()
+  {
     removeComponent ("mainCompanyForm");
   }
 
-  public void removeKeyValueForm () {
+  public void removeKeyValueForm ()
+  {
     removeComponent ("keyValueForm");
   }
 
-  public String getRequestId () {
-    if (requestIdLabel != null) {
+  public String getRequestId ()
+  {
+    if (requestIdLabel != null)
+    {
       return requestIdLabel.getValue ();
     }
     return null;
