@@ -38,9 +38,7 @@ import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.ReverseDocumentTypeMapping;
 import eu.toop.demoui.DPUIConfig;
-import eu.toop.demoui.certificate.CertificateProcessContext;
-import eu.toop.demoui.certificate.CertificateProcessStrategy;
-import eu.toop.demoui.certificate.CertificateProcessStrategyBuilder;
+import eu.toop.demoui.certificate.*;
 import eu.toop.iface.IToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceClient;
 import eu.toop.iface.ToopInterfaceConfig;
@@ -132,20 +130,20 @@ public final class DemoUIToopInterfaceDP implements IToopInterfaceDP {
         // handle document request
         if (aResponse.hasDocumentRequestEntries()) {
 
-//            if (eDocType == EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE_LIST ||
-//                    eDocType == EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE_LIST)
-//                HandlerDocumentRequestList.handle(sLogPrefix, aResponse);
-//            else
-//                HandlerDocumentRequestPDF.handle(sLogPrefix, aRequest, aResponse, documentEntries);
+            final CertificateProcessContext processContext;
+            final CertificateProcessStrategy processStrategy;
 
-            CertificateProcessStrategy processStrategy = new CertificateProcessStrategyBuilder()
-                    .setLogPrefix(sLogPrefix)
-                    .setRequest(aRequest)
-                    .setResponse(aResponse)
-                    .setDocumentEntries(documentEntries)
-                    .build(eDocType);
+            if (eDocType == EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE_LIST ||
+                    eDocType == EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE_LIST) {
 
-            CertificateProcessContext processContext = new CertificateProcessContext(processStrategy);
+                processStrategy = new MaritimeCertificateProcessStrategy(sLogPrefix, aResponse);
+                processContext = new CertificateProcessContext(processStrategy);
+            } else {
+
+                processStrategy = new NonMaritimeCertificateProcessStrategy(sLogPrefix, aRequest, aResponse, documentEntries);
+                processContext = new CertificateProcessContext(processStrategy);
+            }
+
             processContext.executeProcessStrategy();
         }
 
