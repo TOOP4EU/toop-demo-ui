@@ -265,32 +265,32 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
           homeView.setToopDataBean(bean);
           final MaritimePage page = (MaritimePage) homeView.getCurrentPage();
 
-//          final String expectedUuid = page.getRequestId ();
-//
-//          if (aResponse.getDataRequestIdentifier () != null && expectedUuid != null
-//                  && expectedUuid.equals (aResponse.getDataRequestIdentifier ().getValue ())) {
-//            if (!aResponse.hasErrorEntries ()) {
-//
-//              final IdentifierType documentTypeIdentifier = aResponse.getRoutingInformation ()
-//                      .getDocumentTypeIdentifier ();
-//
-//              if (documentTypeIdentifier.getValue ().contains ("registeredorganization")) {
-//                page.addMainCompanyForm ();
-//              } else {
-//                page.addKeyValueForm ();
-//              }
-//            } else {
-//              page.setError (aResponse.getError ());
-//            }
-//
-//            final String conceptErrors = getConceptErrors (aResponse);
-//            if (!conceptErrors.isEmpty ()) {
-//              page.setConceptErrors (conceptErrors);
-//            }
-//          }
-//        }
+          final String expectedUuid = page.getRequestId ();
+
+          if (aResponse.getDataRequestIdentifier() != null && expectedUuid != null
+                  && expectedUuid.equals (aResponse.getDataRequestIdentifier ().getValue())) {
+            if (!aResponse.hasErrorEntries ()) {
+
+              final IdentifierType documentTypeIdentifier = aResponse.getRoutingInformation ()
+                      .getDocumentTypeIdentifier ();
+
+              if (documentTypeIdentifier.getValue ().contains ("registeredorganization")) {
+                page.addMainCompanyForm ();
+              } else {
+                page.addKeyValueForm ();
+              }
+            } else {
+              page.setError (aResponse.getError ());
+            }
+
+            final String conceptErrors = getConceptErrors (aResponse);
+            if (!conceptErrors.isEmpty ()) {
+              page.setConceptErrors (conceptErrors);
+            }
+          }
         }
-      }
+        }
+
 
       ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Pushed new bean data to the Demo UI: " + bean);
     } catch (final Exception e) {
