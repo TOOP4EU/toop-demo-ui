@@ -49,7 +49,13 @@ public class MaritimeCertificateProcessStrategy implements CertificateProcessStr
                 tdeDocument.setDocumentMimeTypeCode(ToopXSDHelper140.createCode(CMimeType.APPLICATION_PDF.getAsString()));
                 documentResponseType.addDocument(tdeDocument);
             }
-
+            // FIXME Setters values should probably change
+            {
+                final TDEDocumentType tdeDocument = new TDEDocumentType();
+                tdeDocument.setDocumentURI(ToopXSDHelper140.createIdentifier(UUID.randomUUID().toString()));
+                tdeDocument.setDocumentMimeTypeCode(ToopXSDHelper140.createCode(CMimeType.APPLICATION_PDF.getAsString()));
+                documentResponseType.addDocument(tdeDocument);
+            }
             documentRequestType.setDocumentResponse(new CommonsArrayList<>(documentResponseType));
         }
     }
