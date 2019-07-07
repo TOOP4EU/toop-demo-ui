@@ -17,23 +17,20 @@
 package eu.toop.demoui.layouts;
 
 import com.helger.commons.error.level.EErrorLevel;
-import com.helger.commons.string.StringHelper;
 import com.helger.commons.timing.StopWatch;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
-import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
-import eu.toop.commons.dataexchange.v140.*;
+import eu.toop.commons.dataexchange.v140.TDEErrorType;
+import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.error.ToopErrorException;
-import eu.toop.commons.exchange.ToopMessageBuilder140;
-import eu.toop.commons.jaxb.ToopXSDHelper140;
-import eu.toop.commons.usecase.EToopEntityType;
 import eu.toop.demoui.DCToToopInterfaceMapper;
 import eu.toop.demoui.DCUIConfig;
+import eu.toop.demoui.builder.TOOPRequestMaker;
+import eu.toop.demoui.builder.model.Request;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceHelper;
 import eu.toop.demoui.view.BaseView;
-import eu.toop.demoui.view.Maritime;
 import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
@@ -58,8 +55,8 @@ public class MaritimePage extends CustomLayout {
     private final TextField dataProviderName = new TextField ();
     private Label errorLabel = null;
     private Label conceptErrorsLabel = null;
-    private final Button dataProvidersFindButton = new Button ("Find Data Providers");
-    private final Button dataProvidersManualButton = new Button ("Manually enter Data Provider");
+//    private final Button dataProvidersFindButton = new Button ("Find Data Providers");
+//    private final Button dataProvidersManualButton = new Button ("Manually enter Data Provider");
 //    private final Button sendButton = new Button ("Send Data Element Request");
     private final Button sendDocumentRequestButton = new Button ("Send Document Request");
 
@@ -115,49 +112,13 @@ public class MaritimePage extends CustomLayout {
         addComponent (dataProviderScheme, "dataProviderScheme");
         addComponent (dataProviderName, "dataProviderName");
 
-        dataProvidersFindButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
-        dataProvidersFindButton.addClickListener ( (evt) -> {
-
-            new DataProviderSelectionWindow (view, countryCodeField.getValue ()) {
-                @Override
-                public void onSave (final String participantScheme, final String participantValue) {
-                    dataProviderScheme.setValue (participantScheme);
-                    dataProviderName.setValue (participantValue);
-
-                    dataProvidersFindButton.setVisible (false);
-                    dataProvidersManualButton.setVisible (false);
-                    dataProviderScheme.setVisible (true);
-                    dataProviderName.setVisible (true);
-                }
-
-                @Override
-                public void onCancel () {
-                    dataProvidersFindButton.setVisible (true);
-                    dataProvidersManualButton.setVisible (true);
-                    dataProviderScheme.setVisible (false);
-                    dataProviderName.setVisible (false);
-                }
-            };
-        });
-
-        dataProvidersManualButton.addStyleName (ValoTheme.BUTTON_BORDERLESS);
-        dataProvidersManualButton.addClickListener ( (evt) -> {
-            ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Manual entry of data provider...");
-            dataProvidersFindButton.setVisible (false);
-            dataProvidersManualButton.setVisible (false);
-            dataProviderScheme.setVisible (true);
-            dataProviderName.setVisible (true);
-            dataProviderScheme.setReadOnly (false);
-            dataProviderName.setReadOnly (false);
-        });
-
         /* Document Request Button - styles - listener*/
         sendDocumentRequestButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         sendDocumentRequestButton.addStyleName ("ConsentAgreeButton");
         sendDocumentRequestButton.addClickListener (new MaritimePage.SendRequest());
 
-        addComponent (dataProvidersFindButton, "dataProvidersFindButton");
-        addComponent (dataProvidersManualButton, "dataProvidersManualButton");
+//        addComponent (dataProvidersFindButton, "dataProvidersFindButton");
+//        addComponent (dataProvidersManualButton, "dataProvidersManualButton");
         addComponent (sendDocumentRequestButton, "sendDocumentRequestButton");
 
     }
@@ -176,124 +137,45 @@ public class MaritimePage extends CustomLayout {
             sw.restart ();
 
             try {
-                final String identifierPrefix = countryCodeField.getValue () + "/" + DCUIConfig.getSenderCountryCode () + "/";
+
+                Request formValues = new Request(countryCodeField.getValue(), documentTypeField.getValue());
+
+                if(!naturalPersonIdentifierField.isEmpty()) {
+                    formValues.setNaturalPersonIdentifier(naturalPersonIdentifierField.getValue());
+                }
+                if (!naturalPersonFirstNameField.isEmpty()) {
+                    formValues.setNaturalPersonFirstName(naturalPersonFirstNameField.getValue());
+                }
+                if(!naturalPersonFamilyNameField.isEmpty()) {
+                    formValues.setNaturalPersonFamilyName(naturalPersonFamilyNameField.getValue());
+                }
+                if(!IMOIdentifierField.isEmpty()) {
+                    formValues.setId(IMOIdentifierField.getValue());
+                }
+                if (!documentIdentifierField.isEmpty()) {
+                    formValues.setDocumentIdentifier(documentIdentifierField.getValue());
+                }
+
                 ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting document.");
 
-                final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
-                if (!naturalPersonIdentifierField.isEmpty ()) {
-                    boolean bCanAddNaturalPerson = true;
-                    final TDENaturalPersonType aNP = new TDENaturalPersonType ();
-
-                    // Mandatory field - checked in Schematrin
-                    {
-                        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.NATURAL_PERSON.getID ()));
-                        final String naturalPersonIdentifier = naturalPersonIdentifierField.getValue ();
-                        if (StringHelper.hasText (naturalPersonIdentifier))
-                            aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix
-                                    + naturalPersonIdentifier));
-                        else
-                            bCanAddNaturalPerson = false;
-                    }
-
-                    // Mandatory field
-                    String naturalPersonFirstName = "";
-                    if (!naturalPersonFirstNameField.isEmpty ()) {
-                        naturalPersonFirstName = naturalPersonFirstNameField.getValue ();
-                    }
-                    aNP.setFirstName (ToopXSDHelper140.createTextWithLOA (naturalPersonFirstName));
-
-                    // Mandatory field
-                    String naturalPersonFamilyName = "";
-                    if (!naturalPersonFamilyNameField.isEmpty ()) {
-                        naturalPersonFamilyName = naturalPersonFamilyNameField.getValue ();
-                    }
-                    aNP.setFamilyName (ToopXSDHelper140.createTextWithLOA (naturalPersonFamilyName));
-
-                    // Mandatory field
-                    aNP.setBirthDate (ToopXSDHelper140.createDateWithLOANow ());
-
-                    final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
-                    aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
-                    aNP.setNaturalPersonLegalAddress (aAddress);
-
-                    if (bCanAddNaturalPerson) {
-                        aDS.setNaturalPerson (aNP);
-                    }
-                }
-                /* can a ship add a legal person? */
-                if (!IMOIdentifierField.isEmpty ()) {
-                    boolean bCanAddLegalPerson = true;
-                    final TDELegalPersonType aLP = new TDELegalPersonType ();
-
-                    // Mandatory field
-                    final String id = IMOIdentifierField.getValue ();
-                    if (StringHelper.hasText (id))
-                        aLP.setLegalPersonUniqueIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix + id));
-                    else
-                        bCanAddLegalPerson = false;
-
-                    // Mandatory field
-                    String legalName = "";
-//                    if (!legalPersonCompanyNameField.isEmpty ()) {
-//                        legalName = legalPersonCompanyNameField.getValue ();
-//                    }
-                    aLP.setLegalName (ToopXSDHelper140.createTextWithLOA (legalName));
-
-                    final TDEAddressWithLOAType aAddress = new TDEAddressWithLOAType ();
-                    aAddress.setCountryCode (ToopXSDHelper140.createCodeWithLOA (countryCodeField.getValue ()));
-                    aLP.setLegalPersonLegalAddress (aAddress);
-
-                    if (bCanAddLegalPerson) {
-                        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.LEGAL_ENTITY.getID ()));
-                        aDS.setLegalPerson (aLP);
-                    }
-                }
-
-                final String srcCountryCode = DCUIConfig.getSenderCountryCode ();
-                final String dstCountryCode = countryCodeField.getValue ();
-                final EPredefinedDocumentTypeIdentifier eDocumentTypeID = documentTypeField.getValue ();
-                // maritime uses twophaserequestresponse
-                final EPredefinedProcessIdentifier eProcessID  = EPredefinedProcessIdentifier.TWOPHASEDREQUESTRESPONSE;
-
-//              /* Maritime conceptlist is null */
-                final TDETOOPRequestType aRequest = ToopMessageBuilder140.createMockRequest (aDS, srcCountryCode,
-                        dstCountryCode,
-                        ToopXSDHelper140.createIdentifier (DCUIConfig.getSenderIdentifierScheme (),
-                                DCUIConfig.getSenderIdentifierValue ()),
-                        eDocumentTypeID, eProcessID, null);
+                TOOPRequestMaker makeRequest = new TOOPRequestMaker(formValues);
+                final TDETOOPRequestType aRequest = makeRequest.createTOOPRequest();
 
                 final UUID uuid = UUID.randomUUID ();
-                requestIdLabel = new Label (uuid.toString ());
+                requestIdLabel = new Label (aRequest.getDocumentUniversalUniqueIdentifier().getValue());
                 addComponent (requestIdLabel, "requestId");
-                aRequest.setDocumentUniversalUniqueIdentifier (ToopXSDHelper140.createIdentifier ("UUID", null,
-                        uuid.toString ()));
-                aRequest.setSpecificationIdentifier (ToopXSDHelper140.createIdentifier (EPredefinedDocumentTypeIdentifier.DOC_TYPE_SCHEME,
-                        eDocumentTypeID.getID ()
-                                .substring (0,
-                                        eDocumentTypeID.getID ()
-                                                .indexOf ("##"))));
-
-                /* IF DOCUMENT*/
-                final TDEDocumentRequestType documentRequestType = new TDEDocumentRequestType ();
-                documentRequestType.setDocumentURI (ToopXSDHelper140.createIdentifier ("https://koolitus.emde.ee/cc/b0/67/123456"));
-                documentRequestType.setDocumentRequestIdentifier (ToopXSDHelper140.createIdentifier ("demo-agency",
-                        "toop-doctypeid-qns",
-                        UUID.randomUUID ()
-                                .toString ()));
-                documentRequestType.setDocumentRequestTypeCode (ToopXSDHelper140.createCode ("ETR"));
-                aRequest.addDocumentRequest (documentRequestType);
 
 
-                if (!dataProviderScheme.isEmpty () && !dataProviderName.isEmpty ()) {
-                    final TDERoutingInformationType routingInformation = aRequest.getRoutingInformation ();
-                    routingInformation.setDataProviderElectronicAddressIdentifier (ToopXSDHelper140.createIdentifier (dataProviderScheme.getValue (),
-                            dataProviderName.getValue ()));
-                    aRequest.setRoutingInformation (routingInformation);
-
-                    ToopKafkaClient.send (EErrorLevel.INFO,
-                            () -> "[DC] Set routing information to specific data provider: ["
-                                    + dataProviderScheme.getValue () + ", " + dataProviderName.getValue () + "]");
-                }
+//                if (!dataProviderScheme.isEmpty () && !dataProviderName.isEmpty ()) {
+//                    final TDERoutingInformationType routingInformation = aRequest.getRoutingInformation ();
+//                    routingInformation.setDataProviderElectronicAddressIdentifier (ToopXSDHelper140.createIdentifier (dataProviderScheme.getValue (),
+//                            dataProviderName.getValue ()));
+//                    aRequest.setRoutingInformation (routingInformation);
+//
+//                    ToopKafkaClient.send (EErrorLevel.INFO,
+//                            () -> "[DC] Set routing information to specific data provider: ["
+//                                    + dataProviderScheme.getValue () + ", " + dataProviderName.getValue () + "]");
+//                }
 
                 DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
@@ -323,7 +205,7 @@ public class MaritimePage extends CustomLayout {
     private void _onResponseReceived () {
         responseReceived = true;
         timeoutTimer.cancel ();
-        spinner.setVisible (false);
+        spinner.setVisible(false);
         sw.stop ();
         addComponent (new Label ("Last request took " + sw.getMillis () + " milliseconds"), "durationText");
     }
