@@ -473,6 +473,7 @@ public class DynamicRequestPage extends CustomLayout {
     view.setMainCompanyForm (mainCompanyForm);
   }
 
+
   public void addKeyValueForm () {
 
     _onResponseReceived ();
