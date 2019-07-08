@@ -22,11 +22,14 @@ import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
+import eu.toop.commons.dataexchange.v140.TDEDocumentResponseType;
 import eu.toop.commons.dataexchange.v140.TDEErrorType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
+import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.error.ToopErrorException;
 import eu.toop.demoui.DCToToopInterfaceMapper;
 import eu.toop.demoui.DCUIConfig;
+import eu.toop.demoui.bean.DocumentDataBean;
 import eu.toop.demoui.builder.TOOPRequestMaker;
 import eu.toop.demoui.builder.model.Request;
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceHelper;
@@ -161,21 +164,8 @@ public class MaritimePage extends CustomLayout {
                 TOOPRequestMaker makeRequest = new TOOPRequestMaker(formValues);
                 final TDETOOPRequestType aRequest = makeRequest.createTOOPRequest();
 
-                final UUID uuid = UUID.randomUUID ();
                 requestIdLabel = new Label (aRequest.getDocumentUniversalUniqueIdentifier().getValue());
                 addComponent (requestIdLabel, "requestId");
-
-
-//                if (!dataProviderScheme.isEmpty () && !dataProviderName.isEmpty ()) {
-//                    final TDERoutingInformationType routingInformation = aRequest.getRoutingInformation ();
-//                    routingInformation.setDataProviderElectronicAddressIdentifier (ToopXSDHelper140.createIdentifier (dataProviderScheme.getValue (),
-//                            dataProviderName.getValue ()));
-//                    aRequest.setRoutingInformation (routingInformation);
-//
-//                    ToopKafkaClient.send (EErrorLevel.INFO,
-//                            () -> "[DC] Set routing information to specific data provider: ["
-//                                    + dataProviderScheme.getValue () + ", " + dataProviderName.getValue () + "]");
-//                }
 
                 DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
@@ -295,14 +285,28 @@ public class MaritimePage extends CustomLayout {
         view.setMainCompanyForm (mainCompanyForm);
     }
 
+    public void addDocumentCertificateList(List<DocumentDataBean> docResponseList) {
+        _onResponseReceived();
+
+        final DocumentCertificateList documentCertificateList = new DocumentCertificateList(docResponseList);
+
+        addComponent(documentCertificateList, "documentCertificateList");
+
+
+
+    }
+
     public void addKeyValueForm () {
 
         _onResponseReceived ();
+
+//        final Label test = new Label("This is a test to see how components are added");
 
         final KeyValueForm keyValueForm = new KeyValueForm (view.getToopDataBean (), false);
 
         final BaseForm baseForm = new BaseForm (keyValueForm, "Key value details");
         addComponent (baseForm, "keyValueForm");
+//        addComponent(test, "testLabel");
         view.setKeyValueForm (keyValueForm);
     }
 

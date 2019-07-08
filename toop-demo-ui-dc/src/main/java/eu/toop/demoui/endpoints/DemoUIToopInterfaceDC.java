@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.AbstractMap;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 import com.helger.commons.collection.impl.ICommonsList;
@@ -26,14 +27,11 @@ import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.ui.UI;
 
-import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
-import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
-import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
-import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
-import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
+import eu.toop.commons.dataexchange.v140.*;
 import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.demoui.DCToToopInterfaceMapper;
+import eu.toop.demoui.bean.DocumentDataBean;
 import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.layouts.DynamicRequestPage;
 import eu.toop.demoui.layouts.MaritimePage;
@@ -274,10 +272,10 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
               final IdentifierType documentTypeIdentifier = aResponse.getRoutingInformation ()
                       .getDocumentTypeIdentifier ();
 
-              if (documentTypeIdentifier.getValue ().contains ("registeredorganization")) {
-                page.addMainCompanyForm ();
-              } else {
-                page.addKeyValueForm ();
+              if (documentTypeIdentifier.getValue().contains ("ship") || documentTypeIdentifier.getValue().contains ("crew")) {
+                // add grid layout
+                final List<DocumentDataBean> docResponseList = DemoUIToopInterfaceHelper.getDocumentResponseDataBeanList(aResponse);
+                page.addDocumentCertificateList(docResponseList);
               }
             } else {
               page.setError (aResponse.getError ());

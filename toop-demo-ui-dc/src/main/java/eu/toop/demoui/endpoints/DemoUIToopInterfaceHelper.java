@@ -17,9 +17,17 @@ package eu.toop.demoui.endpoints;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import com.helger.commons.error.level.EErrorLevel;
+import eu.toop.commons.dataexchange.v140.TDEDocumentResponseType;
+import eu.toop.commons.dataexchange.v140.TDEDocumentType;
+import eu.toop.demoui.bean.DocumentDataBean;
+import eu.toop.kafkaclient.ToopKafkaClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,5 +70,58 @@ public final class DemoUIToopInterfaceHelper {
     if (ToopWriter.response140 ().write (aResponse, f).isFailure ())
       LOGGER.error ("Failed to write response to '" + filePath + "'");
   }
+
+  public static List<TDEDocumentResponseType> getDocumentResponseDataList(TDETOOPResponseType aResponse) {
+    final List<TDEDocumentResponseType> docResponseList = new ArrayList<>();
+
+    if (aResponse.getDocumentRequestCount () > 0) {
+      aResponse.getDocumentRequest().forEach( dRec -> {
+        dRec.getDocumentResponse().forEach(dResp -> {
+          docResponseList.add(dResp);
+        });
+      });
+    }
+    return docResponseList;
+  }
+
+  public static List<DocumentDataBean> getDocumentResponseDataBeanList(TDETOOPResponseType aResponse) {
+    final List<DocumentDataBean> docResponseList = new ArrayList<>();
+//    DocumentDataBean doc;
+
+    if (aResponse.getDocumentRequestCount () > 0) {
+      aResponse.getDocumentRequest().forEach( dRec -> {
+        dRec.getDocumentResponse().forEach(dResp -> {
+          DocumentDataBean doc = new DocumentDataBean();
+          doc.setDocumentDescription(dResp.getDocumentDescription().getValue());
+          doc.setDocumentName(dResp.getDocumentName().getValue());
+          doc.setDocumentIdentifier(dResp.getDocumentIdentifier().getValue());
+          doc.setDocumentIssueDate(dResp.getDocumentIssueDate().getValue().toString());
+          doc.setDocumentIssuePlace(dResp.getDocumentIssuePlace().getValue());
+          doc.setLegalReference(dResp.getLegalReference().getValue());
+          doc.setDocumentURI(dResp.getDocument().get(0).getDocumentURI().getValue());
+          doc.setDocumentMIMEType(dResp.getDocument().get(0).getDocumentMimeTypeCode().getValue());
+          docResponseList.add(doc);
+        });
+      });
+    }
+    return docResponseList;
+  }
+
+  public static List<TDEDocumentType> getDocumentDataList(TDETOOPResponseType aResponse) {
+    final List<TDEDocumentType> docList = new ArrayList<>();
+
+    if (aResponse.getDocumentRequestCount () > 0) {
+      aResponse.getDocumentRequest().forEach( dRec -> {
+        dRec.getDocumentResponse().forEach(dResp -> {
+          dResp.getDocument().forEach(doc -> {
+            docList.add(doc);
+          });
+        });
+      });
+    }
+    return docList;
+  }
+
+
 
 }
