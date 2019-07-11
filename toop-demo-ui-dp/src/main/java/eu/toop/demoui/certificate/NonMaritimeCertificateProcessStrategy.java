@@ -94,7 +94,9 @@ public class NonMaritimeCertificateProcessStrategy implements CertificateProcess
                     EPLPlaceholder.PAGESET_PAGE_COUNT.getVariable(),
                     r10b).setReplacePlaceholder(true).setHorzAlign(EHorzAlignment.RIGHT));
             aPS1.addElement(new PLText("This is the response to the request with UUID " +
-                    aRequest.getDocumentUniversalUniqueIdentifier().getValue(),
+                    // aRequest.getDocumentUniversalUniqueIdentifier().getValue(),
+                    // FIXME check for null values here
+                    aRequest.getDocumentRequest().get(0).getDocumentURI().getValue(),
                     r10));
             aPS1.addElement(new PLText("This dummy document was created at " +
                     PDTFactory.getCurrentLocalDateTime().toString(),
