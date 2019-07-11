@@ -111,7 +111,15 @@ public class TOOPRequestMaker {
 
     private TDEDocumentRequestType createDocumentRequestType() {
         final TDEDocumentRequestType documentRequestType = new TDEDocumentRequestType();
-        documentRequestType.setDocumentURI(dURI("https://koolitus.emde.ee/cc/b0/67/123456"));
+
+        if(formValues.geteDocumentTypeID().toString().contains("SHIPCERTIFICATE_LIST") ||
+                formValues.geteDocumentTypeID().toString().contains("CREWCERTIFICATE_LIST")) {
+                    documentRequestType.setDocumentURI(dURI("https://koolitus.emde.ee/cc/b0/67/123456"));
+        } else {
+            documentRequestType.setDocumentURI(dURI(formValues.getDocumentIdentifier()));
+        }
+//        documentRequestType.setDocumentURI(dURI("https://koolitus.emde.ee/cc/b0/67/123456"));
+//        documentRequestType.setDocumentURI(dURI(formValues.getDocumentIdentifier()));
         documentRequestType.setDocumentRequestIdentifier(dRequestIdentifier("demo-agency", "toop-doctypeid-qns"));
         documentRequestType.setDocumentRequestTypeCode(dRequestTypeCode("ETR"));
 

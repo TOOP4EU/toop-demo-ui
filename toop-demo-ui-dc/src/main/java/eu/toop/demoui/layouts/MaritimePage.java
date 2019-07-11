@@ -161,6 +161,8 @@ public class MaritimePage extends CustomLayout {
                 documentTypeField.setValue(EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE);
                 formValues = new Request(countryCodeField.getValue(), EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE);
             }
+            /* 2nd step: set always the DocumentIdentifier as the certificate's URI */
+            formValues.setDocumentIdentifier(uri);
 
             if(!naturalPersonIdentifierField.isEmpty()) {
                 formValues.setNaturalPersonIdentifier(naturalPersonIdentifierField.getValue());
@@ -173,9 +175,6 @@ public class MaritimePage extends CustomLayout {
             }
             if(!IMOIdentifierField.isEmpty()) {
                 formValues.setId(IMOIdentifierField.getValue());
-            }
-            if (!documentIdentifierField.isEmpty()) {
-                formValues.setDocumentIdentifier(uri);
             }
 
             ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting document.");
@@ -401,20 +400,8 @@ public class MaritimePage extends CustomLayout {
         grid.addColumn(DocumentDataBean::getDocumentIssuePlace).setCaption("Issue Place");
         grid.addColumn(DocumentDataBean::getDocumentIssueDate).setCaption("Issue Date");
         grid.addColumn(DocumentDataBean::getDocumentMIMEType).setCaption("MIME Type code");
-//        grid.addComponentColumn(this::getCertificateButton).setCaption("Download");
         grid.addComponentColumn(DocumentDataBean -> {
             Button certificateButton = getCertificateButton(DocumentDataBean.getDocumentURI());
-            if (view.getToopDataBean().getAttachments() != null && view.getToopDataBean().getAttachments().size() > 0) {
-                for (AsicReadEntry attachment : view.getToopDataBean().getAttachments()) {
-//                    Button downloadButton = new Button("Download " + attachment.getEntryName());
-
-                    StreamResource myResource = new StreamResource((StreamResource.StreamSource) () ->
-                            new ByteArrayInputStream(attachment.payload()), attachment.getEntryName());
-                    FileDownloader fileDownloader = new FileDownloader(myResource);
-//                    fileDownloader.extend(downloadButton);
-                    fileDownloader.extend(certificateButton);
-                }
-            }
             return certificateButton;
         });
         grid.setWidth("980");

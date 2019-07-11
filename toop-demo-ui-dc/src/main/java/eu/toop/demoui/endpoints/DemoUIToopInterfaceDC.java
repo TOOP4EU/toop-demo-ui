@@ -15,6 +15,7 @@
  */
 package eu.toop.demoui.endpoints;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.AbstractMap;
 
@@ -24,7 +25,12 @@ import javax.annotation.Nonnull;
 
 import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.error.level.EErrorLevel;
+import com.vaadin.data.Binder;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
 
 import eu.toop.commons.dataexchange.v140.*;
@@ -85,6 +91,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
       ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Current Navigator: " + threadUINavigator);
 
       final ToopDataBean bean = new ToopDataBean (attachments);
+      DocumentDataBean documentBean = new DocumentDataBean(attachments);
 
       // Get requested documents
       if (aResponse.getDocumentRequestCount () > 0) {
@@ -261,6 +268,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
         final Maritime homeView = (Maritime) threadUINavigator.getCurrentView();
         if (homeView.getCurrentPage() instanceof MaritimePage) {
           homeView.setToopDataBean(bean);
+          homeView.setDocumentDataBean(documentBean);
           final MaritimePage page = (MaritimePage) homeView.getCurrentPage();
 
           final String expectedUuid = page.getRequestId ();
@@ -272,10 +280,28 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
               final IdentifierType documentTypeIdentifier = aResponse.getRoutingInformation ()
                       .getDocumentTypeIdentifier ();
 
-              if (documentTypeIdentifier.getValue().contains ("ship") || documentTypeIdentifier.getValue().contains ("crew")) {
+              if (documentTypeIdentifier.getValue().contains ("list")) {
                 // add grid layout
                 final List<DocumentDataBean> docResponseList = DemoUIToopInterfaceHelper.getDocumentResponseDataBeanList(aResponse);
-                page.addDocumentCertificateList(docResponseList);
+                  page.addDocumentCertificateList(docResponseList);
+//                page.addComponent(page.addDocumentCertificateList(docResponseList), "documentCertificateList");
+                ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "GOT INTO GRID LIST FLOW");
+              }
+              else {
+                ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "GOT INTO ELSE attachments" + attachments);
+
+                if (documentBean.getAttachments() != null && documentBean.getAttachments().size() > 0) {
+                  for (AsicReadEntry attachment : documentBean.getAttachments()) {
+                    ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "DocumentBeanAttachments" + documentBean.getAttachments());
+                    Button downloadButton = new Button("Download " + attachment.getEntryName());
+
+                    StreamResource myResource = new StreamResource((StreamResource.StreamSource) () ->
+                            new ByteArrayInputStream(attachment.payload()), attachment.getEntryName());
+                    FileDownloader fileDownloader = new FileDownloader(myResource);
+                    fileDownloader.extend(downloadButton);
+//                    page.getComponent("documentCertificateList").get
+                  }
+                }
               }
             } else {
               page.setError (aResponse.getError ());
