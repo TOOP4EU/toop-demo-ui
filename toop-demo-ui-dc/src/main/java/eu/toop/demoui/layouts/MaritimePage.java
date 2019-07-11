@@ -66,7 +66,7 @@ public class MaritimePage extends CustomLayout {
     private Label requestIdLabel = null;
     private boolean responseReceived = false;
     private final StopWatch sw = StopWatch.createdStopped ();
-    private final Timer timeoutTimer = new Timer ();
+    private Timer timeoutTimer = new Timer ();
 
     public MaritimePage(final BaseView view) {
         super("MaritimePage");
@@ -178,13 +178,19 @@ public class MaritimePage extends CustomLayout {
                 // setEnabled (false);
 
                 // Fake response
-                timeoutTimer.schedule (new TimerTask() {
-                    @Override
-                    public void run () {
-                        if (!responseReceived)
-                            setErrorTimeout ();
-                    }
-                }, 60000);
+                if (timeoutTimer == null)
+                {
+                    timeoutTimer = new Timer ();
+                    timeoutTimer.schedule (new TimerTask ()
+                    {
+                        @Override
+                        public void run ()
+                        {
+                            if (!responseReceived)
+                                setErrorTimeout ();
+                        }
+                    }, 60000);
+                }
             } catch (final IOException | ToopErrorException ex) {
                 // Convert from checked to unchecked
                 throw new RuntimeException (ex);
@@ -194,7 +200,11 @@ public class MaritimePage extends CustomLayout {
 
     private void _onResponseReceived () {
         responseReceived = true;
-        timeoutTimer.cancel ();
+        if (timeoutTimer != null)
+        {
+            timeoutTimer.cancel ();
+            timeoutTimer = null;
+        }
         spinner.setVisible(false);
         sw.stop ();
         addComponent (new Label ("Last request took " + sw.getMillis () + " milliseconds"), "durationText");
