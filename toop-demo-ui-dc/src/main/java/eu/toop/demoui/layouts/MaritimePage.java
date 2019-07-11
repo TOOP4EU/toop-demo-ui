@@ -96,7 +96,7 @@ public class MaritimePage extends CustomLayout {
         // dataProviderName.setReadOnly(true);
 
         countryCodeField.setStyleName ("countryCodeDropdown");
-        countryCodeField.setItems (DCUIConfig.getCountryCodes ());
+        countryCodeField.setItems (DCUIConfig.getMaritimeCountryCodes());
         documentTypeField.setStyleName ("documentTypeDropdown");
         final List<EPredefinedDocumentTypeIdentifier> aDocTypes = new ArrayList<> ();
         /* add only Request documents and Maritime related types*/
@@ -390,7 +390,6 @@ public class MaritimePage extends CustomLayout {
     public void addDocumentCertificateList(List<DocumentDataBean> docResponseList) {
         _onResponseReceived();
 
-//        final DocumentCertificateList documentCertificateList = new DocumentCertificateList(docResponseList);
         Grid<DocumentDataBean> grid = new Grid<>();
         grid.setItems(docResponseList);
         grid.addColumn(DocumentDataBean::getDocumentName).setCaption("Document Name");
@@ -408,20 +407,6 @@ public class MaritimePage extends CustomLayout {
 //        return grid;
         addComponent(grid, "documentCertificateList");
 
-    }
-
-    public void addKeyValueForm () {
-
-        _onResponseReceived ();
-
-//        final Label test = new Label("This is a test to see how components are added");
-
-        final KeyValueForm keyValueForm = new KeyValueForm (view.getToopDataBean (), false);
-
-        final BaseForm baseForm = new BaseForm (keyValueForm, "Key value details");
-        addComponent (baseForm, "keyValueForm");
-//        addComponent(test, "testLabel");
-        view.setKeyValueForm (keyValueForm);
     }
 
     public void removeMainCompanyForm () {
