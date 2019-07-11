@@ -288,9 +288,18 @@ public class MaritimePage extends CustomLayout {
     public void addDocumentCertificateList(List<DocumentDataBean> docResponseList) {
         _onResponseReceived();
 
-        final DocumentCertificateList documentCertificateList = new DocumentCertificateList(docResponseList);
+//        final DocumentCertificateList documentCertificateList = new DocumentCertificateList(docResponseList);
+        Grid<DocumentDataBean> grid = new Grid<>();
+        grid.setItems(docResponseList);
+        grid.addColumn(DocumentDataBean::getDocumentName).setCaption("Document Name");
+        grid.addColumn(DocumentDataBean::getDocumentDescription).setCaption("Document Description");
+        grid.addColumn(DocumentDataBean::getDocumentIdentifier).setCaption("Document Identifier");
+        grid.addColumn(DocumentDataBean::getDocumentIssuePlace).setCaption("Issue Place");
+        grid.addColumn(DocumentDataBean::getDocumentIssueDate).setCaption("Issue Date");
+        grid.addColumn(DocumentDataBean::getDocumentMIMEType).setCaption("MIME Type code");
+        grid.addColumn(DocumentDataBean::getDocumentURI).setCaption("URI");
 
-        addComponent(documentCertificateList, "documentCertificateList");
+        addComponent(grid, "documentCertificateList");
 
 
 

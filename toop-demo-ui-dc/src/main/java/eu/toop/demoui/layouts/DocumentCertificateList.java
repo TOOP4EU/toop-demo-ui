@@ -5,6 +5,7 @@ import com.vaadin.data.ValidationException;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.GridLayout;
 import eu.toop.commons.dataexchange.v140.TDEDocumentResponseType;
 import eu.toop.demoui.bean.DocumentDataBean;
 import eu.toop.demoui.bean.ToopDataBean;
@@ -13,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
 
-public class DocumentCertificateList extends CustomLayout {
+public class DocumentCertificateList extends GridLayout {
 
     private static final Logger logger = LoggerFactory.getLogger (DocumentCertificateList.class);
 
@@ -22,6 +23,8 @@ public class DocumentCertificateList extends CustomLayout {
 //    private ToopDataBean toopDataBean;
 
     public DocumentCertificateList (final List<DocumentDataBean> docResponseList) {
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.setColumns(docResponseList.size());
 
         Grid<DocumentDataBean> grid = new Grid<>();
         grid.setItems(docResponseList);
@@ -32,6 +35,8 @@ public class DocumentCertificateList extends CustomLayout {
         grid.addColumn(DocumentDataBean::getDocumentIssueDate).setCaption("Issue Date");
         grid.addColumn(DocumentDataBean::getDocumentMIMEType).setCaption("MIME Type code");
         grid.addColumn(DocumentDataBean::getDocumentURI).setCaption("URI");
+
+        gridLayout.addComponent(grid);
 
 //        GridLayout grid = new GridLayout(1, 2);
 //        grid.setColumns(2);
@@ -45,7 +50,6 @@ public class DocumentCertificateList extends CustomLayout {
 //        grid.setWidth(100f, Sizeable.Unit.PERCENTAGE);
 //        grid.setItems(toopDataBean.getKeyValList());
 //
-        addComponent(grid);
 
 
     }
