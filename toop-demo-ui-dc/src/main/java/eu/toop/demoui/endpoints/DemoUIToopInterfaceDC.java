@@ -290,6 +290,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
               else {
                 ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "GOT INTO ELSE attachments" + attachments);
 
+
                 if (documentBean.getAttachments() != null && documentBean.getAttachments().size() > 0) {
                   for (AsicReadEntry attachment : documentBean.getAttachments()) {
                     ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "DocumentBeanAttachments" + documentBean.getAttachments());
@@ -299,6 +300,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
                             new ByteArrayInputStream(attachment.payload()), attachment.getEntryName());
                     FileDownloader fileDownloader = new FileDownloader(myResource);
                     fileDownloader.extend(downloadButton);
+                    page.addComponent(downloadButton, "downloadButton");
 //                    page.getComponent("documentCertificateList").get
                   }
                 }
