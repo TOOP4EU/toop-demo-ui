@@ -18,6 +18,9 @@ package eu.toop.demoui.layouts;
 
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.timing.StopWatch;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -27,6 +30,7 @@ import eu.toop.commons.dataexchange.v140.TDEErrorType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.error.ToopErrorException;
+import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.demoui.DCToToopInterfaceMapper;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.bean.DocumentDataBean;
@@ -38,6 +42,7 @@ import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -125,6 +130,94 @@ public class MaritimePage extends CustomLayout {
         addComponent (sendDocumentRequestButton, "sendDocumentRequestButton");
 
     }
+
+    private Button getCertificateButton(String uri) {
+        Button button = new Button(VaadinIcons.ARROW_CIRCLE_DOWN_O);
+        button.addStyleName(ValoTheme.BUTTON_SMALL);
+        button.addClickListener(e -> sendCertficateRequest(uri));
+        return button;
+    }
+
+    private void sendCertficateRequest(String uri) {
+        Notification.show(uri);
+
+        responseReceived = false;
+        resetError ();
+        removeMainCompanyForm ();
+        removeKeyValueForm ();
+        sw.restart ();
+
+        try {
+
+            // SET DOCUMENTTYPEFIELD value from list to certificate...
+
+            Request formValues;
+
+            if(documentTypeField.getValue().toString().contains("SHIPCERTIFICATE_LIST")) {
+                documentTypeField.setValue(EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE);
+                formValues = new Request(countryCodeField.getValue(), EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE);
+
+            } else {
+                documentTypeField.setValue(EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE);
+                formValues = new Request(countryCodeField.getValue(), EPredefinedDocumentTypeIdentifier.REQUEST_CREWCERTIFICATE);
+            }
+
+            if(!naturalPersonIdentifierField.isEmpty()) {
+                formValues.setNaturalPersonIdentifier(naturalPersonIdentifierField.getValue());
+            }
+            if (!naturalPersonFirstNameField.isEmpty()) {
+                formValues.setNaturalPersonFirstName(naturalPersonFirstNameField.getValue());
+            }
+            if(!naturalPersonFamilyNameField.isEmpty()) {
+                formValues.setNaturalPersonFamilyName(naturalPersonFamilyNameField.getValue());
+            }
+            if(!IMOIdentifierField.isEmpty()) {
+                formValues.setId(IMOIdentifierField.getValue());
+            }
+            if (!documentIdentifierField.isEmpty()) {
+                formValues.setDocumentIdentifier(uri);
+            }
+
+            ToopKafkaClient.send (EErrorLevel.INFO, () -> "[DC] Requesting document.");
+
+            TOOPRequestMaker makeRequest = new TOOPRequestMaker(formValues);
+            final TDETOOPRequestType aRequest = makeRequest.createTOOPRequest();
+
+            requestIdLabel = new Label (aRequest.getDocumentUniversalUniqueIdentifier().getValue());
+            addComponent (requestIdLabel, "requestId");
+
+            DemoUIToopInterfaceHelper.dumpRequest (aRequest);
+
+            ToopKafkaClient.send (EErrorLevel.INFO,
+                    () -> "[DC] Sending request to TC: " + ToopInterfaceConfig.getToopConnectorDCUrl ());
+
+            DCToToopInterfaceMapper.sendRequest (aRequest, getUI ());
+
+            spinner.setVisible (true);
+            // setEnabled (false);
+
+            // Fake response
+            if (timeoutTimer == null)
+            {
+                timeoutTimer = new Timer ();
+                timeoutTimer.schedule (new TimerTask ()
+                {
+                    @Override
+                    public void run ()
+                    {
+                        if (!responseReceived)
+                            setErrorTimeout ();
+                    }
+                }, 60000);
+            }
+        } catch (final IOException | ToopErrorException ex) {
+            // Convert from checked to unchecked
+            throw new RuntimeException (ex);
+        }
+
+
+    }
+
 
     class SendRequest implements Button.ClickListener {
 
@@ -308,10 +401,25 @@ public class MaritimePage extends CustomLayout {
         grid.addColumn(DocumentDataBean::getDocumentIssuePlace).setCaption("Issue Place");
         grid.addColumn(DocumentDataBean::getDocumentIssueDate).setCaption("Issue Date");
         grid.addColumn(DocumentDataBean::getDocumentMIMEType).setCaption("MIME Type code");
-        grid.setWidth("950");
+//        grid.addComponentColumn(this::getCertificateButton).setCaption("Download");
+        grid.addComponentColumn(DocumentDataBean -> {
+            Button certificateButton = getCertificateButton(DocumentDataBean.getDocumentURI());
+            if (view.getToopDataBean().getAttachments() != null && view.getToopDataBean().getAttachments().size() > 0) {
+                for (AsicReadEntry attachment : view.getToopDataBean().getAttachments()) {
+//                    Button downloadButton = new Button("Download " + attachment.getEntryName());
+
+                    StreamResource myResource = new StreamResource((StreamResource.StreamSource) () ->
+                            new ByteArrayInputStream(attachment.payload()), attachment.getEntryName());
+                    FileDownloader fileDownloader = new FileDownloader(myResource);
+//                    fileDownloader.extend(downloadButton);
+                    fileDownloader.extend(certificateButton);
+                }
+            }
+            return certificateButton;
+        });
+        grid.setWidth("980");
+//        return grid;
         addComponent(grid, "documentCertificateList");
-
-
 
     }
 

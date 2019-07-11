@@ -15,6 +15,15 @@ public class DocumentDataBean implements Serializable {
     private String documentIdentifier;
     private String documentIssuePlace;
     private String documentMIMEType;
+    private ICommonsList<AsicReadEntry> attachments = null;
+
+    public DocumentDataBean(final ICommonsList<AsicReadEntry> attachments) {
+        this.attachments = attachments;
+    }
+
+    public DocumentDataBean() {
+
+    }
 
     public String getDocumentMIMEType() {
         return documentMIMEType;
@@ -63,8 +72,6 @@ public class DocumentDataBean implements Serializable {
     public void setDocumentIssuePlace(String documentIssuePlace) {
         this.documentIssuePlace = documentIssuePlace;
     }
-
-    private ICommonsList<AsicReadEntry> attachments = null;
 
     public String getDocumentName() {
         return documentName;
