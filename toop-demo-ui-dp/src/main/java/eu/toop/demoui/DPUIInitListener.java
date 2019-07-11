@@ -19,6 +19,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.apache.kafka.clients.producer.ProducerConfig;
+
 import eu.toop.demoui.endpoints.DemoUIToopInterfaceDP;
 import eu.toop.iface.ToopInterfaceManager;
 import eu.toop.kafkaclient.ToopKafkaClient;
@@ -34,7 +36,7 @@ public class DPUIInitListener implements ServletContextListener
     if (DPUIConfig.isTrackerEnabled ())
     {
       ToopKafkaSettings.setKafkaEnabled (true);
-      ToopKafkaSettings.defaultProperties ().put ("bootstrap.servers", DPUIConfig.getTrackerURL ());
+      ToopKafkaSettings.defaultProperties ().put (ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, DPUIConfig.getTrackerURL ());
       ToopKafkaSettings.setKafkaTopic (DPUIConfig.getTrackerTopic ());
     }
     else
