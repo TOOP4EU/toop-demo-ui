@@ -28,22 +28,49 @@ public class MaritimeCertificateProcessStrategy implements CertificateProcessStr
         for (final TDEDocumentRequestType documentRequestType : aResponse.getDocumentRequest()) {
 
             documentRequestType.setDocumentResponse(new CommonsArrayList<>());
-
-            documentRequestType.getDocumentResponse().add(new TDEDocumentResponseTypeBuilder()
-                    .setDocumentName("ISMCompliance")
-                    .setDocumentDescription("Document of Compliance (DOC)")
-                    .setDocumentIdentifier("077SM/16")
-                    .setDocumentIssuePlace("Pallen, Elonia")
-                    .setLegalReference("SOLAS 1974")
-                    .addDocument(SchemaFactory.createDefaultTDEDocumentType())
-                    .addDocument(SchemaFactory.createDefaultTDEDocumentType())
-                    .build());
-
-            documentRequestType.getDocumentResponse().add(new TDEDocumentResponseTypeBuilder()
-                    .setDocumentIssuer(SchemaFactory.createDefaultTDEIssuerType("__ISSUER"))
-                    .addDocument(SchemaFactory.createDefaultTDEDocumentType())
-                    .addDocument(SchemaFactory.createDefaultTDEDocumentType())
-                    .build());
+            addDummyDocuments(documentRequestType);
         }
     }
+
+    private void addDummyDocuments(TDEDocumentRequestType documentRequestType) {
+
+        documentRequestType.getDocumentResponse().add(new TDEDocumentResponseTypeBuilder()
+                .setDocumentName("ISMCompliance")
+                .setDocumentDescription("Document of Compliance (DOC)")
+                .setDocumentIdentifier("077SM/16")
+                .setDocumentIssuePlace("Pallen, Elonia")
+                .setLegalReference("SOLAS 1974")
+                .addDocument(SchemaFactory.createDefaultTDEDocumentType())
+                .addDocument(SchemaFactory.createDefaultTDEDocumentType())
+                .build());
+
+        documentRequestType.getDocumentResponse().add(new TDEDocumentResponseTypeBuilder()
+                .setDocumentIssuer(SchemaFactory.createDefaultTDEIssuerType("__ISSUER"))
+                .addDocument(SchemaFactory.createDefaultTDEDocumentType())
+                .addDocument(SchemaFactory.createDefaultTDEDocumentType())
+                .build());
+
+        documentRequestType.getDocumentResponse().add(new TDEDocumentResponseTypeBuilder()
+                .setDocumentName("__DOCUMENT_NAME_2")
+                .setDocumentDescription("__DOCUMENT_DESCRIPTION_2")
+                .setDocumentIdentifier("__DOCUMENT_IDENTIFIER_2")
+                .setDocumentIssuePlace("__DOCUMENT_ISSUE_PLACE_2")
+                .setLegalReference("__LEGAL_REFERENCE_2")
+                .setDocumentIssuer(SchemaFactory.createDefaultTDEIssuerType("__ISSUER_2"))
+                .addDocument(SchemaFactory.createDefaultTDEDocumentType())
+                .addDocument(SchemaFactory.createDefaultTDEDocumentType())
+                .build());
+
+        documentRequestType.getDocumentResponse().add(new TDEDocumentResponseTypeBuilder()
+                .setDocumentName("__DOCUMENT_NAME_3")
+                .setDocumentDescription("__DOCUMENT_DESCRIPTION_3")
+                .setDocumentIdentifier("__DOCUMENT_IDENTIFIER_3")
+                .setDocumentIssuePlace("__DOCUMENT_ISSUE_PLACE_3")
+                .setLegalReference("__LEGAL_REFERENCE_3")
+                .setDocumentIssuer(SchemaFactory.createDefaultTDEIssuerType("__ISSUER_3"))
+                .addDocument(SchemaFactory.createDefaultTDEDocumentType())
+                .addDocument(SchemaFactory.createDefaultTDEDocumentType())
+                .build());
+    }
+
 }
