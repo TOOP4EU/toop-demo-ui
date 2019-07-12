@@ -94,7 +94,7 @@ public class MaritimePage extends CustomLayout {
         final List<EPredefinedDocumentTypeIdentifier> aDocTypes = new ArrayList<> ();
         /* add only Request documents and Maritime related types*/
         for (final EPredefinedDocumentTypeIdentifier e : EPredefinedDocumentTypeIdentifier.values ())
-            if (e.getID ().contains ("::Request##") && (e.getID().contains("ship")|| e.getID().contains("crew"))) {
+            if (e.getID ().contains ("::Request##") && (e.getID().contains("shipcertificate-list")|| e.getID().contains("crewcertificate-list"))) {
                 aDocTypes.add (e);
             }
 
