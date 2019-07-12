@@ -19,18 +19,13 @@ package eu.toop.demoui.layouts;
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.timing.StopWatch;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
-import eu.toop.commons.dataexchange.v140.TDEDocumentResponseType;
 import eu.toop.commons.dataexchange.v140.TDEErrorType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
-import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.error.ToopErrorException;
-import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.demoui.DCToToopInterfaceMapper;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.bean.DocumentDataBean;
@@ -42,9 +37,11 @@ import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MaritimePage extends CustomLayout {
 
@@ -57,15 +54,11 @@ public class MaritimePage extends CustomLayout {
     private final TextField naturalPersonFirstNameField = new TextField ();
     private final TextField naturalPersonFamilyNameField = new TextField ();
     private final TextField IMOIdentifierField = new TextField ();
-//    private final TextField legalPersonCompanyNameField = new TextField ();
     private final TextField documentIdentifierField = new TextField();
     private final TextField dataProviderScheme = new TextField ();
     private final TextField dataProviderName = new TextField ();
     private Label errorLabel = null;
     private Label conceptErrorsLabel = null;
-//    private final Button dataProvidersFindButton = new Button ("Find Data Providers");
-//    private final Button dataProvidersManualButton = new Button ("Manually enter Data Provider");
-//    private final Button sendButton = new Button ("Send Data Element Request");
     private final Button sendDocumentRequestButton = new Button ("Send Document Request");
 
     private Label requestIdLabel = null;
@@ -108,6 +101,20 @@ public class MaritimePage extends CustomLayout {
         documentTypeField.setItems (aDocTypes);
         // Don't allow new items
         documentTypeField.setNewItemHandler (null);
+        documentTypeField.addValueChangeListener( valueChangeEvent -> {
+            ToopKafkaClient.send (EErrorLevel.INFO, () -> "Doc Type value changed to: " + valueChangeEvent.getValue());
+            if (valueChangeEvent.getValue().toString().contains("SHIP")) {
+                naturalPersonFirstNameField.setVisible(false);
+                naturalPersonFamilyNameField.setVisible(false);
+                naturalPersonIdentifierField.setVisible(false);
+                IMOIdentifierField.setVisible(true);
+            } else {
+                naturalPersonFirstNameField.setVisible(true);
+                naturalPersonFamilyNameField.setVisible(true);
+                naturalPersonIdentifierField.setVisible(true);
+                IMOIdentifierField.setVisible(false);
+            }
+        });
 
         addComponent (countryCodeField, "countryCodeField");
         addComponent (documentTypeField, "documentTypeField");
@@ -128,7 +135,6 @@ public class MaritimePage extends CustomLayout {
 //        addComponent (dataProvidersFindButton, "dataProvidersFindButton");
 //        addComponent (dataProvidersManualButton, "dataProvidersManualButton");
         addComponent (sendDocumentRequestButton, "sendDocumentRequestButton");
-
     }
 
     private Button getCertificateButton(String uri) {
@@ -192,7 +198,7 @@ public class MaritimePage extends CustomLayout {
 
             DCToToopInterfaceMapper.sendRequest (aRequest, getUI ());
 
-            spinner.setVisible (true);
+            spinner.setVisible (false);
             // setEnabled (false);
 
             // Fake response
@@ -266,7 +272,7 @@ public class MaritimePage extends CustomLayout {
 
                 DCToToopInterfaceMapper.sendRequest (aRequest, getUI ());
 
-                spinner.setVisible (true);
+                spinner.setVisible (false);
                 // setEnabled (false);
 
                 // Fake response
@@ -373,18 +379,6 @@ public class MaritimePage extends CustomLayout {
 
     public void resetError () {
         removeComponent ("errorLabel");
-    }
-
-
-    public void addMainCompanyForm () {
-
-        _onResponseReceived ();
-
-        final MainCompanyForm mainCompanyForm = new MainCompanyForm (view.getToopDataBean (), false);
-
-        final BaseForm baseForm = new BaseForm (mainCompanyForm, "Company details");
-        addComponent (baseForm, "mainCompanyForm");
-        view.setMainCompanyForm (mainCompanyForm);
     }
 
     public void addDocumentCertificateList(List<DocumentDataBean> docResponseList) {
