@@ -57,6 +57,11 @@ public class MaritimePage extends CustomLayout {
     private final TextField documentIdentifierField = new TextField();
     private final TextField dataProviderScheme = new TextField ();
     private final TextField dataProviderName = new TextField ();
+    private final Label IMOIdentifierLabel = new Label("IMO Identifier");
+    private final Label naturalPersonIdentifierLabel = new Label("Natural Person Identifier");
+    private final Label naturalPersonFirstNameLabel = new Label("Natural Person First Name");
+    private final Label naturalPersonFamilyNameLabel = new Label("Natural Person Family Name");
+
     private Label errorLabel = null;
     private Label conceptErrorsLabel = null;
     private final Button sendDocumentRequestButton = new Button ("Send Document Request");
@@ -107,12 +112,20 @@ public class MaritimePage extends CustomLayout {
                 naturalPersonFirstNameField.setVisible(false);
                 naturalPersonFamilyNameField.setVisible(false);
                 naturalPersonIdentifierField.setVisible(false);
+                naturalPersonFamilyNameLabel.setVisible(false);
+                naturalPersonFirstNameLabel.setVisible(false);
+                naturalPersonIdentifierLabel.setVisible(false);
                 IMOIdentifierField.setVisible(true);
+                IMOIdentifierLabel.setVisible(true);
             } else {
                 naturalPersonFirstNameField.setVisible(true);
                 naturalPersonFamilyNameField.setVisible(true);
                 naturalPersonIdentifierField.setVisible(true);
+                naturalPersonFamilyNameLabel.setVisible(true);
+                naturalPersonFirstNameLabel.setVisible(true);
+                naturalPersonIdentifierLabel.setVisible(true);
                 IMOIdentifierField.setVisible(false);
+                IMOIdentifierLabel.setVisible(false);
             }
         });
 
@@ -121,7 +134,12 @@ public class MaritimePage extends CustomLayout {
         addComponent (naturalPersonIdentifierField, "naturalPersonIdentifierField");
         addComponent (naturalPersonFirstNameField, "naturalPersonFirstNameField");
         addComponent (naturalPersonFamilyNameField, "naturalPersonFamilyNameField");
+        addComponent(naturalPersonFamilyNameLabel, "naturalPersonFamilyNameLabel");
+        addComponent(naturalPersonFirstNameLabel, "naturalPersonFirstNameLabel");
+        addComponent(naturalPersonIdentifierLabel, "naturalPersonIdentifierLabel");
+
         addComponent (IMOIdentifierField, "IMOIdentifierField");
+        addComponent(IMOIdentifierLabel, "IMOIdentifierLabel");
 //        addComponent (legalPersonCompanyNameField, "legalPersonCompanyNameField");
         addComponent(documentIdentifierField, "documentIdentifierField");
         addComponent (dataProviderScheme, "dataProviderScheme");
