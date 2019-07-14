@@ -25,13 +25,13 @@ public class TDEDocumentResponseTypeBuilder {
     private List<TDEDocumentType> documentTypeList;
 
     public TDEDocumentResponseTypeBuilder() {
-        this.name = "__DOCUMENT_NAME";
-        this.description = "__DOCUMENT_DESCRIPTION";
-        this.identifier = "__DOCUMENT_IDENTIFIER";
+        this.name = "MinimumSafeManning";
+        this.description = "Minimum Safe Manning Certiﬁcate";
+        this.identifier = "090SM/17";
         this.issueDate = ToopXSDHelper140.createDateWithLOANow();
-        this.issuePlace = "__DOCUMENT_ISSUE_PLACE";
+        this.issuePlace = "Pallen, Elonia";
         this.issuer = SchemaFactory.createDefaultTDEIssuerType();
-        this.legalReference = "__LEGAL_REFERENCE";
+        this.legalReference = "SOLAS 1978";
         this.documentRemarks = new CommonsArrayList<>();
         this.errorIndicator = false;
     }
