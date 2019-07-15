@@ -75,4 +75,7 @@ public class DCUIConfig {
   public static List<String> getCountryCodes () {
     return StringHelper.getExploded (',', rb.getString("country.codes"));
   }
+  public static List<String> getMaritimeCountryCodes () {
+    return StringHelper.getExploded (',', rb.getString("maritime.country.codes"));
+  }
 }

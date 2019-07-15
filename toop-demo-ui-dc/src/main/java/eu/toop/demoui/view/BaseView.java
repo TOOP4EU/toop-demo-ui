@@ -19,6 +19,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.CustomLayout;
 
+import eu.toop.demoui.bean.DocumentDataBean;
 import eu.toop.demoui.bean.Identity;
 import eu.toop.demoui.bean.NewCompany;
 import eu.toop.demoui.bean.ToopDataBean;
@@ -31,6 +32,7 @@ public class BaseView extends CustomLayout implements View {
   private Identity identity = new Identity ();
   private ToopDataBean toopDataBean = new ToopDataBean();
   private NewCompany newCompany = new NewCompany ();
+  private DocumentDataBean documentDataBean = new DocumentDataBean();
 
   private MainCompanyForm mainCompanyForm = null;
   private KeyValueForm keyValueForm = null;
@@ -64,6 +66,14 @@ public class BaseView extends CustomLayout implements View {
   public void setIdentity (Identity identity) {
 
     this.identity = identity;
+  }
+
+  public DocumentDataBean getDocumentDataBean() {
+    return documentDataBean;
+  }
+
+  public void setDocumentDataBean(DocumentDataBean documentDataBean) {
+    this.documentDataBean = documentDataBean;
   }
 
   public ToopDataBean getToopDataBean () {

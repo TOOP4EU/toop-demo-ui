@@ -57,10 +57,8 @@ import eu.toop.iface.ToopInterfaceConfig;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.TextType;
 
-public class DynamicRequestPage extends CustomLayout
-{
-  private static enum ERequestType
-  {
+public class DynamicRequestPage extends CustomLayout {
+  private static enum ERequestType {
     DATA,
     DOCUMENT
   }
@@ -68,13 +66,14 @@ public class DynamicRequestPage extends CustomLayout
   private final BaseView view;
   private final ProgressBar spinner = new ProgressBar ();
 
-  private final ComboBox <String> countryCodeField = new ComboBox <> ();
-  private final ComboBox <EPredefinedDocumentTypeIdentifier> documentTypeField = new ComboBox <> ();
+  private final ComboBox<String> countryCodeField = new ComboBox<> ();
+  private final ComboBox<EPredefinedDocumentTypeIdentifier> documentTypeField = new ComboBox<> ();
   private final TextField naturalPersonIdentifierField = new TextField ();
   private final TextField naturalPersonFirstNameField = new TextField ();
   private final TextField naturalPersonFamilyNameField = new TextField ();
   private final TextField legalPersonUniqueIdentifierField = new TextField ();
   private final TextField legalPersonCompanyNameField = new TextField ();
+  private final TextField documentIdentifierField = new TextField();
   private final TextField dataProviderScheme = new TextField ();
   private final TextField dataProviderName = new TextField ();
   private Label errorLabel = null;
@@ -87,12 +86,11 @@ public class DynamicRequestPage extends CustomLayout
   private Label requestIdLabel = null;
   private boolean responseReceived = false;
   private final StopWatch sw = StopWatch.createdStopped ();
-  private Timer timeoutTimer;
+  private Timer timeoutTimer = new Timer ();
 
-  private final static List <ConceptValue> conceptList = new ArrayList <> ();
+  private final static List<ConceptValue> conceptList = new ArrayList<> ();
 
-  static
-  {
+  static {
     final String sNS = DCUIConfig.getConceptNamespace ();
     conceptList.add (new ConceptValue (sNS, "FreedoniaStreetAddress"));
     conceptList.add (new ConceptValue (sNS, "FreedoniaSSNumber"));
@@ -153,6 +151,7 @@ public class DynamicRequestPage extends CustomLayout
     addComponent (naturalPersonFamilyNameField, "naturalPersonFamilyNameField");
     addComponent (legalPersonUniqueIdentifierField, "legalPersonUniqueIdentifierField");
     addComponent (legalPersonCompanyNameField, "legalPersonCompanyNameField");
+    addComponent(documentIdentifierField, "documentIdentifierField");
     addComponent (dataProviderScheme, "dataProviderScheme");
     addComponent (dataProviderName, "dataProviderName");
 
@@ -536,6 +535,7 @@ public class DynamicRequestPage extends CustomLayout
     addComponent (baseForm, "mainCompanyForm");
     view.setMainCompanyForm (mainCompanyForm);
   }
+
 
   public void addKeyValueForm ()
   {

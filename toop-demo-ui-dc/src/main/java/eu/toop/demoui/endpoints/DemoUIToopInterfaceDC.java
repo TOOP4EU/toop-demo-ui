@@ -15,38 +15,31 @@
  */
 package eu.toop.demoui.endpoints;
 
-import java.io.IOException;
-import java.util.AbstractMap;
-
-import javax.annotation.Nonnull;
-
 import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.StreamResource;
 import com.vaadin.ui.UI;
-
-import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
-import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
-import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
-import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
-import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
+import eu.toop.commons.dataexchange.v140.*;
 import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.demoui.DCToToopInterfaceMapper;
+import eu.toop.demoui.bean.DocumentDataBean;
 import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.layouts.DynamicRequestPage;
+import eu.toop.demoui.layouts.MaritimePage;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
-import eu.toop.demoui.view.DynamicRequest;
-import eu.toop.demoui.view.PhaseTwo;
-import eu.toop.demoui.view.RequestToItalyOne;
-import eu.toop.demoui.view.RequestToSlovakiaOne;
-import eu.toop.demoui.view.RequestToSlovakiaTwo;
-import eu.toop.demoui.view.RequestToSloveniaOne;
-import eu.toop.demoui.view.RequestToSwedenOne;
-import eu.toop.demoui.view.RequestToSwedenTwo;
+import eu.toop.demoui.view.*;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
+
+import javax.annotation.Nonnull;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   public DemoUIToopInterfaceDC () {
@@ -92,10 +85,24 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
       ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Current Navigator: " + threadUINavigator);
 
       final ToopDataBean bean = new ToopDataBean (attachments);
+//      DocumentDataBean documentBean = new DocumentDataBean(attachments);
 
       // Get requested documents
       if (aResponse.getDocumentRequestCount () > 0) {
         ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Contains requested documents");
+        aResponse.getDocumentRequest().forEach( dRec -> {
+          dRec.getDocumentResponse().forEach(dResp -> {
+            bean.getKeyValList().add(new SimpleEntry<>("Document Name:",dResp.getDocumentName().getValue()));
+            bean.getKeyValList().add(new SimpleEntry<>("Document Issue Date:",dResp.getDocumentIssueDate().getValue().toString()));
+            bean.getKeyValList().add(new SimpleEntry<>("Document Issue Place:",dResp.getDocumentIssuePlace().getValue()));
+            bean.getKeyValList().add(new SimpleEntry<>("Document Description:",dResp.getDocumentDescription().getValue()));
+            bean.getKeyValList().add(new SimpleEntry<>("Document Identifier:",dResp.getDocumentIdentifier().getValue()));
+            dResp.getDocument().forEach(doc -> {
+              bean.getKeyValList().add(new SimpleEntry<>("Document URI:", doc.getDocumentURI().getValue()));
+              bean.getKeyValList().add(new SimpleEntry<>("Document MIME Type:", doc.getDocumentMimeTypeCode().getValue()));
+            });
+          });
+        });
       }
 
       // Inspect all mapped values
@@ -251,7 +258,52 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
             }
           }
         }
-      }
+      } else if (threadUINavigator.getCurrentView () instanceof Maritime) {
+        final Maritime homeView = (Maritime) threadUINavigator.getCurrentView();
+        if (homeView.getCurrentPage() instanceof MaritimePage) {
+          homeView.setToopDataBean(bean);
+//          homeView.setDocumentDataBean(documentBean);
+          final MaritimePage page = (MaritimePage) homeView.getCurrentPage();
+
+          final String expectedUuid = page.getRequestId ();
+
+          if (aResponse.getDataRequestIdentifier() != null && expectedUuid != null
+                  && expectedUuid.equals (aResponse.getDataRequestIdentifier ().getValue())) {
+            if (!aResponse.hasErrorEntries ()) {
+
+              final IdentifierType documentTypeIdentifier = aResponse.getRoutingInformation ()
+                      .getDocumentTypeIdentifier ();
+
+              if (documentTypeIdentifier.getValue().contains ("list")) {
+                // add grid layout
+                final List<DocumentDataBean> docResponseList = DemoUIToopInterfaceHelper.getDocumentResponseDataBeanList(aResponse);
+                  page.addDocumentCertificateList(docResponseList);
+//                page.addComponent(page.addDocumentCertificateList(docResponseList), "documentCertificateList");
+              }
+              else {
+                  if (attachments != null && attachments.size() > 0) {
+                      for (AsicReadEntry attachment : attachments) {
+                          StreamResource myResource = new StreamResource((StreamResource.StreamSource) () ->
+                                  new ByteArrayInputStream(attachment.payload()), attachment.getEntryName());
+                          myResource.getStream().setParameter("Content-Disposition", "attachment;filename=\"" + attachment.getEntryName()+ "\"");
+                          myResource.setCacheTime(0);
+                          myResource.setMIMEType ( "application/octet-stream" );
+                        aUI.getPage().open(myResource,"_top", false);
+                      }
+                  }
+              }
+            } else {
+              page.setError (aResponse.getError ());
+            }
+
+            final String conceptErrors = getConceptErrors (aResponse);
+            if (!conceptErrors.isEmpty ()) {
+              page.setConceptErrors (conceptErrors);
+            }
+          }
+        }
+        }
+
 
       ToopKafkaClient.send (EErrorLevel.INFO, () -> sLogPrefix + "Pushed new bean data to the Demo UI: " + bean);
     } catch (final Exception e) {
