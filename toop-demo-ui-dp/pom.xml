@@ -61,6 +61,10 @@
       <groupId>com.helger</groupId>
       <artifactId>ph-pdf-layout4</artifactId>
     </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+    </dependency>
 
     <!-- Test stuff -->
     <dependency>
