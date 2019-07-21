@@ -12,6 +12,7 @@ if [ -f ~/$FILENAME ]
     echo Cleaning exisiting dirs
     cd $BASEDIR
     sudo mv ROOT/ ~/dc.$DATE
+    sudo chmod 777 ~/dc.$DATE
 
     echo ROOT
     APPDIR=$BASEDIR/ROOT
