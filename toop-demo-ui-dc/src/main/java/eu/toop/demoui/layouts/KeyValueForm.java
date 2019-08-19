@@ -16,7 +16,6 @@
 package eu.toop.demoui.layouts;
 
 import java.io.ByteArrayInputStream;
-import java.util.AbstractMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
