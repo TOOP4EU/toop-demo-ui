@@ -16,16 +16,16 @@
 package eu.toop.demoui.bean;
 
 import java.io.Serializable;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.helger.commons.collection.impl.ICommonsList;
 
 import eu.toop.commons.exchange.AsicReadEntry;
 
-public class ToopDataBean implements Serializable {
-
+public class ToopDataBean implements Serializable
+{
   private String address;
   private String ssNumber;
   private String businessCode;
@@ -39,156 +39,159 @@ public class ToopDataBean implements Serializable {
   private String companyNaceCode;
   private String activityDeclaration;
   private String registrationAuthority;
-  private ICommonsList<AsicReadEntry> attachments = null;
-  private List<AbstractMap.SimpleEntry<String, String>> keyValList = new ArrayList<> ();
+  private ICommonsList <AsicReadEntry> attachments = null;
+  private List <Map.Entry <String, String>> keyValList = new ArrayList <> ();
 
-  public ToopDataBean () {
+  public ToopDataBean ()
+  {}
 
-  }
-
-  public ToopDataBean (final ICommonsList<AsicReadEntry> attachments) {
+  public ToopDataBean (final ICommonsList <AsicReadEntry> attachments)
+  {
     this.attachments = attachments;
   }
 
-  public String getAddress () {
-
+  public String getAddress ()
+  {
     return address;
   }
 
-  public void setAddress (String address) {
-
+  public void setAddress (final String address)
+  {
     this.address = address;
   }
 
-  public String getSSNumber () {
-
+  public String getSSNumber ()
+  {
     return ssNumber;
   }
 
-  public void setSSNumber (String ssNumber) {
-
+  public void setSSNumber (final String ssNumber)
+  {
     this.ssNumber = ssNumber;
   }
 
-  public String getBusinessCode () {
-
+  public String getBusinessCode ()
+  {
     return businessCode;
   }
 
-  public void setBusinessCode (String businessCode) {
-
+  public void setBusinessCode (final String businessCode)
+  {
     this.businessCode = businessCode;
   }
 
-  public String getVATNumber () {
-
+  public String getVATNumber ()
+  {
     return vatNumber;
   }
 
-  public void setVATNumber (String vatNumber) {
-
+  public void setVATNumber (final String vatNumber)
+  {
     this.vatNumber = vatNumber;
   }
 
-  public String getCompanyType () {
-
+  public String getCompanyType ()
+  {
     return companyType;
   }
 
-  public void setCompanyType (String companyType) {
-
+  public void setCompanyType (final String companyType)
+  {
     this.companyType = companyType;
   }
 
-  public String getLegalStatus () {
-
+  public String getLegalStatus ()
+  {
     return legalStatus;
   }
 
-  public void setLegalStatus (String legalStatus) {
-
+  public void setLegalStatus (final String legalStatus)
+  {
     this.legalStatus = legalStatus;
   }
 
-  public String getLegalStatusEffectiveDate () {
-
+  public String getLegalStatusEffectiveDate ()
+  {
     return legalStatusEffectiveDate;
   }
 
-  public void setLegalStatusEffectiveDate (String legalStatusEffectiveDate) {
-
+  public void setLegalStatusEffectiveDate (final String legalStatusEffectiveDate)
+  {
     this.legalStatusEffectiveDate = legalStatusEffectiveDate;
   }
 
-  public String getRegistrationDate () {
-
+  public String getRegistrationDate ()
+  {
     return registrationDate;
   }
 
-  public void setRegistrationDate (String registrationDate) {
-
+  public void setRegistrationDate (final String registrationDate)
+  {
     this.registrationDate = registrationDate;
   }
 
-  public String getRegistrationNumber () {
-
+  public String getRegistrationNumber ()
+  {
     return registrationNumber;
   }
 
-  public void setRegistrationNumber (String registrationNumber) {
-
+  public void setRegistrationNumber (final String registrationNumber)
+  {
     this.registrationNumber = registrationNumber;
   }
 
-  public String getCompanyName () {
-
+  public String getCompanyName ()
+  {
     return companyName;
   }
 
-  public void setCompanyName (String companyName) {
-
+  public void setCompanyName (final String companyName)
+  {
     this.companyName = companyName;
   }
 
-  public String getCompanyNaceCode () {
-
+  public String getCompanyNaceCode ()
+  {
     return companyNaceCode;
   }
 
-  public void setCompanyNaceCode (String companyNaceCode) {
-
+  public void setCompanyNaceCode (final String companyNaceCode)
+  {
     this.companyNaceCode = companyNaceCode;
   }
 
-  public String getActivityDeclaration () {
-
+  public String getActivityDeclaration ()
+  {
     return activityDeclaration;
   }
 
-  public void setActivityDeclaration (String activityDeclaration) {
-
+  public void setActivityDeclaration (final String activityDeclaration)
+  {
     this.activityDeclaration = activityDeclaration;
   }
 
-  public String getRegistrationAuthority () {
-
+  public String getRegistrationAuthority ()
+  {
     return registrationAuthority;
   }
 
-  public void setRegistrationAuthority (String registrationAuthority) {
-
+  public void setRegistrationAuthority (final String registrationAuthority)
+  {
     this.registrationAuthority = registrationAuthority;
   }
 
-  public ICommonsList<AsicReadEntry> getAttachments () {
+  public ICommonsList <AsicReadEntry> getAttachments ()
+  {
     return attachments;
   }
 
-  public List<AbstractMap.SimpleEntry<String, String>> getKeyValList () {
+  public List <Map.Entry <String, String>> getKeyValList ()
+  {
     return keyValList;
   }
 
-  public void setKeyValList (List<AbstractMap.SimpleEntry<String, String>> keyValList) {
+  public void setKeyValList (final List <Map.Entry <String, String>> keyValList)
+  {
     this.keyValList = keyValList;
   }
 }

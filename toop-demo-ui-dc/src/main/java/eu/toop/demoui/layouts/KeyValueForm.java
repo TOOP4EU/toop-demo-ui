@@ -17,6 +17,7 @@ package eu.toop.demoui.layouts;
 
 import java.io.ByteArrayInputStream;
 import java.util.AbstractMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +42,12 @@ public class KeyValueForm extends FormLayout {
 
     public KeyValueForm (final ToopDataBean toopDataBean, final boolean readOnly) {
 
-        Grid<AbstractMap.SimpleEntry<String, String>> grid = new Grid<>();
+        Grid<Map.Entry<String, String>> grid = new Grid<>();
         grid.setWidth(100f, Unit.PERCENTAGE);
 
         grid.setItems(toopDataBean.getKeyValList());
-        grid.addColumn(AbstractMap.SimpleEntry::getKey).setCaption("Key");
-        grid.addColumn(AbstractMap.SimpleEntry::getValue).setCaption("Value");
+        grid.addColumn(Map.Entry::getKey).setCaption("Key");
+        grid.addColumn(Map.Entry::getValue).setCaption("Value");
 
         addComponent(grid);
 /*
