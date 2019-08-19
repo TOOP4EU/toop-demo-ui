@@ -1,9 +1,6 @@
 package eu.toop.demoui.builder;
 
-import eu.toop.commons.dataexchange.v140.TDEIdentifierWithLOAType;
 import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
-
-import javax.annotation.Nullable;
 
 public class NaturalPerson extends TDENaturalPersonType {
 

@@ -27,7 +27,18 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
-import eu.toop.demoui.view.*;
+import eu.toop.demoui.view.DynamicRequest;
+import eu.toop.demoui.view.Maritime;
+import eu.toop.demoui.view.MockRequestToSwedenDPOne;
+import eu.toop.demoui.view.MockRequestToSwedenDPTwo;
+import eu.toop.demoui.view.PhaseOne;
+import eu.toop.demoui.view.PhaseTwo;
+import eu.toop.demoui.view.RequestToItalyOne;
+import eu.toop.demoui.view.RequestToSlovakiaOne;
+import eu.toop.demoui.view.RequestToSlovakiaTwo;
+import eu.toop.demoui.view.RequestToSloveniaOne;
+import eu.toop.demoui.view.RequestToSwedenOne;
+import eu.toop.demoui.view.RequestToSwedenTwo;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser

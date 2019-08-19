@@ -17,6 +17,7 @@
 package eu.toop.demoui.view;
 
 import com.vaadin.navigator.ViewChangeListener;
+
 import eu.toop.demoui.layouts.MaritimePage;
 
 public class Maritime extends BaseView {

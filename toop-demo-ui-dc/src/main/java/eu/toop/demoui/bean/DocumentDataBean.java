@@ -1,9 +1,10 @@
 package eu.toop.demoui.bean;
 
-import com.helger.commons.collection.impl.ICommonsList;
-import eu.toop.commons.exchange.AsicReadEntry;
-
 import java.io.Serializable;
+
+import com.helger.commons.collection.impl.ICommonsList;
+
+import eu.toop.commons.exchange.AsicReadEntry;
 
 public class DocumentDataBean implements Serializable {
 

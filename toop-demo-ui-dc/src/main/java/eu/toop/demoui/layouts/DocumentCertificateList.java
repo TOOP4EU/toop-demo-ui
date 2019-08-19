@@ -1,18 +1,14 @@
 package eu.toop.demoui.layouts;
 
-import com.vaadin.data.Binder;
-import com.vaadin.data.ValidationException;
-import com.vaadin.server.Sizeable;
-import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.GridLayout;
-import eu.toop.commons.dataexchange.v140.TDEDocumentResponseType;
-import eu.toop.demoui.bean.DocumentDataBean;
-import eu.toop.demoui.bean.ToopDataBean;
-import eu.toop.demoui.view.BaseView;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.List;
+
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.GridLayout;
+
+import eu.toop.demoui.bean.DocumentDataBean;
 
 public class DocumentCertificateList extends GridLayout {
 

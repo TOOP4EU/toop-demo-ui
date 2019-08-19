@@ -17,17 +17,11 @@ package eu.toop.demoui.endpoints;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import com.helger.commons.error.level.EErrorLevel;
-import eu.toop.commons.dataexchange.v140.TDEDocumentResponseType;
-import eu.toop.commons.dataexchange.v140.TDEDocumentType;
-import eu.toop.demoui.bean.DocumentDataBean;
-import eu.toop.kafkaclient.ToopKafkaClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +30,13 @@ import com.helger.commons.io.file.FileOperationManager;
 import com.helger.commons.string.StringHelper;
 import com.helger.datetime.util.PDTIOHelper;
 
+import eu.toop.commons.dataexchange.v140.TDEDocumentResponseType;
+import eu.toop.commons.dataexchange.v140.TDEDocumentType;
 import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.jaxb.ToopWriter;
 import eu.toop.demoui.DCUIConfig;
+import eu.toop.demoui.bean.DocumentDataBean;
 
 public final class DemoUIToopInterfaceHelper {
   private static final Logger LOGGER = LoggerFactory.getLogger (DemoUIToopInterfaceHelper.class);

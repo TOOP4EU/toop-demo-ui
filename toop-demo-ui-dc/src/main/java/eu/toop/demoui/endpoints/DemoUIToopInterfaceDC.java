@@ -15,12 +15,25 @@
  */
 package eu.toop.demoui.endpoints;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.UI;
-import eu.toop.commons.dataexchange.v140.*;
+
+import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
+import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
+import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
+import eu.toop.commons.dataexchange.v140.TDEDataProviderType;
+import eu.toop.commons.dataexchange.v140.TDETOOPResponseType;
 import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.demoui.DCToToopInterfaceMapper;
@@ -29,17 +42,18 @@ import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.layouts.DynamicRequestPage;
 import eu.toop.demoui.layouts.MaritimePage;
 import eu.toop.demoui.layouts.RegisterWithWEEEMainPage;
-import eu.toop.demoui.view.*;
+import eu.toop.demoui.view.DynamicRequest;
+import eu.toop.demoui.view.Maritime;
+import eu.toop.demoui.view.PhaseTwo;
+import eu.toop.demoui.view.RequestToItalyOne;
+import eu.toop.demoui.view.RequestToSlovakiaOne;
+import eu.toop.demoui.view.RequestToSlovakiaTwo;
+import eu.toop.demoui.view.RequestToSloveniaOne;
+import eu.toop.demoui.view.RequestToSwedenOne;
+import eu.toop.demoui.view.RequestToSwedenTwo;
 import eu.toop.iface.IToopInterfaceDC;
 import eu.toop.kafkaclient.ToopKafkaClient;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
-
-import javax.annotation.Nonnull;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.AbstractMap;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.List;
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
   public DemoUIToopInterfaceDC () {

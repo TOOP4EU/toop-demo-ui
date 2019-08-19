@@ -1,18 +1,23 @@
 package eu.toop.demoui.builder;
 
+import java.util.UUID;
+
 import com.helger.commons.string.StringHelper;
+
 import eu.toop.commons.codelist.EPredefinedDocumentTypeIdentifier;
 import eu.toop.commons.codelist.EPredefinedProcessIdentifier;
-import eu.toop.commons.dataexchange.v140.*;
-import eu.toop.commons.exchange.ToopMessageBuilder140;
+import eu.toop.commons.dataexchange.v140.TDEAddressWithLOAType;
+import eu.toop.commons.dataexchange.v140.TDEDataRequestSubjectType;
+import eu.toop.commons.dataexchange.v140.TDEDocumentRequestType;
+import eu.toop.commons.dataexchange.v140.TDELegalPersonType;
+import eu.toop.commons.dataexchange.v140.TDENaturalPersonType;
+import eu.toop.commons.dataexchange.v140.TDETOOPRequestType;
 import eu.toop.commons.jaxb.ToopXSDHelper140;
 import eu.toop.commons.usecase.EToopEntityType;
 import eu.toop.demoui.DCUIConfig;
 import eu.toop.demoui.builder.model.Request;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.CodeType;
 import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.IdentifierType;
-
-import java.util.UUID;
 
 public class TOOPRequestMaker {
     private Request formValues;
