@@ -245,14 +245,14 @@ public class DynamicRequestPage extends CustomLayout {
         }
 
         final TDEDataRequestSubjectType aDS = new TDEDataRequestSubjectType ();
+        // Mandatory field - checked in Schematron
+        aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.NATURAL_PERSON.getID ()));
         if (!naturalPersonIdentifierField.isEmpty ())
         {
           boolean bCanAddNaturalPerson = true;
           final TDENaturalPersonType aNP = new TDENaturalPersonType ();
 
-          // Mandatory field - checked in Schematrin
           {
-            aDS.setDataRequestSubjectTypeCode (ToopXSDHelper140.createCode (EToopEntityType.NATURAL_PERSON.getID ()));
             final String naturalPersonIdentifier = naturalPersonIdentifierField.getValue ();
             if (StringHelper.hasText (naturalPersonIdentifier))
               aNP.setPersonIdentifier (ToopXSDHelper140.createIdentifierWithLOA (identifierPrefix +
