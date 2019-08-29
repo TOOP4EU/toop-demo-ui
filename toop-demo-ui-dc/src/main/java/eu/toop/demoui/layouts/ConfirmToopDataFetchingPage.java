@@ -64,8 +64,6 @@ public class ConfirmToopDataFetchingPage extends Window {
     final ConfirmToopDataFetchingTable confirmToopDataFetchingTable = new ConfirmToopDataFetchingTable ();
     subContent.addComponent (confirmToopDataFetchingTable);
 
-    // rember outside lambda
-    UI aUI = getUI ();
     final Button proceedButton = new Button ("Please request this information through TOOP", event -> {
       onConsent ();
       subWindow.close ();
@@ -154,7 +152,7 @@ public class ConfirmToopDataFetchingPage extends Window {
         DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
         // Calling getUI in hee leads to null value 
-        DCToToopInterfaceMapper.sendRequest (aRequest, aUI);
+        DCToToopInterfaceMapper.sendRequest (aRequest, view.getUI ());
       } catch (final IOException | ToopErrorException ex) {
         // Convert from checked to unchecked
         throw new RuntimeException (ex);
