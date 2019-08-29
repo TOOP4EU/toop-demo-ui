@@ -22,6 +22,7 @@ import java.util.List;
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.string.StringHelper;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
@@ -63,6 +64,8 @@ public class ConfirmToopDataFetchingPage extends Window {
     final ConfirmToopDataFetchingTable confirmToopDataFetchingTable = new ConfirmToopDataFetchingTable ();
     subContent.addComponent (confirmToopDataFetchingTable);
 
+    // rember outside lambda
+    UI aUI = getUI ();
     final Button proceedButton = new Button ("Please request this information through TOOP", event -> {
       onConsent ();
       subWindow.close ();
@@ -150,7 +153,8 @@ public class ConfirmToopDataFetchingPage extends Window {
 
         DemoUIToopInterfaceHelper.dumpRequest (aRequest);
 
-        DCToToopInterfaceMapper.sendRequest (aRequest, getUI ());
+        // Calling getUI in hee leads to null value 
+        DCToToopInterfaceMapper.sendRequest (aRequest, aUI);
       } catch (final IOException | ToopErrorException ex) {
         // Convert from checked to unchecked
         throw new RuntimeException (ex);
