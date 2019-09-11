@@ -27,18 +27,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
-import eu.toop.demoui.view.DynamicRequest;
 import eu.toop.demoui.view.Maritime;
-import eu.toop.demoui.view.MockRequestToSwedenDPOne;
-import eu.toop.demoui.view.MockRequestToSwedenDPTwo;
-import eu.toop.demoui.view.PhaseOne;
-import eu.toop.demoui.view.PhaseTwo;
-import eu.toop.demoui.view.RequestToItalyOne;
-import eu.toop.demoui.view.RequestToSlovakiaOne;
-import eu.toop.demoui.view.RequestToSlovakiaTwo;
-import eu.toop.demoui.view.RequestToSloveniaOne;
-import eu.toop.demoui.view.RequestToSwedenOne;
-import eu.toop.demoui.view.RequestToSwedenTwo;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -70,45 +59,10 @@ public class DCUI extends UI {
     getPage ().setTitle ("TOOP Demo User Interface");
 
     final Navigator navigator = new Navigator (this, this);
-    navigator.addView ("", new PhaseOne ());
-    navigator.addView ("PhaseOne", new PhaseOne ());
-    final PhaseTwo phaseTwo = new PhaseTwo ();
-    navigator.addView ("loginSuccess", phaseTwo);
-    final RequestToSwedenOne requestToSwedenOne = new RequestToSwedenOne ();
-    navigator.addView ("requestToSwedenOne", requestToSwedenOne);
-
-    final RequestToSwedenTwo requestToSwedenTwo = new RequestToSwedenTwo ();
-    navigator.addView ("requestToSwedenTwo", requestToSwedenTwo);
-
-    final RequestToSloveniaOne requestToSloveniaOne = new RequestToSloveniaOne ();
-    navigator.addView ("requestToSloveniaOne", requestToSloveniaOne);
-
-    final RequestToSlovakiaOne requestToSlovakiaOne = new RequestToSlovakiaOne ();
-    navigator.addView ("requestToSlovakiaOne", requestToSlovakiaOne);
-    final RequestToSlovakiaTwo requestToSlovakiaTwo = new RequestToSlovakiaTwo ();
-    navigator.addView ("requestToSlovakiaTwo", requestToSlovakiaTwo);
-
-    final RequestToItalyOne requestToItalyOne = new RequestToItalyOne ();
-    navigator.addView ("requestToItalyOne", requestToItalyOne);
-
-    // Temporary mock endpoints for ToopRequests to the Swedish pilot
-    final MockRequestToSwedenDPOne mockRequestToSwedenDPOne = new MockRequestToSwedenDPOne ();
-    navigator.addView ("mockRequestToSwedenDPOne", mockRequestToSwedenDPOne);
-    final MockRequestToSwedenDPTwo mockRequestToSwedenDPTwo = new MockRequestToSwedenDPTwo ();
-    navigator.addView ("mockRequestToSwedenDPTwo", mockRequestToSwedenDPTwo);
-
-    final DynamicRequest dynamicRequest = new DynamicRequest ();
-    navigator.addView ("dynamicRequest", dynamicRequest);
 
     final Maritime maritime = new Maritime();
     navigator.addView("maritime", maritime);
 
-
-    final String eidasAttributes = vaadinRequest.getParameter ("eidasAttributes");
-    if (eidasAttributes != null) {
-      phaseTwo.setEidasAttributes (eidasAttributes);
-      navigator.navigateTo ("loginSuccess");
-    }
   }
 
   @Override

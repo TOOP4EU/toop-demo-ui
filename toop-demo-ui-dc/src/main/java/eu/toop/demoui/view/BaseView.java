@@ -20,22 +20,14 @@ import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.CustomLayout;
 
 import eu.toop.demoui.bean.DocumentDataBean;
-import eu.toop.demoui.bean.Identity;
-import eu.toop.demoui.bean.NewCompany;
 import eu.toop.demoui.bean.ToopDataBean;
-import eu.toop.demoui.layouts.KeyValueForm;
-import eu.toop.demoui.layouts.MainCompanyForm;
 
 public class BaseView extends CustomLayout implements View {
 
   private AbstractLayout page;
-  private Identity identity = new Identity ();
   private ToopDataBean toopDataBean = new ToopDataBean();
-  private NewCompany newCompany = new NewCompany ();
   private DocumentDataBean documentDataBean = new DocumentDataBean();
 
-  private MainCompanyForm mainCompanyForm = null;
-  private KeyValueForm keyValueForm = null;
 
   public BaseView () {
 
@@ -58,16 +50,6 @@ public class BaseView extends CustomLayout implements View {
     return page;
   }
 
-  public Identity getIdentity () {
-
-    return identity;
-  }
-
-  public void setIdentity (Identity identity) {
-
-    this.identity = identity;
-  }
-
   public DocumentDataBean getDocumentDataBean() {
     return documentDataBean;
   }
@@ -86,30 +68,6 @@ public class BaseView extends CustomLayout implements View {
     this.toopDataBean = toopDataBean;
   }
 
-  public NewCompany getNewCompany () {
-
-    return newCompany;
-  }
-
-  public void setNewCompany (NewCompany newCompany) {
-
-    this.newCompany = newCompany;
-  }
-
-  public MainCompanyForm getMainCompanyForm () {
-
-    return mainCompanyForm;
-  }
-
-  public void setMainCompanyForm (MainCompanyForm mainCompanyForm) {
-
-    this.mainCompanyForm = mainCompanyForm;
-  }
-
-  public void setKeyValueForm (KeyValueForm keyValueForm) {
-
-    this.keyValueForm = keyValueForm;
-  }
 
   @Override
   public boolean equals(Object obj) {
