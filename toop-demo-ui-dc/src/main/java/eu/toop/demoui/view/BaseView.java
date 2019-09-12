@@ -20,12 +20,10 @@ import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.CustomLayout;
 
 import eu.toop.demoui.bean.DocumentDataBean;
-import eu.toop.demoui.bean.ToopDataBean;
 
 public class BaseView extends CustomLayout implements View {
 
   private AbstractLayout page;
-  private ToopDataBean toopDataBean = new ToopDataBean();
   private DocumentDataBean documentDataBean = new DocumentDataBean();
 
 
@@ -56,16 +54,6 @@ public class BaseView extends CustomLayout implements View {
 
   public void setDocumentDataBean(DocumentDataBean documentDataBean) {
     this.documentDataBean = documentDataBean;
-  }
-
-  public ToopDataBean getToopDataBean () {
-
-    return toopDataBean;
-  }
-
-  public void setToopDataBean (ToopDataBean toopDataBean) {
-
-    this.toopDataBean = toopDataBean;
   }
 
 

@@ -175,8 +175,6 @@ public class MaritimePage extends CustomLayout {
 
         responseReceived = false;
         resetError ();
-        removeMainCompanyForm ();
-        removeKeyValueForm ();
         sw.restart ();
 
         try {
@@ -259,8 +257,6 @@ public class MaritimePage extends CustomLayout {
 
             responseReceived = false;
             resetError ();
-            removeMainCompanyForm ();
-            removeKeyValueForm ();
             sw.restart ();
 
             try {
@@ -427,15 +423,6 @@ public class MaritimePage extends CustomLayout {
 //        return grid;
         addComponent(grid, "documentCertificateList");
 
-    }
-
-    public void removeMainCompanyForm () {
-        removeComponent ("mainCompanyForm");
-    }
-
-
-    public void removeKeyValueForm () {
-        removeComponent ("keyValueForm");
     }
 
     public String getRequestId () {

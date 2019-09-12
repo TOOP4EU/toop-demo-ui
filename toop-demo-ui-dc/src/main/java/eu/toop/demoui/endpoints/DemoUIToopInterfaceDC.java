@@ -17,13 +17,11 @@ package eu.toop.demoui.endpoints;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import com.helger.commons.collection.impl.ICommonsList;
-import com.helger.commons.datetime.PDTFactory;
 import com.helger.commons.error.level.EErrorLevel;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.StreamResource;
@@ -38,7 +36,6 @@ import eu.toop.commons.exchange.AsicReadEntry;
 import eu.toop.commons.exchange.ToopResponseWithAttachments140;
 import eu.toop.demoui.DCToToopInterfaceMapper;
 import eu.toop.demoui.bean.DocumentDataBean;
-import eu.toop.demoui.bean.ToopDataBean;
 import eu.toop.demoui.layouts.MaritimePage;
 import eu.toop.demoui.view.Maritime;
 import eu.toop.iface.IToopInterfaceDC;
@@ -47,97 +44,6 @@ import oasis.names.specification.ubl.schema.xsd.unqualifieddatatypes_21.Identifi
 
 public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
     public DemoUIToopInterfaceDC() {
-    }
-
-    private static boolean _canUseConcept(@Nonnull final TDEConceptRequestType aConcept) {
-        // This class can only deliver to:
-        // - leaf entries
-        // - that have already a response
-        return aConcept.hasNoConceptRequestEntries() && aConcept.getDataElementResponseValueCount() > 0;
-    }
-
-    private void _extractValue(@Nonnull final String sLogPrefix,
-                               @Nonnull final String sConceptName1,
-                               @Nonnull final String mappedConcept,
-                               @Nonnull final TDEConceptRequestType aConcept,
-                               @Nonnull final ToopDataBean bean) {
-        String sValue = null;
-        for (final TDEDataElementResponseValueType aDER : aConcept.getDataElementResponseValue()) {
-            ToopKafkaClient.send(EErrorLevel.INFO,
-                    () -> sLogPrefix +
-                            "Received a mapped concept ( " +
-                            mappedConcept +
-                            " ), response: " +
-                            aDER.toString());
-
-            if (aDER.getResponseIdentifier() != null)
-                sValue = aDER.getResponseIdentifier().getValue();
-            else if (aDER.getResponseDescription() != null)
-                sValue = aDER.getResponseDescription().getValue();
-            else if (aDER.getResponseAmount() != null && aDER.getResponseAmount().getValue() != null)
-                sValue = aDER.getResponseAmount().getValue().toString();
-            else if (aDER.getResponseCode() != null)
-                sValue = aDER.getResponseCode().getValue();
-            else if (aDER.getResponseDate() != null)
-                sValue = PDTFactory.createLocalDate(aDER.getResponseDate().toGregorianCalendar()).toString();
-            else if (aDER.getResponseTime() != null)
-                sValue = PDTFactory.createLocalTime(aDER.getResponseTime().toGregorianCalendar()).toString();
-            else if (aDER.getResponseIndicator() != null)
-                sValue = Boolean.toString(aDER.getResponseIndicator().isValue());
-            else if (aDER.getResponseMeasure() != null && aDER.getResponseMeasure().getValue() != null)
-                sValue = aDER.getResponseMeasure().getValue().toString();
-            else if (aDER.getResponseNumeric() != null && aDER.getResponseNumeric().getValue() != null)
-                sValue = aDER.getResponseNumeric().getValue().toString();
-            else if (aDER.getResponseQuantity() != null && aDER.getResponseQuantity().getValue() != null)
-                sValue = aDER.getResponseQuantity().getValue().toString();
-                // TODO ResponseURI is an indicator making no sense to
-                // me atm
-            else
-                ToopKafkaClient.send(EErrorLevel.WARN,
-                        () -> sLogPrefix +
-                                "Unsupported response value provided: " +
-                                aDER.toString());
-            if (sValue != null)
-                break;
-        }
-
-        if (sValue == null)
-            return;
-
-        bean.getKeyValList().add(new SimpleEntry<>(sConceptName1, sValue));
-        if (sConceptName1.equals("FreedoniaStreetAddress"))
-            bean.setAddress(sValue);
-        else if (sConceptName1.equals("FreedoniaSSNumber"))
-            bean.setSSNumber(sValue);
-        else if (sConceptName1.equals("FreedoniaCompanyCode"))
-            bean.setBusinessCode(sValue);
-        else if (sConceptName1.equals("FreedoniaVATNumber"))
-            bean.setVATNumber(sValue);
-        else if (sConceptName1.equals("FreedoniaCompanyType"))
-            bean.setCompanyType(sValue);
-        else if (sConceptName1.equals("FreedoniaRegistrationDate"))
-            bean.setRegistrationDate(sValue);
-        else if (sConceptName1.equals("FreedoniaRegistrationNumber"))
-            bean.setRegistrationNumber(sValue);
-        else if (sConceptName1.equals("FreedoniaCompanyName"))
-            bean.setCompanyName(sValue);
-        else if (sConceptName1.equals("FreedoniaNaceCode"))
-            bean.setCompanyNaceCode(sValue);
-        else if (sConceptName1.equals("FreedoniaActivityDescription"))
-            bean.setActivityDeclaration(sValue);
-        else if (sConceptName1.equals("FreedoniaRegistrationAuthority"))
-            bean.setRegistrationAuthority(sValue);
-        else if (sConceptName1.equals("FreedoniaLegalStatus"))
-            bean.setLegalStatus(sValue);
-        else if (sConceptName1.equals("FreedoniaLegalStatusEffectiveDate"))
-            bean.setLegalStatusEffectiveDate(sValue);
-        else {
-            ToopKafkaClient.send(EErrorLevel.WARN,
-                    () -> sLogPrefix +
-                            "Unsupported source concept name: '" +
-                            sConceptName1 +
-                            "'");
-        }
     }
 
     public void onToopResponse(@Nonnull final ToopResponseWithAttachments140 aResponseWA) throws IOException {
@@ -188,64 +94,13 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
             final Navigator threadUINavigator = aUI.getNavigator();
             ToopKafkaClient.send(EErrorLevel.INFO, () -> sLogPrefix + "Current Navigator: " + threadUINavigator);
 
-            final ToopDataBean bean = new ToopDataBean(attachments);
+            final DocumentDataBean bean = new DocumentDataBean(attachments);
             // DocumentDataBean documentBean = new DocumentDataBean(attachments);
-
-            // Get requested documents
-            if (aResponse.getDocumentRequestCount() > 0) {
-                ToopKafkaClient.send(EErrorLevel.INFO, () -> sLogPrefix + "Contains requested documents");
-                aResponse.getDocumentRequest().forEach(dRec -> {
-                    dRec.getDocumentResponse().forEach(dResp -> {
-                        bean.getKeyValList().add(new SimpleEntry<>("Document Name:", dResp.getDocumentName().getValue()));
-                        bean.getKeyValList()
-                                .add(new SimpleEntry<>("Document Issue Date:",
-                                        dResp.getDocumentIssueDate().getValue().toString()));
-                        bean.getKeyValList()
-                                .add(new SimpleEntry<>("Document Issue Place:", dResp.getDocumentIssuePlace().getValue()));
-                        bean.getKeyValList()
-                                .add(new SimpleEntry<>("Document Description:", dResp.getDocumentDescription().getValue()));
-                        bean.getKeyValList()
-                                .add(new SimpleEntry<>("Document Identifier:", dResp.getDocumentIdentifier().getValue()));
-                        dResp.getDocument().forEach(doc -> {
-                            bean.getKeyValList().add(new SimpleEntry<>("Document URI:", doc.getDocumentURI().getValue()));
-                            bean.getKeyValList()
-                                    .add(new SimpleEntry<>("Document MIME Type:", doc.getDocumentMimeTypeCode().getValue()));
-                        });
-                    });
-                });
-            }
-
-            // Inspect all mapped values
-            for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest()) {
-                final TDEConceptRequestType aConcept1 = aDER.getConceptRequest();
-                final String sConceptName1 = aConcept1.getConceptName().getValue();
-                if (_canUseConcept(aConcept1)) {
-                    // Apply value from this concept
-                    _extractValue(sLogPrefix, sConceptName1, sConceptName1, aConcept1, bean);
-                } else
-                    for (final TDEConceptRequestType aConcept2 : aConcept1.getConceptRequest()) {
-                        final String sConceptName2 = aConcept2.getConceptName().getValue();
-                        if (_canUseConcept(aConcept2)) {
-                            // Apply value from this concept
-                            _extractValue(sLogPrefix, sConceptName1, sConceptName1 + " - " + sConceptName2, aConcept2, bean);
-                        } else
-                            for (final TDEConceptRequestType aConcept3 : aConcept2.getConceptRequest()) {
-                                final String sConceptName3 = aConcept3.getConceptName().getValue();
-
-                                // Three layers is all we have
-                                // Apply value from this concept
-                                _extractValue(sLogPrefix,
-                                        sConceptName1,
-                                        sConceptName1 + " - " + sConceptName2 + " - " + sConceptName3,
-                                        aConcept3,
-                                        bean);
-                            }
-                    }
-            }
             if (threadUINavigator.getCurrentView() instanceof Maritime) {
                 final Maritime homeView = (Maritime) threadUINavigator.getCurrentView();
                 if (homeView.getCurrentPage() instanceof MaritimePage) {
-                    homeView.setToopDataBean(bean);
+//                    homeView.setToopDataBean(bean);\
+                    homeView.setDocumentDataBean(bean);
                     // homeView.setDocumentDataBean(documentBean);
                     final MaritimePage page = (MaritimePage) homeView.getCurrentPage();
 
