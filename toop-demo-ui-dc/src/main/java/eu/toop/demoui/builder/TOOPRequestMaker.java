@@ -40,28 +40,7 @@ public class TOOPRequestMaker {
         aReq.setDocumentUniversalUniqueIdentifier(documentUniversalUniqueIdentifier(uuid));
         aReq.setSpecificationIdentifier(specificationIdentifier(uuid));
         aReq.addDocumentRequest(createDocumentRequestType());
-
-//        final TDETOOPRequestType aReq = ToopMessageBuilder140.createMockRequest(
-//                createDataRequestSubject(),
-//                srcCountry(),
-//                dstCountry(),
-//                senderIdentifier(),
-//                eDocumentTypeID(),
-//                eProcessID(),
-//                null);
-
-//        final UUID uuid = generateUUID();
-//        aReq.setDocumentUniversalUniqueIdentifier(documentUniversalUniqueIdentifier(uuid));
-//        aReq.setSpecificationIdentifier(specificationIdentifier(uuid));
-//        aReq.addDocumentRequest(createDocumentRequestType());
-
-        // TODO add way of handling different cases of request (DATA, DOCUMENT, TWOPHASED)
-        // TODO refactor DynamicRequestPage
-
-
         return aReq;
-
-
     }
 
     private TDEDataRequestSubjectType createDataRequestSubject() {
@@ -158,7 +137,6 @@ public class TOOPRequestMaker {
         } else {
             eProcessID = EPredefinedProcessIdentifier.DOCUMENTREQUESTRESPONSE;
         }
-      //TODO add DATAREQUESTRESPONSE...
         return eProcessID;
     }
 

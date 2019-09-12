@@ -183,7 +183,7 @@ public class MaritimePage extends CustomLayout {
 
             Request formValues;
 
-            if(documentTypeField.getValue().toString().contains("SHIPCERTIFICATE_LIST")) {
+            if(documentTypeField.getValue().toString().contains("SHIPCERTIFICATE")) {
                 documentTypeField.setValue(EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE);
                 formValues = new Request(countryCodeField.getValue(), EPredefinedDocumentTypeIdentifier.REQUEST_SHIPCERTIFICATE);
 

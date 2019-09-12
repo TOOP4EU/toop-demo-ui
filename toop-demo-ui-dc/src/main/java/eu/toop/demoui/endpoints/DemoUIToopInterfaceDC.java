@@ -95,13 +95,10 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC {
             ToopKafkaClient.send(EErrorLevel.INFO, () -> sLogPrefix + "Current Navigator: " + threadUINavigator);
 
             final DocumentDataBean bean = new DocumentDataBean(attachments);
-            // DocumentDataBean documentBean = new DocumentDataBean(attachments);
             if (threadUINavigator.getCurrentView() instanceof Maritime) {
                 final Maritime homeView = (Maritime) threadUINavigator.getCurrentView();
                 if (homeView.getCurrentPage() instanceof MaritimePage) {
-//                    homeView.setToopDataBean(bean);\
                     homeView.setDocumentDataBean(bean);
-                    // homeView.setDocumentDataBean(documentBean);
                     final MaritimePage page = (MaritimePage) homeView.getCurrentPage();
 
                     final String expectedUuid = page.getRequestId();
