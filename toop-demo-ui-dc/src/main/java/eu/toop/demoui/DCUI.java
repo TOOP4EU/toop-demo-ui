@@ -56,12 +56,12 @@ public class DCUI extends UI {
     });
 
     setPollInterval (1000);
-    getPage ().setTitle ("TOOP Demo User Interface");
+    getPage ().setTitle ("TOOP Demo Maritime Interface");
 
     final Navigator navigator = new Navigator (this, this);
 
     final Maritime maritime = new Maritime();
-    navigator.addView("maritime", maritime);
+    navigator.addView("", maritime);
 
   }
 
