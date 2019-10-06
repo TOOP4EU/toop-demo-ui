@@ -412,18 +412,19 @@ public class MaritimePage extends CustomLayout {
 
         Grid<DocumentDataBean> grid = new Grid<>();
         grid.setItems(docResponseList);
-        grid.addColumn(DocumentDataBean::getDocumentName).setCaption("Document Name");
-        grid.addColumn(DocumentDataBean::getDocumentDescription).setCaption("Document Description");
-        grid.addColumn(DocumentDataBean::getDocumentURI).setCaption("URI");
-        grid.addColumn(DocumentDataBean::getDocumentIdentifier).setCaption("Document Identifier");
-        grid.addColumn(DocumentDataBean::getDocumentIssuePlace).setCaption("Issue Place");
-        grid.addColumn(DocumentDataBean::getDocumentIssueDate).setCaption("Issue Date");
-        grid.addColumn(DocumentDataBean::getDocumentMIMEType).setCaption("MIME Type code");
         grid.addComponentColumn(DocumentDataBean -> {
             Button certificateButton = getCertificateButton(DocumentDataBean.getDocumentURI());
             return certificateButton;
         });
-        grid.setWidth("980");
+        grid.addColumn(DocumentDataBean::getDocumentName).setCaption("Document Name");
+        grid.addColumn(DocumentDataBean::getDocumentDescription).setCaption("Document Description");
+        grid.addColumn(DocumentDataBean::getDocumentIssuePlace).setCaption("Issue Place");
+        grid.addColumn(DocumentDataBean::getDocumentIssueDate).setCaption("Issue Date");
+        grid.addColumn(DocumentDataBean::getDocumentIdentifier).setCaption("Document Identifier");
+        grid.addColumn(DocumentDataBean::getDocumentURI).setCaption("URI");
+        grid.addColumn(DocumentDataBean::getDocumentMIMEType).setCaption("MIME Type code");
+        grid.setWidth("1500");
+//        grid.setSizeFull();
 //        return grid;
         addComponent(grid, "documentCertificateList");
 
