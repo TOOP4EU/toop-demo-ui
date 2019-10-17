@@ -25,6 +25,7 @@ target/
 .idea/
 *.iml
 *.sublime-workspace
-/.settings/
-/.project
-/.classpath
+.settings/
+.project
+.classpath
+dump/
