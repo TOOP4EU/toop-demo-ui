@@ -10,6 +10,17 @@ if ! [ -x "$(command -v mvn)" ]; then
   echo 'Error: Maven is not installed.' >&2
   exit 1
 fi
+if ! [ -x "$(command -v git)" ]; then
+  echo 'Error: Git is not installed.' >&2
+  exit 1
+fi
+if ! [ -x "$(command -v javac)" ]; then
+  echo 'Error: JDK is not installed.' >&2
+  exit 1
+fi
+
+echo Fetching latest changes
+git pull
 
 echo Making App
 cd toop-demo-ui-dp
