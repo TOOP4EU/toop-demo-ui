@@ -16,9 +16,32 @@
 
 #/bin/sh
 
-DATE=`date +%Y%m%d`
+TIMESTAMP=`date +%Y%m%d.%H%M%S`
 BASEDIR=/opt/tomcat/webapps
 FILENAME=toop-demo-ui-dp-0.10.5-SNAPSHOT.war
+APP=$(pwd)/toop-demo-ui-dp/target/$FILENAME
+BACKUPDIR=/toop-dir/backups
+
+if ! [ -x "$(command -v mvn)" ]; then
+  echo 'Error: Maven is not installed.' >&2
+  exit 1
+fi
+if ! [ -x "$(command -v git)" ]; then
+  echo 'Error: Git is not installed.' >&2
+  exit 1
+fi
+if ! [ -x "$(command -v javac)" ]; then
+  echo 'Error: JDK is not installed.' >&2
+  exit 1
+fi
+
+echo Fetching latest changes
+git pull
+
+echo Making App
+cd toop-demo-ui-dp
+mvn clean package
+cd ..
 
 if [ -f ~/$FILENAME ]
   then
@@ -27,13 +50,14 @@ if [ -f ~/$FILENAME ]
 
     echo Cleaning exisiting dirs
     cd $BASEDIR
-    sudo mv ROOT/ ~/dp.$DATE
-    sudo chmod 777 ~/dp.$DATE
+    [ ! -d "$BACKUPDIR" ] && mkdir -p "$BACKUPDIR"
+    sudo mv ROOT/ $BACKUPDIR/dp.$TIMESTAMP
+    sudo chmod 777 $BACKUPDIR/dp.$TIMESTAMP
 
     echo ROOT
     APPDIR=$BASEDIR/ROOT
     [ ! -d $APPDIR ] && sudo mkdir $APPDIR
-    sudo cp ~/$FILENAME $APPDIR
+    sudo cp $APP $APPDIR
     cd $APPDIR
     sudo unzip -q $FILENAME && sudo rm $FILENAME
     sudo rm $APPDIR/WEB-INF/classes/private-*.properties
@@ -43,7 +67,9 @@ if [ -f ~/$FILENAME ]
     sudo mv $APPDIR/WEB-INF/classes/toop-interface.elonia-acc.properties $APPDIR/WEB-INF/classes/toop-interface.properties
     sudo mv $APPDIR/WEB-INF/classes/datasets.elonia.xml $APPDIR/WEB-INF/classes/datasets.xml
 
+    echo starting Tomcat 
+    sudo service tomcat start
     echo Done!
   else
-    echo "Source file ~/$FILENAME not existing!"
+    echo "Source file $APP not existing!"
 fi
