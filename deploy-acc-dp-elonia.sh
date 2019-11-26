@@ -18,7 +18,7 @@
 
 TIMESTAMP=`date +%Y%m%d.%H%M%S`
 BASEDIR=/opt/tomcat/webapps
-FILENAME=toop-demo-ui-dp-0.10.5-SNAPSHOT.war
+FILENAME=toop-demo-ui-dp-*-SNAPSHOT.war
 APP=$(pwd)/toop-demo-ui-dp/target/$FILENAME
 BACKUPDIR=/toop-dir/backups
 
