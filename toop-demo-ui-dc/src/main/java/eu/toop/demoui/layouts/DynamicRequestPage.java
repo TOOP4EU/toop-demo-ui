@@ -137,7 +137,7 @@ public class DynamicRequestPage extends CustomLayout {
     // add all Request document types only
     final List <EPredefinedDocumentTypeIdentifier> aDocTypes = new ArrayList <> ();
     for (final EPredefinedDocumentTypeIdentifier e : EPredefinedDocumentTypeIdentifier.values ())
-      if (e.getID ().contains ("::Request##"))
+      if (e.getID ().contains ("::Request##") && e.getID ().contains ("::1.40"))
         aDocTypes.add (e);
 
     documentTypeField.setItems (aDocTypes);
