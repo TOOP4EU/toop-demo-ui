@@ -69,7 +69,7 @@
   </repositories>
   
   <properties>
-    <toop.version>0.10.6</toop.version>
+    <toop.version>0.10.6-2</toop.version>
   </properties>
 
   <dependencyManagement>
