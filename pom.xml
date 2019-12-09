@@ -26,7 +26,7 @@
   <groupId>eu.toop</groupId>
   <artifactId>toop-demo-ui-parent-pom</artifactId>
   <packaging>pom</packaging>
-  <version>0.10.7-SNAPSHOT</version>
+  <version>0.10.6-2-SNAPSHOT</version>
   <name>toop-demo-ui-parent-pom</name>
   <url>https://github.com/toop4eu/toop-demo-ui</url>
   <inceptionYear>2018</inceptionYear>
