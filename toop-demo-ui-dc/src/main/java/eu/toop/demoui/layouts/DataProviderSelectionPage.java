@@ -53,7 +53,7 @@ public class DataProviderSelectionPage extends CustomLayout {
 
     final List<MatchType> listOfMatches = new ArrayList<> ();
 
-    final ResultListType result = ToopInterfaceClient.searchDataProvider (countryCode, null);
+    final ResultListType result = ToopInterfaceClient.searchDataProviderByCountryCode (countryCode, null);
     if (result != null)
       listOfMatches.addAll (result.getMatch ());
 

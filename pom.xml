@@ -69,7 +69,7 @@
   </repositories>
   
   <properties>
-    <toop.version>0.10.6-2</toop.version>
+    <toop.version>0.10.7</toop.version>
   </properties>
 
   <dependencyManagement>
@@ -78,6 +78,13 @@
         <groupId>com.helger</groupId>
         <artifactId>ph-commons-parent-pom</artifactId>
         <version>9.3.9</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.helger</groupId>
+        <artifactId>ph-web-parent-pom</artifactId>
+        <version>9.1.5</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
