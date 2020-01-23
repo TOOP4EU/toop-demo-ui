@@ -167,13 +167,58 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC
                             if (sConceptName1.equals ("FreedoniaLegalStatusEffectiveDate"))
                               bean.setLegalStatusEffectiveDate (sValue);
                             else
-                            {
-                              ToopKafkaClient.send (EErrorLevel.WARN,
-                                                    () -> sLogPrefix +
-                                                          "Unsupported source concept name: '" +
-                                                          sConceptName1 +
-                                                          "'");
-                            }
+                              if (sConceptName1.equals ("FreedoniaBirthDate"))
+                                bean.setBirthDate (sValue);
+                              else
+                                if (sConceptName1.equals ("FreedoniaCapitalType"))
+                                  bean.setCapitalType (sValue);
+                              else
+                                if (sConceptName1.equals ("FreedoniaCountryName"))
+                                  bean.setCountryName (sValue);
+                                else
+                                  if (sConceptName1.equals ("FreedoniaEmailAddress"))
+                                    bean.setEmailAddress (sValue);
+                                  else
+                                    if (sConceptName1.equals ("FreedoniaFamilyName"))
+                                      bean.setFamilyName (sValue);
+                                    else
+                                      if (sConceptName1.equals ("FreedoniaFaxNumber"))
+                                        bean.setFaxNumber (sValue);
+                                      else
+                                        if (sConceptName1.equals ("FreedoniaFoundationDate"))
+                                          bean.setFoundationDate (sValue);
+                                        else
+                                          if (sConceptName1.equals ("FreedoniaGivenName"))
+                                            bean.setGivenName (sValue);
+                                          else
+                                            if (sConceptName1.equals ("FreedoniaHasLegalRepresentative"))
+                                              bean.setHasLegalRepresentative (sValue);
+                                            else
+                                              if (sConceptName1.equals ("FreedoniaLocality"))
+                                                bean.setLocality (sValue);
+                                              else
+                                                if (sConceptName1.equals ("FreedoniaPerson"))
+                                                  bean.setPerson (sValue);
+                                                else
+                                                  if (sConceptName1.equals ("FreedoniaPostalCode"))
+                                                    bean.setPostalCode (sValue);
+                                                  else
+                                                    if (sConceptName1.equals ("FreedoniaRegion"))
+                                                      bean.setRegion (sValue);
+                                                    else
+                                                      if (sConceptName1.equals ("FreedoniaRegisteredOrganization"))
+                                                        bean.setRegisteredOrganization(sValue);
+                                                      else
+                                                        if (sConceptName1.equals ("FreedoniaTelephoneNumber"))
+                                                          bean.setTelephoneNumber (sValue);
+                                                        else
+                                                          {
+                                                            ToopKafkaClient.send (EErrorLevel.WARN,
+                                                                      () -> sLogPrefix +
+                                                                            "Unsupported source concept name: '" +
+                                                                            sConceptName1 +
+                                                                            "'");
+                                                          }
   }
 
   public void onToopResponse (@Nonnull final ToopResponseWithAttachments140 aResponseWA) throws IOException

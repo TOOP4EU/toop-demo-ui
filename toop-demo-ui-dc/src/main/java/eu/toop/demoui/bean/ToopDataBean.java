@@ -39,8 +39,143 @@ public class ToopDataBean implements Serializable
   private String companyNaceCode;
   private String activityDeclaration;
   private String registrationAuthority;
+  private String birthDate;
+  private String capitalType;
+  private String countryName;
+  private String EmailAddress;
+  private String familyName;
+  private String faxNumber;
+  private String foundationDate;
+  private String givenName;
+  private String hasLegalRepresentative;
+  private String locality;
+  private String person;
+  private String postalCode;
+  private String region;
+  private String registeredOrganization;
+  private String telephoneNumber;
   private ICommonsList <AsicReadEntry> attachments = null;
   private List <Map.Entry <String, String>> keyValList = new ArrayList <> ();
+
+  public String getBirthDate() {
+    return birthDate;
+  }
+
+  public void setBirthDate(String birthDate) {
+    this.birthDate = birthDate;
+  }
+
+  public String getCapitalType() {
+    return capitalType;
+  }
+
+  public void setCapitalType(String capitalType) {
+    this.capitalType = capitalType;
+  }
+
+  public String getCountryName() {
+    return countryName;
+  }
+
+  public void setCountryName(String countryName) {
+    this.countryName = countryName;
+  }
+
+  public String getEmailAddress() {
+    return EmailAddress;
+  }
+
+  public void setEmailAddress(String emailAddress) {
+    EmailAddress = emailAddress;
+  }
+
+  public String getFamilyName() {
+    return familyName;
+  }
+
+  public void setFamilyName(String familyName) {
+    this.familyName = familyName;
+  }
+
+  public String getFaxNumber() {
+    return faxNumber;
+  }
+
+  public void setFaxNumber(String faxNumber) {
+    this.faxNumber = faxNumber;
+  }
+
+  public String getFoundationDate() {
+    return foundationDate;
+  }
+
+  public void setFoundationDate(String foundationDate) {
+    this.foundationDate = foundationDate;
+  }
+
+  public String getGivenName() {
+    return givenName;
+  }
+
+  public void setGivenName(String givenName) {
+    this.givenName = givenName;
+  }
+
+  public String getHasLegalRepresentative() {
+    return hasLegalRepresentative;
+  }
+
+  public void setHasLegalRepresentative(String hasLegalRepresentative) {
+    this.hasLegalRepresentative = hasLegalRepresentative;
+  }
+
+  public String getLocality() {
+    return locality;
+  }
+
+  public void setLocality(String locality) {
+    this.locality = locality;
+  }
+
+  public String getPerson() {
+    return person;
+  }
+
+  public void setPerson(String person) {
+    this.person = person;
+  }
+
+  public String getPostalCode() {
+    return postalCode;
+  }
+
+  public void setPostalCode(String postalCode) {
+    this.postalCode = postalCode;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public void setRegion(String region) {
+    this.region = region;
+  }
+
+  public String getRegisteredOrganization() {
+    return registeredOrganization;
+  }
+
+  public void setRegisteredOrganization(String registeredOrganization) {
+    this.registeredOrganization = registeredOrganization;
+  }
+
+  public String getTelephoneNumber() {
+    return telephoneNumber;
+  }
+
+  public void setTelephoneNumber(String telephoneNumber) {
+    this.telephoneNumber = telephoneNumber;
+  }
 
   public ToopDataBean ()
   {}

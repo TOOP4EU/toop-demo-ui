@@ -105,6 +105,21 @@ public class DynamicRequestPage extends CustomLayout {
     conceptList.add (new ConceptValue (sNS, "FreedoniaRegistrationAuthority"));
     conceptList.add (new ConceptValue (sNS, "FreedoniaLegalStatus"));
     conceptList.add (new ConceptValue (sNS, "FreedoniaLegalStatusEffectiveDate"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaBirthDate"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaCapitalType"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaCountryName"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaEmailAddress"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaFamilyName"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaFaxNumber"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaFoundationDate"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaGivenName"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaHasLegalRepresentative"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaLocality"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaPerson"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaPostalCode"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaRegion"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaRegisteredOrganization"));
+    conceptList.add (new ConceptValue (sNS, "FreedoniaTelephoneNumber"));
   }
 
   public DynamicRequestPage (final BaseView view)
