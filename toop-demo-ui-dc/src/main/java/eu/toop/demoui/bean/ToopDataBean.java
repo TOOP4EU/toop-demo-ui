@@ -54,8 +54,16 @@ public class ToopDataBean implements Serializable
   private String region;
   private String registeredOrganization;
   private String telephoneNumber;
-  private ICommonsList <AsicReadEntry> attachments = null;
+  private ICommonsList <AsicReadEntry> attachments ;
   private List <Map.Entry <String, String>> keyValList = new ArrayList <> ();
+
+  public ToopDataBean ()
+  {}
+
+  public ToopDataBean (final ICommonsList <AsicReadEntry> attachments)
+  {
+    this.attachments = attachments;
+  }
 
   public String getBirthDate() {
     return birthDate;
@@ -175,14 +183,6 @@ public class ToopDataBean implements Serializable
 
   public void setTelephoneNumber(String telephoneNumber) {
     this.telephoneNumber = telephoneNumber;
-  }
-
-  public ToopDataBean ()
-  {}
-
-  public ToopDataBean (final ICommonsList <AsicReadEntry> attachments)
-  {
-    this.attachments = attachments;
   }
 
   public String getAddress ()
