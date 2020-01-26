@@ -23,8 +23,10 @@ import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.error.level.EErrorLevel;
 import com.helger.commons.state.EChange;
 import com.helger.commons.string.StringHelper;
+import com.helger.jaxb.GenericJAXBMarshaller;
 
 import eu.toop.commons.concept.EConceptType;
+import eu.toop.commons.dataexchange.v140.ObjectFactory;
 import eu.toop.commons.dataexchange.v140.TDEConceptRequestType;
 import eu.toop.commons.dataexchange.v140.TDEDataElementRequestType;
 import eu.toop.commons.dataexchange.v140.TDEDataElementResponseValueType;
@@ -119,9 +121,9 @@ final class HandlerDataRequest
     return eChange;
   }
 
-  private static void _applyConceptValues (@Nonnull final TDEDataElementRequestType aDER,
-                                           final String sLogPrefix,
-                                           final DPDataset dataset)
+  private static void _applyConceptValues (@Nonnull final String sLogPrefix,
+                                           @Nonnull final TDEDataElementRequestType aDER,
+                                           @Nullable final DPDataset aDataset)
   {
     final TDEConceptRequestType aFirstLevelConcept = aDER.getConceptRequest ();
     if (aFirstLevelConcept != null)
@@ -130,7 +132,7 @@ final class HandlerDataRequest
       if (_canUseConcept (aFirstLevelConcept))
       {
         // Apply on first level - highly unlikely but who knows....
-        _applyStaticDataset (sLogPrefix, aFirstLevelConcept, dataset);
+        _applyStaticDataset (sLogPrefix, aFirstLevelConcept, aDataset);
         bDidApplyResponse = true;
       }
       else
@@ -139,16 +141,16 @@ final class HandlerDataRequest
           if (_canUseConcept (aSecondLevelConcept))
           {
             // Apply on second level - used if directly started with TC concepts
-            _applyStaticDataset (sLogPrefix, aSecondLevelConcept, dataset);
+            _applyStaticDataset (sLogPrefix, aSecondLevelConcept, aDataset);
             bDidApplyResponse = true;
-            break second;
+            break;
           }
           for (final TDEConceptRequestType aThirdLevelConcept : aSecondLevelConcept.getConceptRequest ())
           {
             if (_canUseConcept (aThirdLevelConcept))
             {
               // Apply on third level
-              _applyStaticDataset (sLogPrefix, aThirdLevelConcept, dataset);
+              _applyStaticDataset (sLogPrefix, aThirdLevelConcept, aDataset);
               bDidApplyResponse = true;
               break second;
             }
@@ -159,6 +161,18 @@ final class HandlerDataRequest
       if (!bDidApplyResponse)
       {
         ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Found no place to provide response value in Data");
+        try
+        {
+          final GenericJAXBMarshaller <TDEDataElementRequestType> m = new GenericJAXBMarshaller <> (TDEDataElementRequestType.class,
+                                                                                                    ObjectFactory._Response_QNAME);
+          m.setFormattedOutput (true);
+          ToopKafkaClient.send (EErrorLevel.ERROR,
+                                () -> sLogPrefix + "Response element is currently:\n" + m.getAsString (aDER));
+        }
+        catch (final Exception ex)
+        {
+          ToopKafkaClient.send (EErrorLevel.ERROR, () -> sLogPrefix + "Error dumping response element " + aDER, ex);
+        }
       }
     }
   }
@@ -205,7 +219,7 @@ final class HandlerDataRequest
     // add all the mapped values in the response
     for (final TDEDataElementRequestType aDER : aResponse.getDataElementRequest ())
     {
-      _applyConceptValues (aDER, sLogPrefix, dataset);
+      _applyConceptValues (sLogPrefix, aDER, dataset);
     }
   }
 }
