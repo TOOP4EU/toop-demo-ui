@@ -32,6 +32,21 @@
     <Concept name="EloniaSSNumber">SSN-5458221514699</Concept>
     <Concept name="EloniaStreetAddress">Gamlavegen 234, 321 44, Velma, Elonia</Concept>
     <Concept name="EloniaVATNumber">GF11325528514A01</Concept>
+    <Concept name="EloniaCapitalType">Equity</Concept>
+    <Concept name="EloniaFoundationDate">2012-01-11</Concept>
+    <Concept name="EloniaRegisteredOrganization">Elonian Organization</Concept>
+    <Concept name="EloniaHasLegalRepresentative">true</Concept>
+    <Concept name="EloniaPerson">Mary Jane Parker</Concept>
+    <Concept name="EloniaLegalRepresentativeGivenName">Mary</Concept>
+    <Concept name="EloniaLegalRepresentativeFamilyName">Jane</Concept>
+    <Concept name="EloniaLegalRepresentativeBirthDate">1994-05-15</Concept>
+    <Concept name="EloniaCountryName">Elonia</Concept>
+    <Concept name="EloniaPostalCode">5055</Concept>
+    <Concept name="EloniaLocality">Elonianwood</Concept>
+    <Concept name="EloniaRegion">North Elonia</Concept>
+    <Concept name="EloniaEmailAddress">maryjames@elonia.com</Concept>
+    <Concept name="EloniaFaxNumber">5553346561</Concept>
+    <Concept name="EloniaTelephoneNumber">5553346561</Concept>
   </Dataset>
   <Dataset>
     <LegalPerson>67890</LegalPerson>
