@@ -53,6 +53,23 @@ public class MainCompanyForm extends FormLayout {
     final TextField companyNaceCodeField = new TextField ("Company nace code");
     final TextField activityDeclarationField = new TextField ("Activity declaration");
     final TextField registrationAuthorityField = new TextField ("Registration authority");
+    final TextField capitalTypeField = new TextField("Capital Type");
+    final TextField foundationDateField = new TextField("Foundation Date");
+    final TextField registeredOrganizationField = new TextField("Registered Organization");
+    final TextField hasLegalRepresentativeField = new TextField("Has Legal Representative");
+    final TextField personField = new TextField("Person");
+    final TextField legalRepresentativeGivenNameField = new TextField("Legal Representative given name");
+    final TextField legalRepresentativeFamilyNameField = new TextField("Legal Representative family name");
+    final TextField legalRepresentativeBirthDateField = new TextField("Legal Representative birth date");
+    final TextField countryNameField = new TextField("Country Name");
+    final TextField postalCodeField = new TextField("Postal Code");
+    final TextField localityField = new TextField("Locality");
+    final TextField regionField = new TextField("Region");
+    final TextField emailAddressField = new TextField("Email Address");
+    final TextField faxNumberField = new TextField("Fax Number");
+    final TextField telephoneNumberField = new TextField("Telephone Number");
+
+
 
     binder.bind (addressField, ToopDataBean::getAddress, ToopDataBean::setAddress);
     binder.bind (ssNumberField, ToopDataBean::getSSNumber, ToopDataBean::setSSNumber);
@@ -67,6 +84,21 @@ public class MainCompanyForm extends FormLayout {
     binder.bind (companyNaceCodeField, ToopDataBean::getCompanyNaceCode, ToopDataBean::setCompanyNaceCode);
     binder.bind (activityDeclarationField, ToopDataBean::getActivityDeclaration, ToopDataBean::setActivityDeclaration);
     binder.bind (registrationAuthorityField, ToopDataBean::getRegistrationAuthority, ToopDataBean::setRegistrationAuthority);
+    binder.bind(capitalTypeField, ToopDataBean::getCapitalType, ToopDataBean::setCapitalType);
+    binder.bind(foundationDateField, ToopDataBean::getFoundationDate, ToopDataBean::setFoundationDate);
+    binder.bind(registeredOrganizationField, ToopDataBean::getRegisteredOrganization, ToopDataBean::setRegisteredOrganization);
+    binder.bind(hasLegalRepresentativeField, ToopDataBean::getHasLegalRepresentative, ToopDataBean::setHasLegalRepresentative);
+    binder.bind(personField, ToopDataBean::getPerson, ToopDataBean::setPerson);
+    binder.bind(legalRepresentativeGivenNameField, ToopDataBean::getGivenName, ToopDataBean::setGivenName);
+    binder.bind(legalRepresentativeFamilyNameField, ToopDataBean::getFamilyName, ToopDataBean::setFamilyName);
+    binder.bind(legalRepresentativeBirthDateField, ToopDataBean::getBirthDate, ToopDataBean::setBirthDate);
+    binder.bind(countryNameField, ToopDataBean::getCountryName, ToopDataBean::setCountryName);
+    binder.bind(postalCodeField, ToopDataBean::getPostalCode, ToopDataBean::setPostalCode);
+    binder.bind(localityField, ToopDataBean::getLocality, ToopDataBean::setLocality);
+    binder.bind(regionField, ToopDataBean::getRegion, ToopDataBean::setRegion);
+    binder.bind(emailAddressField, ToopDataBean::getEmailAddress, ToopDataBean::setEmailAddress);
+    binder.bind(faxNumberField, ToopDataBean::getFaxNumber, ToopDataBean::setFaxNumber);
+    binder.bind(telephoneNumberField, ToopDataBean::getTelephoneNumber, ToopDataBean::setTelephoneNumber);
 
     addressField.setReadOnly (readOnly);
     ssNumberField.setReadOnly (readOnly);
@@ -82,6 +114,22 @@ public class MainCompanyForm extends FormLayout {
     activityDeclarationField.setReadOnly (readOnly);
     registrationAuthorityField.setReadOnly (readOnly);
 
+    capitalTypeField.setReadOnly(readOnly);
+    foundationDateField.setReadOnly(readOnly);
+    registeredOrganizationField.setReadOnly(readOnly);
+    hasLegalRepresentativeField.setReadOnly(readOnly);
+    personField.setReadOnly(readOnly);
+    legalRepresentativeGivenNameField.setReadOnly(readOnly);
+    legalRepresentativeFamilyNameField.setReadOnly(readOnly);
+    legalRepresentativeBirthDateField.setReadOnly(readOnly);
+    countryNameField.setReadOnly(readOnly);
+    postalCodeField.setReadOnly(readOnly);
+    localityField.setReadOnly(readOnly);
+    regionField.setReadOnly(readOnly);
+    emailAddressField.setReadOnly(readOnly);
+    faxNumberField.setReadOnly(readOnly);
+    telephoneNumberField.setReadOnly(readOnly);
+
     addComponent (addressField);
     addComponent (ssNumberField);
     addComponent (businessCodeField);
@@ -95,6 +143,22 @@ public class MainCompanyForm extends FormLayout {
     addComponent (companyNaceCodeField);
     addComponent (activityDeclarationField);
     addComponent (registrationAuthorityField);
+
+    addComponent(capitalTypeField);
+    addComponent(foundationDateField);
+    addComponent(registeredOrganizationField);
+    addComponent(hasLegalRepresentativeField);
+    addComponent(personField);
+    addComponent(legalRepresentativeGivenNameField);
+    addComponent(legalRepresentativeFamilyNameField);
+    addComponent(legalRepresentativeBirthDateField);
+    addComponent(countryNameField);
+    addComponent(postalCodeField);
+    addComponent(localityField);
+    addComponent(regionField);
+    addComponent(emailAddressField);
+    addComponent(faxNumberField);
+    addComponent(telephoneNumberField);
 
     setToopDataBean(toopDataBean);
 

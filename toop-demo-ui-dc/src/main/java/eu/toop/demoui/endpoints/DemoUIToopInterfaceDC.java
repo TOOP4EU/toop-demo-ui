@@ -167,7 +167,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC
                             if (sConceptName1.equals ("FreedoniaLegalStatusEffectiveDate"))
                               bean.setLegalStatusEffectiveDate (sValue);
                             else
-                              if (sConceptName1.equals ("FreedoniaBirthDate"))
+                              if (sConceptName1.equals ("FreedoniaLegalRepresentativeBirthDate"))
                                 bean.setBirthDate (sValue);
                               else
                                 if (sConceptName1.equals ("FreedoniaCapitalType"))
@@ -179,7 +179,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC
                                   if (sConceptName1.equals ("FreedoniaEmailAddress"))
                                     bean.setEmailAddress (sValue);
                                   else
-                                    if (sConceptName1.equals ("FreedoniaFamilyName"))
+                                    if (sConceptName1.equals ("FreedoniaLegalRepresentativeFamilyName"))
                                       bean.setFamilyName (sValue);
                                     else
                                       if (sConceptName1.equals ("FreedoniaFaxNumber"))
@@ -188,7 +188,7 @@ public class DemoUIToopInterfaceDC implements IToopInterfaceDC
                                         if (sConceptName1.equals ("FreedoniaFoundationDate"))
                                           bean.setFoundationDate (sValue);
                                         else
-                                          if (sConceptName1.equals ("FreedoniaGivenName"))
+                                          if (sConceptName1.equals ("FreedoniaLegalRepresentativeGivenName"))
                                             bean.setGivenName (sValue);
                                           else
                                             if (sConceptName1.equals ("FreedoniaHasLegalRepresentative"))
