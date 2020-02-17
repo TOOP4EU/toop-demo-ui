@@ -40,7 +40,7 @@ public class PhaseTwo extends BaseView {
 
     Identity newIdentity = new Identity ();
 
-    JsonObject jsonObject = new JsonParser ().parse (eidasAttributes).getAsJsonObject ();
+    JsonObject jsonObject = JsonParser.parseString (eidasAttributes).getAsJsonObject ();
     JsonArray attr = jsonObject.get ("eidasAttributes").getAsJsonArray ();
     for (JsonElement element : attr) {
       JsonObject jsonObj = element.getAsJsonObject ();
