@@ -23,7 +23,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 
 import eu.toop.demoui.bean.NewCompany;
-import eu.toop.demoui.layouts.NewCompanyForm;
 
 public class NewCompanyFormTest {
   @Test

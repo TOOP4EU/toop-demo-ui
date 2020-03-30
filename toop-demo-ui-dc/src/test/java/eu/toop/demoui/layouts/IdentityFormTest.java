@@ -26,7 +26,6 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.TextField;
 
 import eu.toop.demoui.bean.Identity;
-import eu.toop.demoui.layouts.IdentityForm;
 
 public class IdentityFormTest {
   @Test

@@ -22,8 +22,6 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
-import eu.toop.demoui.bean.Identity;
-
 public class IdentityTest {
   @Test
   public void testBasic () {

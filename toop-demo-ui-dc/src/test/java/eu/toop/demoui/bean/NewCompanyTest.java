@@ -19,8 +19,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import eu.toop.demoui.bean.NewCompany;
-
 public final class NewCompanyTest {
   @Test
   public void testBasic () {

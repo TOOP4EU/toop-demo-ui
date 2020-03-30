@@ -38,9 +38,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import eu.toop.demoui.datasets.DPDataset;
-import eu.toop.demoui.datasets.DPUIDatasets;
-
 public class DPUIDatasetsTest
 {
   @Test

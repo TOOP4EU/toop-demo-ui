@@ -17,13 +17,12 @@ package eu.toop.demoui.layouts;
 
 import static org.junit.Assert.assertEquals;
 
-import eu.toop.demoui.bean.ToopDataBean;
 import org.junit.Test;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 
-import eu.toop.demoui.layouts.MainCompanyForm;
+import eu.toop.demoui.bean.ToopDataBean;
 
 public class MainCompanyFormTest {
   @Test

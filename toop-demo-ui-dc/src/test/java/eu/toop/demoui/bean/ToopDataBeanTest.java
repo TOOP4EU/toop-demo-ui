@@ -17,7 +17,6 @@ package eu.toop.demoui.bean;
 
 import static org.junit.Assert.assertEquals;
 
-import eu.toop.demoui.bean.ToopDataBean;
 import org.junit.Test;
 
 public class ToopDataBeanTest {
